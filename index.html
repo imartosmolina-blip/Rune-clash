@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rune Clash</title>
+<script src="https://telegram.org/js/telegram-web-app.js?63"></script>
+  <title>Rune Clash</title>
 
 <style>
 * {
@@ -188,28 +189,35 @@ let level = 1;
 let wins = 0;
 
 let battleOver = false;
-  const SAVE_KEY = "runeClashSave";
-
-function saveGame() {
+ function saveGame() {
   const data = {
     gold: gold,
     level: level,
     wins: wins
   };
 
-  localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+  Telegram.WebApp.CloudStorage.setItem(
+    "runeClashSave",
+    JSON.stringify(data)
+  );
 }
 
-function loadGame() {
-  const saved = localStorage.getItem(SAVE_KEY);
+function loadGame(done) {
+  Telegram.WebApp.CloudStorage.getItem(
+    "runeClashSave",
+    function(error, value) {
 
-  if (!saved) return;
+      if (!error && value) {
+        const data = JSON.parse(value);
 
-  const data = JSON.parse(saved);
+        gold = data.gold || 0;
+        level = data.level || 1;
+        wins = data.wins || 0;
+      }
 
-  gold = data.gold || 0;
-  level = data.level || 1;
-  wins = data.wins || 0;
+      done();
+    }
+  );
 }
 
 function randomRune() {
@@ -484,7 +492,7 @@ function nextEnemy() {
 
   document.getElementById("message").textContent =
     "Toca un grupo de 2 o más runas iguales";
-loadGame();
+
 
 enemyMax = 180 + ((level - 1) * 35);
 enemyHp = enemyMax;
@@ -527,8 +535,18 @@ function message(text) {
   document.getElementById("message").textContent = text;
 }
 
-createBoard();
-updateUI();
+
+Telegram.WebApp.ready();
+
+loadGame(function() {
+
+  enemyMax = 180 + ((level - 1) * 35);
+  enemyHp = enemyMax;
+
+  createBoard();
+  updateUI();
+
+});
 
 </script>
 
