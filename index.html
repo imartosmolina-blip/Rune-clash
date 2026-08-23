@@ -188,6 +188,29 @@ let level = 1;
 let wins = 0;
 
 let battleOver = false;
+  const SAVE_KEY = "runeClashSave";
+
+function saveGame() {
+  const data = {
+    gold: gold,
+    level: level,
+    wins: wins
+  };
+
+  localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+}
+
+function loadGame() {
+  const saved = localStorage.getItem(SAVE_KEY);
+
+  if (!saved) return;
+
+  const data = JSON.parse(saved);
+
+  gold = data.gold || 0;
+  level = data.level || 1;
+  wins = data.wins || 0;
+}
 
 function randomRune() {
   return runes[Math.floor(Math.random() * runes.length)];
@@ -424,6 +447,8 @@ function winBattle() {
   gold += 100 + level * 20;
 
   wins++;
+  saveGame();
+  
 
   document.getElementById("message").textContent =
     "🎉 ¡Goblin derrotado! +" +
@@ -443,6 +468,7 @@ function nextEnemy() {
   if (playerHp > 0) {
     level++;
   }
+  saveGame();
 
   enemyMax = 180 + ((level - 1) * 35);
 
@@ -458,7 +484,10 @@ function nextEnemy() {
 
   document.getElementById("message").textContent =
     "Toca un grupo de 2 o más runas iguales";
+loadGame();
 
+enemyMax = 180 + ((level - 1) * 35);
+enemyHp = enemyMax;
   createBoard();
 
   updateUI();
