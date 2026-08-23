@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Rune Clash</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #121426;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 430px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      background: #20243d;
+      padding: 12px;
+      border-radius: 15px;
+    }
+
+    .enemy {
+      margin-top: 25px;
+      font-size: 70px;
+    }
+
+    .bar {
+      width: 100%;
+      background: #444;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .hp {
+      height: 100%;
+      width: 100%;
+      background: #e53935;
+      transition: width 0.2s;
+    }
+
+    #play {
+      margin-top: 25px;
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      background: #7c4dff;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .board {
+      display: none;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 25px;
+    }
+
+    .rune {
+      border: none;
+      border-radius: 14px;
+      font-size: 32px;
+      padding: 15px;
+      background: #292e4d;
+    }
+
+    .message {
+      margin-top: 15px;
+      min-height: 25px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>⚔️ RUNE CLASH</h1>
+
+    <div class="stats">
+      <div>🪙 <span id="gold">0</span></div>
+      <div>⭐ Nivel 1</div>
+      <div>⚔️ 10</div>
+    </div>
+
+    <div class="enemy">👹</div>
+
+    <h3>Goblin</h3>
+
+    <div class="bar">
+      <div class="hp" id="enemyHP"></div>
+    </div>
+
+    <p>❤️ <span id="hpText">100</span> / 100</p>
+
+    <button id="play" onclick="startGame()">JUGAR</button>
+
+    <div class="board" id="board">
+
+      <button class="rune" onclick="attack()">⚔️</button>
+      <button class="rune" onclick="attack()">🔥</button>
+      <button class="rune" onclick="attack()">🛡️</button>
+      <button class="rune" onclick="attack()">❤️</button>
+
+      <button class="rune" onclick="attack()">🔥</button>
+      <button class="rune" onclick="attack()">⚔️</button>
+      <button class="rune" onclick="attack()">❤️</button>
+      <button class="rune" onclick="attack()">🛡️</button>
+
+      <button class="rune" onclick="attack()">🛡️</button>
+      <button class="rune" onclick="attack()">❤️</button>
+      <button class="rune" onclick="attack()">⚔️</button>
+      <button class="rune" onclick="attack()">🔥</button>
+
+      <button class="rune" onclick="attack()">❤️</button>
+      <button class="rune" onclick="attack()">🛡️</button>
+      <button class="rune" onclick="attack()">🔥</button>
+      <button class="rune" onclick="attack()">⚔️</button>
+
+    </div>
+
+    <div class="message" id="message"></div>
+
+  </div>
+
+  <script>
+    let hp = 100;
+    let gold = 0;
+
+    function startGame() {
+      document.getElementById("play").style.display = "none";
+      document.getElementById("board").style.display = "grid";
+      document.getElementById("message").innerText = "¡Derrota al Goblin!";
+    }
+
+    function attack() {
+      if (hp <= 0) return;
+
+      hp -= 10;
+
+      if (hp < 0) hp = 0;
+
+      document.getElementById("enemyHP").style.width = hp + "%";
+      document.getElementById("hpText").innerText = hp;
+
+      if (hp === 0) {
+        gold += 100;
+        document.getElementById("gold").innerText = gold;
+        document.getElementById("message").innerText =
+          "🎉 ¡Goblin derrotado! +100 🪙";
+      }
+    }
+  </script>
+
+</body>
+</html>
