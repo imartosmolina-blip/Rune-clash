@@ -1,166 +1,506 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rune Clash</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rune Clash</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #121426;
-      color: white;
-      text-align: center;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
-    .container {
-      max-width: 430px;
-      margin: auto;
-      padding: 20px;
-    }
+body {
+  margin: 0;
+  background: #101326;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
 
-    .stats {
-      display: flex;
-      justify-content: space-around;
-      background: #20243d;
-      padding: 12px;
-      border-radius: 15px;
-    }
+.game {
+  max-width: 430px;
+  margin: auto;
+  padding: 18px;
+}
 
-    .enemy {
-      margin-top: 25px;
-      font-size: 70px;
-    }
+h1 {
+  margin: 8px 0 15px;
+  font-size: 30px;
+}
 
-    .bar {
-      width: 100%;
-      background: #444;
-      height: 20px;
-      border-radius: 10px;
-      overflow: hidden;
-    }
+.stats {
+  display: flex;
+  justify-content: space-around;
+  background: #202540;
+  padding: 12px;
+  border-radius: 16px;
+  margin-bottom: 15px;
+}
 
-    .hp {
-      height: 100%;
-      width: 100%;
-      background: #e53935;
-      transition: width 0.2s;
-    }
+.enemy {
+  font-size: 68px;
+  margin-top: 8px;
+}
 
-    #play {
-      margin-top: 25px;
-      width: 100%;
-      border: none;
-      border-radius: 14px;
-      padding: 15px;
-      background: #7c4dff;
-      color: white;
-      font-size: 22px;
-      font-weight: bold;
-    }
+.enemy-name {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 5px;
+}
 
-    .board {
-      display: none;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-top: 25px;
-    }
+.bar {
+  height: 17px;
+  background: #383b50;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 10px 0 5px;
+}
 
-    .rune {
-      border: none;
-      border-radius: 14px;
-      font-size: 32px;
-      padding: 15px;
-      background: #292e4d;
-    }
+.enemy-hp {
+  height: 100%;
+  width: 100%;
+  background: #ef3d3d;
+  transition: width .25s;
+}
 
-    .message {
-      margin-top: 15px;
-      min-height: 25px;
-    }
-  </style>
+.player-info {
+  display: flex;
+  justify-content: space-around;
+  margin: 12px 0;
+  font-size: 17px;
+}
+
+.message {
+  min-height: 28px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  background: #1c2038;
+  padding: 8px;
+  border-radius: 18px;
+}
+
+.tile {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 12px;
+  background: #303654;
+  font-size: 29px;
+  cursor: pointer;
+}
+
+.tile:active {
+  transform: scale(.9);
+}
+
+.legend {
+  margin-top: 15px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #cdd1e8;
+}
+
+.next {
+  display: none;
+  width: 100%;
+  margin-top: 15px;
+  padding: 15px;
+  border: none;
+  border-radius: 15px;
+  background: #7447ff;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="game">
 
-  <h1>⚔️ RUNE CLASH</h1>
+<h1>⚔️ RUNE CLASH</h1>
 
-  <div class="stats">
-    <div>🪙 <span id="gold">0</span></div>
-    <div>⭐ Nivel 1</div>
-    <div>⚔️ 10</div>
-  </div>
+<div class="stats">
+  <div>🪙 <span id="gold">0</span></div>
+  <div>⭐ Nivel <span id="level">1</span></div>
+  <div>🏆 <span id="wins">0</span></div>
+</div>
 
-  <div class="enemy">👹</div>
+<div class="enemy">👹</div>
+<div class="enemy-name">Goblin</div>
 
-  <h3>Goblin</h3>
+<div class="bar">
+  <div class="enemy-hp" id="enemyBar"></div>
+</div>
 
-  <div class="bar">
-    <div class="hp" id="enemyHP"></div>
-  </div>
+<div>
+❤️ Enemigo:
+<span id="enemyHpText">180</span> / 
+<span id="enemyMaxText">180</span>
+</div>
 
-  <p>❤️ <span id="hpText">100</span> / 100</p>
+<div class="player-info">
+  <div>❤️ <span id="playerHp">100</span>/100</div>
+  <div>🛡️ <span id="shield">0</span></div>
+</div>
 
-  <button id="play" onclick="startGame()">JUGAR</button>
+<div class="message" id="message">
+Toca un grupo de 2 o más runas iguales
+</div>
 
-  <div class="board" id="board">
+<div class="board" id="board"></div>
 
-    <button class="rune" onclick="attack()">⚔️</button>
-    <button class="rune" onclick="attack()">🔥</button>
-    <button class="rune" onclick="attack()">🛡️</button>
-    <button class="rune" onclick="attack()">❤️</button>
+<button class="next" id="next" onclick="nextEnemy()">
+SIGUIENTE ENEMIGO
+</button>
 
-    <button class="rune" onclick="attack()">🔥</button>
-    <button class="rune" onclick="attack()">⚔️</button>
-    <button class="rune" onclick="attack()">❤️</button>
-    <button class="rune" onclick="attack()">🛡️</button>
-
-    <button class="rune" onclick="attack()">🛡️</button>
-    <button class="rune" onclick="attack()">❤️</button>
-    <button class="rune" onclick="attack()">⚔️</button>
-    <button class="rune" onclick="attack()">🔥</button>
-
-    <button class="rune" onclick="attack()">❤️</button>
-    <button class="rune" onclick="attack()">🛡️</button>
-    <button class="rune" onclick="attack()">🔥</button>
-    <button class="rune" onclick="attack()">⚔️</button>
-
-  </div>
-
-  <div class="message" id="message"></div>
+<div class="legend">
+⚔️ Ataque &nbsp; 🔥 Magia<br>
+🛡️ Escudo &nbsp; ❤️ Curación
+</div>
 
 </div>
 
 <script>
-  let hp = 100;
-  let gold = 0;
 
-  function startGame() {
-    document.getElementById("play").style.display = "none";
-    document.getElementById("board").style.display = "grid";
-    document.getElementById("message").innerText = "¡Derrota al Goblin!";
-  }
+const SIZE = 6;
 
-  function attack() {
-    if (hp <= 0) return;
+const runes = ["⚔️","🔥","🛡️","❤️"];
 
-    hp -= 10;
+let board = [];
 
-    if (hp < 0) hp = 0;
+let enemyMax = 180;
+let enemyHp = 180;
 
-    document.getElementById("enemyHP").style.width = hp + "%";
-    document.getElementById("hpText").innerText = hp;
+let playerHp = 100;
+let shield = 0;
 
-    if (hp === 0) {
-      gold += 100;
-      document.getElementById("gold").innerText = gold;
-      document.getElementById("message").innerText =
-        "🎉 ¡Goblin derrotado! +100 🪙";
+let gold = 0;
+let level = 1;
+let wins = 0;
+
+let battleOver = false;
+
+function randomRune() {
+  return runes[Math.floor(Math.random() * runes.length)];
+}
+
+function createBoard() {
+  board = [];
+
+  for (let r = 0; r < SIZE; r++) {
+    board[r] = [];
+
+    for (let c = 0; c < SIZE; c++) {
+      board[r][c] = randomRune();
     }
   }
+
+  renderBoard();
+}
+
+function renderBoard() {
+
+  const container = document.getElementById("board");
+
+  container.innerHTML = "";
+
+  for (let r = 0; r < SIZE; r++) {
+
+    for (let c = 0; c < SIZE; c++) {
+
+      const button = document.createElement("button");
+
+      button.className = "tile";
+
+      button.textContent = board[r][c];
+
+      button.onclick = () => selectRune(r,c);
+
+      container.appendChild(button);
+    }
+  }
+}
+
+function findGroup(row,col) {
+
+  const target = board[row][col];
+
+  const visited = Array.from(
+    {length: SIZE},
+    () => Array(SIZE).fill(false)
+  );
+
+  const group = [];
+
+  const stack = [[row,col]];
+
+  while (stack.length) {
+
+    const [r,c] = stack.pop();
+
+    if (
+      r < 0 ||
+      r >= SIZE ||
+      c < 0 ||
+      c >= SIZE ||
+      visited[r][c] ||
+      board[r][c] !== target
+    ) continue;
+
+    visited[r][c] = true;
+
+    group.push([r,c]);
+
+    stack.push(
+      [r+1,c],
+      [r-1,c],
+      [r,c+1],
+      [r,c-1]
+    );
+  }
+
+  return group;
+}
+
+function selectRune(row,col) {
+
+  if (battleOver) return;
+
+  const group = findGroup(row,col);
+
+  if (group.length < 2) {
+
+    document.getElementById("message").textContent =
+      "Necesitas juntar al menos 2 runas iguales";
+
+    return;
+  }
+
+  const rune = board[row][col];
+
+  activateRune(rune,group.length);
+
+  removeGroup(group);
+
+  collapseBoard();
+
+  renderBoard();
+
+  updateUI();
+
+  if (enemyHp <= 0) {
+    winBattle();
+    return;
+  }
+
+  enemyAttack();
+}
+
+function activateRune(rune,count) {
+
+  let power = 0;
+
+  if (rune === "⚔️") {
+
+    power = count * 6;
+
+    enemyHp -= power;
+
+    message("⚔️ Ataque: -" + power + " al Goblin");
+
+  }
+
+  if (rune === "🔥") {
+
+    power = count * 8;
+
+    enemyHp -= power;
+
+    message("🔥 Magia: -" + power + " al Goblin");
+
+  }
+
+  if (rune === "🛡️") {
+
+    power = count * 5;
+
+    shield += power;
+
+    message("🛡️ +" + power + " de escudo");
+
+  }
+
+  if (rune === "❤️") {
+
+    power = count * 5;
+
+    playerHp = Math.min(100,playerHp + power);
+
+    message("❤️ +" + power + " de vida");
+
+  }
+
+  enemyHp = Math.max(0,enemyHp);
+}
+
+function removeGroup(group) {
+
+  for (const [r,c] of group) {
+    board[r][c] = null;
+  }
+}
+
+function collapseBoard() {
+
+  for (let c = 0; c < SIZE; c++) {
+
+    let column = [];
+
+    for (let r = SIZE - 1; r >= 0; r--) {
+
+      if (board[r][c] !== null) {
+        column.push(board[r][c]);
+      }
+    }
+
+    while (column.length < SIZE) {
+      column.push(randomRune());
+    }
+
+    for (let r = SIZE - 1; r >= 0; r--) {
+      board[r][c] = column[SIZE - 1 - r];
+    }
+  }
+}
+
+function enemyAttack() {
+
+  const damage = 8 + Math.floor(level * 1.5);
+
+  let remaining = damage;
+
+  if (shield > 0) {
+
+    const blocked = Math.min(shield,remaining);
+
+    shield -= blocked;
+
+    remaining -= blocked;
+  }
+
+  playerHp -= remaining;
+
+  playerHp = Math.max(0,playerHp);
+
+  updateUI();
+
+  if (playerHp <= 0) {
+
+    battleOver = true;
+
+    document.getElementById("message").textContent =
+      "💀 Has sido derrotado";
+
+    document.getElementById("next").style.display = "block";
+
+    document.getElementById("next").textContent =
+      "REINTENTAR";
+  }
+}
+
+function winBattle() {
+
+  battleOver = true;
+
+  gold += 100 + level * 20;
+
+  wins++;
+
+  document.getElementById("message").textContent =
+    "🎉 ¡Goblin derrotado! +" +
+    (100 + level * 20) +
+    " 🪙";
+
+  document.getElementById("next").style.display = "block";
+
+  document.getElementById("next").textContent =
+    "SIGUIENTE ENEMIGO";
+
+  updateUI();
+}
+
+function nextEnemy() {
+
+  if (playerHp > 0) {
+    level++;
+  }
+
+  enemyMax = 180 + ((level - 1) * 35);
+
+  enemyHp = enemyMax;
+
+  playerHp = 100;
+
+  shield = 0;
+
+  battleOver = false;
+
+  document.getElementById("next").style.display = "none";
+
+  document.getElementById("message").textContent =
+    "Toca un grupo de 2 o más runas iguales";
+
+  createBoard();
+
+  updateUI();
+}
+
+function updateUI() {
+
+  document.getElementById("enemyHpText").textContent =
+    enemyHp;
+
+  document.getElementById("enemyMaxText").textContent =
+    enemyMax;
+
+  document.getElementById("playerHp").textContent =
+    playerHp;
+
+  document.getElementById("shield").textContent =
+    shield;
+
+  document.getElementById("gold").textContent =
+    gold;
+
+  document.getElementById("level").textContent =
+    level;
+
+  document.getElementById("wins").textContent =
+    wins;
+
+  const percent =
+    (enemyHp / enemyMax) * 100;
+
+  document.getElementById("enemyBar").style.width =
+    percent + "%";
+}
+
+function message(text) {
+  document.getElementById("message").textContent = text;
+}
+
+createBoard();
+updateUI();
+
 </script>
 
 </body>
