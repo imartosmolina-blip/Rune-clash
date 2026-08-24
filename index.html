@@ -14,7 +14,9 @@
 
 body {
   margin: 0;
-  background: #101326;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 50% 0%, #35245f 0%, #1a1733 38%, #0c0d18 100%);
   color: white;
   font-family: Arial, sans-serif;
   text-align: center;
@@ -28,49 +30,69 @@ body {
 
 h1 {
   margin: 8px 0 15px;
-  font-size: 30px;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #f3c969;
+  text-shadow:
+    0 2px 0 #7b4b16,
+    0 0 14px rgba(243, 201, 105, 0.45);
 }
 
 .stats {
   display: flex;
   justify-content: space-around;
-  background: #202540;
+  background: linear-gradient(180deg, #29264a, #1b1d35);
   padding: 12px;
   border-radius: 16px;
   margin-bottom: 15px;
+  border: 1px solid rgba(243, 201, 105, 0.25);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
-
 .enemy {
-  font-size: 68px;
-  margin-top: 8px;
+  font-size: 82px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.45));
 }
 
 .enemy-name {
-  font-size: 22px;
-  font-weight: bold;
+  font-size: 23px;
+  font-weight: 800;
   margin: 5px;
+  color: #f3c969;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 .bar {
-  height: 17px;
-  background: #383b50;
+  height: 18px;
+  background: #17192b;
   border-radius: 20px;
   overflow: hidden;
   margin: 10px 0 5px;
+  border: 2px solid #4c4964;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45);
 }
 
 .enemy-hp {
   height: 100%;
   width: 100%;
-  background: #ef3d3d;
+  background: linear-gradient(90deg, #ff6b6b, #e52f4f);
+  box-shadow: 0 0 10px rgba(255, 70, 90, 0.45);
   transition: width .25s;
 }
 
 .player-info {
   display: flex;
   justify-content: space-around;
-  margin: 12px 0;
+  margin: 14px 0;
+  padding: 12px;
   font-size: 17px;
+  font-weight: bold;
+  background: linear-gradient(180deg, #29264a, #1b1d35);
+  border-radius: 14px;
+  border: 1px solid rgba(243, 201, 105, 0.18);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.28);
 }
 
 .message {
@@ -82,25 +104,48 @@ h1 {
 .board {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-  background: #1c2038;
-  padding: 8px;
-  border-radius: 18px;
+  gap: 7px;
+  background: linear-gradient(180deg, #23203d, #141527);
+  padding: 10px;
+  border-radius: 20px;
+  border: 2px solid rgba(243, 201, 105, 0.25);
+  box-shadow:
+    inset 0 0 18px rgba(0, 0, 0, 0.45),
+    0 8px 22px rgba(0, 0, 0, 0.35);
 }
 
 .tile {
   aspect-ratio: 1;
-  border: none;
-  border-radius: 12px;
-  background: #303654;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #3a4164, #262b45);
   font-size: 29px;
   cursor: pointer;
+  box-shadow:
+    inset 0 2px 6px rgba(255, 255, 255, 0.05),
+    0 4px 10px rgba(0, 0, 0, 0.28);
+  transition: transform .12s, filter .12s;
 }
 
 .tile:active {
-  transform: scale(.9);
+  transform: scale(.92);
+  filter: brightness(1.25);
+}
+.tile.attack {
+  background: linear-gradient(180deg, #8a3038, #4d1820);
 }
 
+.tile.magic {
+  background: linear-gradient(180deg, #8a4a28, #4e2517);
+}
+
+.tile.shield {
+  background: linear-gradient(180deg, #316993, #18384f);
+}
+
+.tile.heal {
+  background: linear-gradient(180deg, #347553, #193f2c);
+}
 .legend {
   margin-top: 15px;
   font-size: 14px;
@@ -252,7 +297,14 @@ function renderBoard() {
 
       button.className = "tile";
 
-      button.textContent = board[r][c];
+const rune = board[r][c];
+
+if (rune === "⚔️") button.classList.add("attack");
+if (rune === "🔥") button.classList.add("magic");
+if (rune === "🛡️") button.classList.add("shield");
+if (rune === "❤️") button.classList.add("heal");
+
+button.textContent = rune;
 
       button.onclick = () => selectRune(r,c);
 
