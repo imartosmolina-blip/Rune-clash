@@ -115,36 +115,51 @@ h1 {
 }
 
 .tile {
+  position: relative;
   aspect-ratio: 1;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  background: linear-gradient(180deg, #3a4164, #262b45);
-  font-size: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 30px;
+  font-weight: 700;
   cursor: pointer;
+  user-select: none;
+  color: #ffffff;
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.35),
+    0 0 10px rgba(255, 255, 255, 0.10);
   box-shadow:
-    inset 0 2px 6px rgba(255, 255, 255, 0.05),
-    0 4px 10px rgba(0, 0, 0, 0.28);
-  transition: transform .12s, filter .12s;
+    inset 0 2px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.28),
+    0 6px 14px rgba(0, 0, 0, 0.28);
+  transition: transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease;
 }
 
 .tile:active {
-  transform: scale(.92);
-  filter: brightness(1.25);
+  transform: scale(0.96);
+  filter: brightness(0.95);
 }
+
 .tile.attack {
-  background: linear-gradient(180deg, #8a3038, #4d1820);
+  background: linear-gradient(180deg, #d85b5b 0%, #a12d2d 55%, #7f1f1f 100%);
+  border-color: rgba(255, 210, 210, 0.30);
 }
 
 .tile.magic {
-  background: linear-gradient(180deg, #8a4a28, #4e2517);
+  background: linear-gradient(180deg, #ffb45c 0%, #e67e22 55%, #b85d10 100%);
+  border-color: rgba(255, 229, 180, 0.30);
 }
 
 .tile.shield {
-  background: linear-gradient(180deg, #316993, #18384f);
+  background: linear-gradient(180deg, #68b6ff 0%, #2f7de1 55%, #1d56a8 100%);
+  border-color: rgba(210, 230, 255, 0.30);
 }
 
 .tile.heal {
-  background: linear-gradient(180deg, #347553, #193f2c);
+  background: linear-gradient(180deg, #62de8a 0%, #2fb463 55%, #1f8a49 100%);
+  border-color: rgba(210, 255, 225, 0.30);
 }
 .legend {
   margin-top: 15px;
