@@ -319,7 +319,12 @@ if (rune === "🔥") button.classList.add("magic");
 if (rune === "🛡️") button.classList.add("shield");
 if (rune === "❤️") button.classList.add("heal");
 
-button.textContent = rune;
+button.textContent = {
+  "⚔️": "✦",
+  "🔥": "✹",
+  "🛡️": "⬢",
+  "❤️": "✚"
+}[rune] || rune;
 
       button.onclick = () => selectRune(r,c);
 
