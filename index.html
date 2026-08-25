@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <title>Rune Clash</title>
 
 <style>
@@ -319,11 +320,11 @@ if (rune === "🔥") button.classList.add("magic");
 if (rune === "🛡️") button.classList.add("shield");
 if (rune === "❤️") button.classList.add("heal");
 
-button.textContent = {
-  "⚔️": "✦",
-  "🔥": "✹",
-  "🛡️": "⬢",
-  "❤️": "✚"
+button.innerHTML = {
+  "⚔️": '<i data-lucide="swords"></i>',
+  "🔥": '<i data-lucide="flame"></i>',
+  "🛡️": '<i data-lucide="shield"></i>',
+  "❤️": '<i data-lucide="heart-pulse"></i>'
 }[rune] || rune;
 
       button.onclick = () => selectRune(r,c);
@@ -331,6 +332,7 @@ button.textContent = {
       container.appendChild(button);
     }
   }
+  lucide.createIcons();
 }
 
 function findGroup(row,col) {
