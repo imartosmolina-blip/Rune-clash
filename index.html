@@ -731,11 +731,340 @@ h1 {
 
   text-align: center;
 }
+  /* ===== INTRO RUNE CLASH ===== */
+
+.intro-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px 24px;
+
+  background:
+    radial-gradient(circle at 50% 35%, rgba(110, 65, 220, 0.35), transparent 36%),
+    radial-gradient(circle at 50% 90%, rgba(255, 90, 40, 0.18), transparent 35%),
+    linear-gradient(180deg, #090819 0%, #12102b 45%, #070712 100%);
+
+  overflow: hidden;
+
+  opacity: 1;
+  visibility: visible;
+
+  transition:
+    opacity 0.7s ease,
+    visibility 0.7s ease;
+}
+
+
+/* Brillo de fondo */
+
+.intro-glow {
+  position: absolute;
+
+  width: 330px;
+  height: 330px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(125, 75, 255, 0.32) 0%,
+      rgba(80, 40, 180, 0.12) 45%,
+      transparent 72%
+    );
+
+  filter: blur(10px);
+
+  animation: introGlow 3s ease-in-out infinite alternate;
+}
+
+
+/* Contenido */
+
+.intro-content {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  max-width: 420px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  animation: introAppear 0.9s ease-out;
+}
+
+
+/* Runas superiores */
+
+.intro-runes {
+  display: flex;
+  gap: 13px;
+
+  margin-bottom: 30px;
+}
+
+.intro-runes span {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 15px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(70, 60, 130, 0.95),
+    rgba(25, 22, 60, 0.95)
+  );
+
+  border: 1px solid rgba(255,255,255,0.18);
+
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.35),
+    inset 0 1px 2px rgba(255,255,255,0.20);
+
+  animation: runeFloat 2.5s ease-in-out infinite;
+}
+
+.intro-runes span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.intro-runes span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.intro-runes span:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.intro-runes svg {
+  width: 27px;
+  height: 27px;
+
+  color: white;
+  stroke-width: 2.5;
+}
+
+
+/* Texto pequeño */
+
+.intro-small-title {
+  margin-bottom: 8px;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 4px;
+
+  color: rgba(255,255,255,0.55);
+}
+
+
+/* Logo */
+
+.intro-logo {
+  font-size: 48px;
+  line-height: 0.92;
+
+  font-weight: 900;
+
+  letter-spacing: 2px;
+
+  color: white;
+
+  text-shadow:
+    0 4px 15px rgba(0,0,0,0.45),
+    0 0 25px rgba(130,80,255,0.35);
+}
+
+.intro-logo strong {
+  display: block;
+
+  margin-top: 8px;
+
+  font-size: 57px;
+
+  color: #ffc94a;
+
+  text-shadow:
+    0 4px 18px rgba(0,0,0,0.50),
+    0 0 25px rgba(255,170,30,0.28);
+}
+
+
+/* Subtítulo */
+
+.intro-subtitle {
+  margin-top: 26px;
+
+  font-size: 17px;
+  line-height: 1.55;
+
+  font-weight: 600;
+
+  color: rgba(255,255,255,0.72);
+}
+
+
+/* Botón */
+
+.intro-button {
+  width: 100%;
+
+  margin-top: 38px;
+  padding: 18px 20px;
+
+  border: 0;
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffb52e,
+      #ef6b22
+    );
+
+  color: white;
+
+  font-size: 16px;
+  font-weight: 900;
+
+  letter-spacing: 0.7px;
+
+  box-shadow:
+    0 8px 25px rgba(238, 100, 25, 0.35),
+    inset 0 1px 2px rgba(255,255,255,0.35);
+
+  cursor: pointer;
+
+  animation: buttonPulse 2s ease-in-out infinite;
+
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease;
+}
+
+.intro-button:active {
+  transform: scale(0.96);
+  filter: brightness(1.15);
+}
+
+
+/* Ocultar intro */
+
+.intro-screen.intro-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+
+/* ===== ANIMACIONES ===== */
+
+@keyframes introAppear {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+@keyframes introGlow {
+  from {
+    transform: scale(0.90);
+    opacity: 0.65;
+  }
+
+  to {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+
+@keyframes runeFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+
+@keyframes buttonPulse {
+  0%, 100% {
+    box-shadow:
+      0 8px 25px rgba(238,100,25,0.30),
+      inset 0 1px 2px rgba(255,255,255,0.35);
+  }
+
+  50% {
+    box-shadow:
+      0 10px 34px rgba(255,140,35,0.52),
+      inset 0 1px 2px rgba(255,255,255,0.35);
+  }
+}
 </style>
 </head>
 
 <body>
+<div id="introScreen" class="intro-screen">
 
+  <div class="intro-glow"></div>
+
+  <div class="intro-content">
+
+    <div class="intro-runes">
+      <span><i data-lucide="swords"></i></span>
+      <span><i data-lucide="flame"></i></span>
+      <span><i data-lucide="shield"></i></span>
+      <span><i data-lucide="heart-pulse"></i></span>
+    </div>
+
+    <div class="intro-small-title">
+      EL PODER DE LAS RUNAS
+    </div>
+
+    <div class="intro-logo">
+      RUNE
+      <strong>CLASH</strong>
+    </div>
+
+    <div class="intro-subtitle">
+      Domina las runas.<br>
+      Derrota a tus enemigos.
+    </div>
+
+    <button
+      class="intro-button"
+      onclick="document.getElementById('introScreen').classList.add('intro-hidden')"
+    >
+      ⚔ ENTRAR AL COMBATE
+    </button>
+
+  </div>
+
+</div>
 <div class="game">
 
 <h1>⚔️ RUNE CLASH</h1>
