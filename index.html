@@ -381,6 +381,356 @@ h1 {
     0 2px 2px rgba(0,0,0,0.35)
   );
 }
+  /* ==================================================
+   NUEVA ZONA DE COMBATE RPG
+   ================================================== */
+
+.combat-panel {
+  position: relative;
+  margin: 14px 0 12px;
+  padding: 14px;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(55, 36, 95, 0.90),
+      rgba(20, 18, 48, 0.96)
+    );
+
+  border: 1px solid rgba(244, 198, 105, 0.28);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 8px 20px rgba(0,0,0,0.30);
+}
+
+
+/* ===== CABECERA ENEMIGO ===== */
+
+.enemy-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 12px;
+}
+
+.enemy {
+  font-size: 52px;
+  margin: 0;
+  line-height: 1;
+
+  filter:
+    drop-shadow(0 5px 5px rgba(0,0,0,0.40));
+}
+
+.enemy-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.enemy-label {
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.6px;
+
+  color: rgba(255,255,255,0.48);
+}
+
+.enemy-name {
+  margin: 2px 0 0;
+
+  font-size: 23px;
+  font-weight: 900;
+
+  color: #ffd66b;
+
+  text-shadow:
+    0 2px 6px rgba(0,0,0,0.45);
+}
+
+
+/* ===== VIDA ENEMIGO ===== */
+
+.enemy-health-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.health-icon {
+  font-size: 25px;
+
+  filter:
+    drop-shadow(0 3px 4px rgba(0,0,0,0.35));
+}
+
+.enemy-health-area {
+  flex: 1;
+  min-width: 0;
+}
+
+.health-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 6px;
+}
+
+.health-text > span {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+
+  color: rgba(255,255,255,0.52);
+}
+
+.health-text strong {
+  font-size: 14px;
+  font-weight: 900;
+
+  color: white;
+}
+
+
+/* ===== BARRA DE VIDA ===== */
+
+.combat-panel .bar {
+  position: relative;
+
+  width: 100%;
+  height: 16px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background:
+    rgba(5, 5, 15, 0.65);
+
+  border:
+    1px solid rgba(255,255,255,0.10);
+
+  box-shadow:
+    inset 0 3px 6px rgba(0,0,0,0.45);
+}
+
+.combat-panel .enemy-hp {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ff6565,
+      #f23855,
+      #d51f45
+    );
+
+  box-shadow:
+    0 0 10px rgba(255,70,90,0.40);
+
+  transition:
+    width 0.35s ease;
+}
+
+.combat-panel .enemy-hp::after {
+  content: "";
+
+  display: block;
+
+  width: 100%;
+  height: 45%;
+
+  border-radius: inherit;
+
+  background:
+    rgba(255,255,255,0.20);
+}
+
+
+/* ==================================================
+   PANEL DEL HÉROE
+   ================================================== */
+
+.player-card {
+  margin: 0 0 14px;
+  padding: 12px 14px 14px;
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(35, 38, 75, 0.92),
+      rgba(18, 18, 42, 0.95)
+    );
+
+  border:
+    1px solid rgba(100, 155, 255, 0.22);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 7px 16px rgba(0,0,0,0.25);
+}
+
+
+/* Título héroe */
+
+.player-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-bottom: 10px;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  letter-spacing: 1.4px;
+
+  color: rgba(255,255,255,0.60);
+}
+
+
+/* Dos estadísticas */
+
+.player-card .player-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  margin: 0;
+  padding: 0;
+
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+
+/* Cada estadística */
+
+.player-stat {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  min-width: 0;
+
+  padding: 10px;
+
+  border-radius: 13px;
+
+  background:
+    rgba(255,255,255,0.045);
+
+  border:
+    1px solid rgba(255,255,255,0.075);
+}
+
+
+/* Iconos */
+
+.player-stat-icon {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  font-size: 21px;
+}
+
+.player-heart {
+  background:
+    linear-gradient(
+      145deg,
+      #ff5c68,
+      #bd2037
+    );
+
+  box-shadow:
+    0 4px 10px rgba(220,40,60,0.28);
+}
+
+.player-shield {
+  background:
+    linear-gradient(
+      145deg,
+      #58a8ff,
+      #2259bb
+    );
+
+  box-shadow:
+    0 4px 10px rgba(40,110,240,0.28);
+}
+
+
+/* Texto */
+
+.player-stat-text {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.player-stat-text small {
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 1px;
+
+  color:
+    rgba(255,255,255,0.48);
+}
+
+.player-stat-text strong {
+  margin-top: 2px;
+
+  font-size: 17px;
+  font-weight: 900;
+
+  color: white;
+}
+
+
+/* ==================================================
+   MENSAJE DE COMBATE
+   ================================================== */
+
+.message {
+  margin: 13px 0 14px;
+
+  padding: 10px 12px;
+
+  border-radius: 12px;
+
+  background:
+    rgba(255,255,255,0.035);
+
+  border:
+    1px solid rgba(255,255,255,0.06);
+
+  color:
+    rgba(255,255,255,0.85);
+
+  font-size: 14px;
+  font-weight: 700;
+
+  text-align: center;
+}
 </style>
 </head>
 
@@ -396,22 +746,77 @@ h1 {
   <div>🏆 <span id="wins">0</span></div>
 </div>
 
-<div class="enemy">👹</div>
-<div class="enemy-name">Goblin</div>
+<!-- ===== ZONA DE COMBATE ===== -->
 
-<div class="bar">
-  <div class="enemy-hp" id="enemyBar"></div>
+<div class="combat-panel">
+
+  <div class="enemy-header">
+    <div class="enemy">👹</div>
+
+    <div class="enemy-details">
+      <div class="enemy-label">ENEMIGO</div>
+      <div class="enemy-name">Goblin</div>
+    </div>
+  </div>
+
+  <div class="enemy-health-row">
+    <span class="health-icon">❤️</span>
+
+    <div class="enemy-health-area">
+
+      <div class="health-text">
+        <span>VIDA</span>
+
+        <strong>
+          <span id="enemyHpText">180</span>
+          /
+          <span id="enemyMaxText">180</span>
+        </strong>
+      </div>
+
+      <div class="bar">
+        <div class="enemy-hp" id="enemyBar"></div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
-<div>
-❤️ Enemigo:
-<span id="enemyHpText">180</span> / 
-<span id="enemyMaxText">180</span>
-</div>
 
-<div class="player-info">
-  <div>❤️ <span id="playerHp">100</span>/100</div>
-  <div>🛡️ <span id="shield">0</span></div>
+<div class="player-card">
+
+  <div class="player-title">
+    <span>⚔️</span>
+    <span>HÉROE</span>
+  </div>
+
+  <div class="player-info">
+
+    <div class="player-stat">
+      <div class="player-stat-icon player-heart">❤️</div>
+
+      <div class="player-stat-text">
+        <small>VIDA</small>
+        <strong>
+          <span id="playerHp">100</span>/100
+        </strong>
+      </div>
+    </div>
+
+    <div class="player-stat">
+      <div class="player-stat-icon player-shield">🛡️</div>
+
+      <div class="player-stat-text">
+        <small>ESCUDO</small>
+        <strong>
+          <span id="shield">0</span>
+        </strong>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
 <div class="message" id="message">
