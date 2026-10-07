@@ -145,6 +145,7 @@ input{
       <button class="tool" onclick="openLocal('armarios',this)"><span class="ico">🗄️</span>ARMARIOS</button>
       <button class="tool" onclick="openLocal('cajones',this)"><span class="ico">📦</span>CAJONES</button>
       <button class="tool" onclick="openLocal('cajoneras',this)"><span class="ico">🗃️</span>CAJONERAS</button>
+      <button class="tool" onclick="openLocal('metalicas',this)"><span class="ico">🧰</span>CAJ. METÁLICAS</button>
       <button class="tool" onclick="openLocal('tarifa',this)"><span class="ico">📖</span>TARIFA</button>
       <button class="tool" onclick="openLocal('croquis',this)"><span class="ico">📐</span>CROQUIS</button>
       <button class="tool" onclick="toggleCalc(this)"><span class="ico">🧮</span>CALCULADORA</button>
@@ -172,6 +173,17 @@ input{
         <button class="btn primary" onclick="calcChest()">Calcular</button>
       </div>
       <div id="chestResult" class="localresult"></div>
+    </div>
+
+    <div id="local-metalicas" class="localtool">
+      <h3>🧰 Cajoneras metálicas</h3>
+      <p>Cálculo específico para cajón metálico y joyero. No usa las reglas del cajón de madera.</p>
+      <div class="localrow">
+        <div><label>CAJA DEL ARMARIO (cm)</label><input id="metalBox" inputmode="decimal" placeholder="100"></div>
+        <div><label>TIPO</label><select id="metalType" style="width:100%;border:1px solid #334b68;border-radius:13px;background:#071421;color:white;padding:13px"><option value="metalico">Cajón metálico</option><option value="joyero">Joyero</option></select></div>
+        <button class="btn primary" onclick="calcMetalChest()">Sacar medidas</button>
+      </div>
+      <div id="metalResult" class="localresult"></div>
     </div>
 
     <div id="local-tarifa" class="localtool">
@@ -265,7 +277,7 @@ function openLocal(type,el){
     p.classList.add('show');
     setTimeout(()=>{
       p.scrollIntoView({behavior:'smooth',block:'nearest'});
-      const focusMap={armarios:'armBox',cajones:'drawerBox',cajoneras:'chestBox',croquis:'sketchBox'};
+      const focusMap={armarios:'armBox',cajones:'drawerBox',cajoneras:'chestBox',metalicas:'metalBox',croquis:'sketchBox'};
       const id=focusMap[type];
       if(id) document.getElementById(id)?.focus();
     },80);
@@ -275,6 +287,7 @@ function openLocal(type,el){
     armarios:'Escribe la medida de la caja y pulsa Calcular.',
     cajones:'Escribe la medida de la caja y pulsa Sacar medidas. No abre ChatGPT.',
     cajoneras:'Escribe la caja, elige 2 o 3 cajones y pulsa Calcular.',
+    metalicas:'Escribe la caja, elige cajón metálico o joyero y pulsa Sacar medidas.',
     tarifa:'Consulta los datos técnicos cargados aquí mismo.',
     croquis:'Escribe la caja, elige cajones y pulsa Dibujar.'
   };
@@ -306,6 +319,24 @@ function calcDrawer(){
   html+=c===100?'<div class="notice">Caja 100 completa: 961 / 857 / x2 regleta 20 / 819 / 901 / 838 / DIF 26 mm.</div>':'<div class="notice">Para esta caja muestro solo los campos cuya regla tenemos confirmada. Fondo, regleta y DIF no se inventan.</div>';
   localShow('drawerResult',html);
 }
+function calcMetalChest(){
+  const c=nval('metalBox');
+  const type=document.getElementById('metalType').value;
+  if(!Number.isFinite(c)||c<=16.1)return localShow('metalResult','<div class="notice">Introduce una medida de caja válida.</div>');
+  const trabaAncho=c-16.1;
+  const fondoAncho=c-14;
+  const trabaAlto=type==='joyero'?5.8:9;
+  const tipo=type==='joyero'?'Joyero':'Cajón metálico';
+  localShow('metalResult',
+    '<div class="metrics">'
+    +metric('Tipo',tipo)
+    +metric('Traba',cm(trabaAncho)+' × '+cm(trabaAlto))
+    +metric('Fondo',cm(fondoAncho)+' × 43,8 cm')
+    +'</div>'
+    +'<div class="notice">Regla técnica: TRABA = caja − 16,1 cm. FONDO = caja − 14 cm. Altura traba: '+(type==='joyero'?'5,8 cm':'9 cm')+'. Profundidad fondo: 43,8 cm.</div>'
+  );
+}
+
 function calcChest(){
   const c=nval('chestBox'),count=Number(document.getElementById('drawerCount').value),g=widthGroup(c);
   if(!g)return localShow('chestResult','<div class="notice">Para esta calculadora usa cajas de 61 a 120 cm.</div>');
@@ -336,7 +367,7 @@ function resolveLocalQuery(){
   const text=query.value.trim();
   if(!text){setStatus('Escribe la consulta, por ejemplo: caja de 100');query.focus();return}
   if(!currentLocalMode){
-    setStatus('Primero pulsa ARMARIOS, CAJONES, CAJONERAS o CROQUIS.');
+    setStatus('Primero pulsa ARMARIOS, CAJONES, CAJONERAS, CAJ. METÁLICAS o CROQUIS.');
     return;
   }
   const c=extractMeasure(text);
@@ -367,6 +398,16 @@ function resolveLocalQuery(){
     calcChest();
     document.getElementById('local-cajoneras').scrollIntoView({behavior:'smooth',block:'nearest'});
     setStatus('Consulta resuelta aquí · Cajoneras');
+    return;
+  }
+
+  if(currentLocalMode==='metalicas'){
+    if(!Number.isFinite(c)){setStatus('No encuentro la medida de la caja. Ejemplo: cajón metálico caja 100');return}
+    document.getElementById('metalBox').value=c;
+    document.getElementById('metalType').value=/joyero/i.test(text)?'joyero':'metalico';
+    calcMetalChest();
+    document.getElementById('local-metalicas').scrollIntoView({behavior:'smooth',block:'nearest'});
+    setStatus('Consulta resuelta aquí · Cajoneras metálicas');
     return;
   }
 
