@@ -1,0 +1,13 @@
+{
+  "name":"Asistente Taller IA",
+  "short_name":"Taller IA",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#07101c",
+  "theme_color":"#08111d",
+  "description":"Panel rápido de trabajo para armarios, cajones, cajoneras, tarifa técnica y croquis.",
+  "icons":[
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
