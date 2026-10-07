@@ -1,100 +1,314 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b1220">
+<meta name="theme-color" content="#08111d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Taller IA">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Asistente Taller</title>
 <style>
-:root{--bg:#07101d;--p:#111c2d;--p2:#18263a;--line:#2d4059;--txt:#f5f7fb;--muted:#9fb0c8;--a:#4ea1ff}
+:root{
+  --bg:#07101c;--bg2:#0b1625;--card:#101d2f;--card2:#16263b;--line:#2b405b;
+  --text:#f6f8fb;--muted:#9fb0c6;--blue:#55a8ff;--blue2:#1977e8;
+  --green:#43d79a;--gold:#f3c969;--red:#ff6b72;
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#07101d,#0b1422 45%,#08111d);color:var(--txt)}
-.app{max-width:920px;margin:auto;padding:22px 18px 36px}
-.top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
-h1{margin:0;font-size:clamp(30px,6vw,48px)}
-.sub{margin:7px 0 0;color:var(--muted)}
-.badge{padding:8px 12px;border-radius:999px;background:#0e2135;border:1px solid #294660;color:#cbe7ff;font-size:12px;font-weight:900}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
-.card{min-height:118px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--p2),var(--p));color:white;font-weight:900;font-size:17px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.22)}
-.card span{font-size:32px}.card:active{transform:scale(.98)}
-.panel{border:1px solid var(--line);border-radius:20px;background:rgba(16,27,45,.94);padding:16px;box-shadow:0 12px 28px rgba(0,0,0,.25)}
-label{display:block;margin-bottom:8px;color:#c9d7e9;font-weight:800;font-size:13px}
-textarea,input{width:100%;border:1px solid #344c68;border-radius:14px;background:#081321;color:white;padding:14px;font:inherit;font-size:16px;outline:none}
-textarea{min-height:160px;resize:vertical}
-textarea:focus,input:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(78,161,255,.12)}
-.row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-.btn{border:0;border-radius:14px;padding:14px 12px;font-size:15px;font-weight:900;cursor:pointer}
-.secondary{background:#1a2b43;color:#edf5ff;border:1px solid #304863}.primary{background:linear-gradient(135deg,#4ea1ff,#2079e8);color:white}.green{background:linear-gradient(135deg,#34cc8f,#188a61);color:white}
-.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.quick button{background:#102034;color:#dcecff;border:1px solid #2f435c;border-radius:13px;padding:12px;font-weight:800}
-.calc{display:none;margin-top:15px}.calc.show{display:block}.calcbox{display:grid;grid-template-columns:1fr auto;gap:10px}
-.status{min-height:22px;margin-top:10px;color:#9dd3ff;font-size:13px;font-weight:800}
-.note{margin-top:12px;color:var(--muted);font-size:12px;line-height:1.5}
-@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr}.top{flex-direction:column}.card{min-height:104px}}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+body{
+  min-height:100dvh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(64,125,205,.22),transparent 36%),
+    linear-gradient(180deg,#07101c 0%,#0a1422 55%,#07101c 100%);
+}
+button,textarea,input{font:inherit}
+button{touch-action:manipulation}
+.app{max-width:980px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(30px + env(safe-area-inset-bottom))}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:17px}
+.brand{min-width:0}
+.eyebrow{display:flex;align-items:center;gap:8px;color:#9bcfff;font-size:11px;font-weight:900;letter-spacing:1.6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px rgba(67,215,154,.85)}
+h1{margin:5px 0 0;font-size:clamp(30px,7vw,48px);letter-spacing:-1.2px}
+.subtitle{margin:5px 0 0;color:var(--muted);font-size:13px}
+.clock{
+  flex:0 0 auto;padding:10px 12px;border:1px solid var(--line);border-radius:14px;
+  background:rgba(15,29,47,.86);font-weight:900;color:#dcecff;min-width:70px;text-align:center
+}
+.hero{
+  border:1px solid rgba(79,129,183,.34);border-radius:22px;padding:16px;
+  background:linear-gradient(145deg,rgba(19,35,57,.96),rgba(9,20,34,.96));
+  box-shadow:0 16px 36px rgba(0,0,0,.28)
+}
+.hero-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hero-title strong{font-size:16px}
+.tarifa{
+  color:#ffe39b;background:rgba(243,201,105,.09);border:1px solid rgba(243,201,105,.24);
+  border-radius:999px;padding:7px 10px;font-size:10px;font-weight:900;white-space:nowrap
+}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.tool{
+  min-height:102px;padding:12px 8px;border:1px solid var(--line);border-radius:17px;
+  background:linear-gradient(180deg,var(--card2),var(--card));color:white;font-weight:900;font-size:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer;
+  box-shadow:0 8px 18px rgba(0,0,0,.18);transition:.12s ease
+}
+.tool .ico{font-size:28px}.tool:active{transform:scale(.97);filter:brightness(1.08)}
+.tool.active{border-color:#559eea;box-shadow:0 0 0 2px rgba(85,158,234,.12),0 9px 18px rgba(0,0,0,.22)}
+
+.workspace{
+  margin-top:14px;border:1px solid var(--line);border-radius:22px;padding:16px;
+  background:rgba(14,27,44,.94);box-shadow:0 14px 30px rgba(0,0,0,.23)
+}
+.labelrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+label{font-size:12px;font-weight:900;color:#c9d8ea;letter-spacing:.4px}
+.mode{font-size:11px;color:#7fc0ff;font-weight:900}
+textarea{
+  width:100%;min-height:156px;resize:vertical;border:1px solid #334b68;border-radius:16px;
+  background:#071421;color:#fff;padding:14px 14px;font-size:16px;line-height:1.45;outline:none
+}
+textarea:focus{border-color:#55a8ff;box-shadow:0 0 0 3px rgba(85,168,255,.12)}
+.quickrow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.minibtn,.btn{
+  border:0;border-radius:14px;padding:13px 12px;font-weight:900;cursor:pointer
+}
+.minibtn{background:#11233a;color:#dcecff;border:1px solid #304863;font-size:13px}
+.actions{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:9px;margin-top:10px}
+.btn.secondary{background:#182b43;color:#eef6ff;border:1px solid #314966}
+.btn.primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:white;box-shadow:0 8px 20px rgba(31,119,232,.25)}
+.btn.green{background:linear-gradient(135deg,#3ed096,#178b63);color:white}
+.status{min-height:20px;margin-top:9px;color:#9bd0ff;font-size:12px;font-weight:800}
+.calc,.history{display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
+.calc.show,.history.show{display:block}
+.calcline{display:grid;grid-template-columns:1fr auto;gap:9px}
+input{
+  width:100%;border:1px solid #334b68;border-radius:13px;background:#071421;color:white;padding:13px;
+  font-size:16px;outline:none
+}
+.calcresult{margin-top:10px;padding:12px;border-radius:13px;background:#0b1b2d;color:#cfe6ff;font-weight:900;min-height:44px}
+.historylist{display:grid;gap:8px}
+.hist{
+  width:100%;text-align:left;padding:11px 12px;border-radius:12px;border:1px solid #293f58;
+  background:#0c1b2d;color:#dfeafa;font-size:12px;line-height:1.35;cursor:pointer
+}
+.bottomnote{
+  margin:13px 3px 0;color:#8195ad;font-size:11px;line-height:1.5;text-align:center
+}
+@media(max-width:700px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .actions{grid-template-columns:1fr}
+  .topbar{align-items:flex-start}
+  .tool{min-height:94px}
+}
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="top">
-    <div><h1>🛠️ ASISTENTE TALLER</h1><p class="sub">Armarios, cajones, cajoneras, tarifa técnica y croquis.</p></div>
-    <div class="badge">BAIX MODULS</div>
-  </div>
+<main class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="eyebrow"><span class="dot"></span> ASISTENTE ACTIVO</div>
+      <h1>🛠️ Taller IA</h1>
+      <p class="subtitle">Tu panel rápido para el trabajo diario</p>
+    </div>
+    <div class="clock" id="clock">--:--</div>
+  </header>
 
-  <div class="grid">
-    <button class="card" onclick="preset('armarios')"><span>🗄️</span>ARMARIOS</button>
-    <button class="card" onclick="preset('cajones')"><span>📦</span>CAJONES</button>
-    <button class="card" onclick="preset('cajoneras')"><span>🗃️</span>CAJONERAS</button>
-    <button class="card" onclick="preset('tarifa')"><span>📖</span>TARIFA</button>
-    <button class="card" onclick="preset('croquis')"><span>📐</span>CROQUIS</button>
-    <button class="card" onclick="toggleCalc()"><span>🧮</span>CALCULADORA</button>
-  </div>
-
-  <div class="panel">
-    <label for="q">Dime qué necesitas</label>
-    <textarea id="q" placeholder="Ejemplo: Tengo una caja de 100 cm. ¿Qué cajonera de 3 cajones puedo montar y cuánto mide el costado?"></textarea>
-
-    <div class="quick">
-      <button onclick="addTarifa()">📖 CONSULTAR TARIFA TÉCNICA</button>
-      <button onclick="clearQ()">🧹 LIMPIAR</button>
+  <section class="hero">
+    <div class="hero-title">
+      <strong>¿Qué necesitas hacer?</strong>
+      <span class="tarifa">ESENZIA 4.0 · REFERENCIA</span>
     </div>
 
-    <div class="row">
+    <div class="grid">
+      <button class="tool" data-mode="armarios" onclick="preset('armarios',this)"><span class="ico">🗄️</span>ARMARIOS</button>
+      <button class="tool" data-mode="cajones" onclick="preset('cajones',this)"><span class="ico">📦</span>CAJONES</button>
+      <button class="tool" data-mode="cajoneras" onclick="preset('cajoneras',this)"><span class="ico">🗃️</span>CAJONERAS</button>
+      <button class="tool" data-mode="tarifa" onclick="preset('tarifa',this)"><span class="ico">📖</span>TARIFA</button>
+      <button class="tool" data-mode="croquis" onclick="preset('croquis',this)"><span class="ico">📐</span>CROQUIS</button>
+      <button class="tool" onclick="toggleCalc(this)"><span class="ico">🧮</span>CALCULADORA</button>
+    </div>
+  </section>
+
+  <section class="workspace">
+    <div class="labelrow">
+      <label for="query">CONSULTA DE TRABAJO</label>
+      <span class="mode" id="modeLabel">Modo libre</span>
+    </div>
+
+    <textarea id="query" placeholder="Ejemplo: Tengo una caja de 100 cm. Quiero una cajonera de 3 cajones. Dime costados, frente y sobre según tarifa."></textarea>
+
+    <div class="quickrow">
+      <button class="minibtn" onclick="enforceTarifa()">📖 Usar tarifa técnica</button>
+      <button class="minibtn" onclick="clearQuery()">🧹 Limpiar</button>
+    </div>
+
+    <div class="actions">
       <button class="btn secondary" onclick="dictate()">🎙️ Dictar</button>
-      <button class="btn secondary" onclick="copyQ()">📋 Copiar</button>
-      <button class="btn primary" onclick="openGPT()">✨ Abrir ChatGPT</button>
-    </div>
-
-    <div id="calc" class="calc">
-      <label for="expr">Calculadora rápida</label>
-      <div class="calcbox">
-        <input id="expr" inputmode="decimal" placeholder="Ej.: 1000 - 39">
-        <button class="btn green" onclick="calc()">Calcular</button>
-      </div>
-      <div id="calcResult" class="status"></div>
+      <button class="btn secondary" onclick="saveQuery()">⭐ Guardar</button>
+      <button class="btn primary" onclick="askChatGPT()">✨ Preguntar a ChatGPT</button>
     </div>
 
     <div id="status" class="status"></div>
-    <div class="note">En consultas de trabajo sobre armarios, usa la tarifa técnica ESENZIA 4.0 como referencia principal. No inventes medidas y comprueba los datos dos veces.</div>
-  </div>
-</div>
+
+    <div id="calcPanel" class="calc">
+      <div class="labelrow"><label for="expr">CALCULADORA RÁPIDA</label><span class="mode">mm / cm / operaciones</span></div>
+      <div class="calcline">
+        <input id="expr" inputmode="decimal" placeholder="Ej.: 1000 - 39 o 857 / 10">
+        <button class="btn green" onclick="calculate()">Calcular</button>
+      </div>
+      <div class="calcresult" id="calcResult">Resultado</div>
+    </div>
+
+    <div id="historyPanel" class="history">
+      <div class="labelrow"><label>CONSULTAS GUARDADAS</label><button class="minibtn" style="padding:7px 10px" onclick="clearHistory()">Borrar</button></div>
+      <div class="historylist" id="historyList"></div>
+    </div>
+
+    <p class="bottomnote">
+      En consultas de trabajo sobre armarios: usar la tarifa técnica ESENZIA 4.0 como fuente principal,
+      no inventar medidas y comprobar los datos dos veces.
+    </p>
+  </section>
+</main>
+
 <script>
-const q=document.getElementById('q'),st=document.getElementById('status');
-const p={
-armarios:'Consulta de trabajo sobre un armario. Usa la tarifa técnica ESENZIA 4.0 de Baixmoduls como referencia, no inventes medidas y comprueba los datos dos veces. ',
-cajones:'Consulta de trabajo sobre cajones interiores de armario. Usa las medidas técnicas que te he dado y la tarifa ESENZIA 4.0 cuando corresponda. Comprueba dos veces. ',
-cajoneras:'Consulta de trabajo sobre una cajonera. Necesito medidas de costados, frentes, sobre y distribución según la tarifa técnica ESENZIA 4.0. Comprueba dos veces. ',
-tarifa:'Consulta la tarifa técnica ESENZIA 4.0 de Baixmoduls. Dame el dato exacto y di claramente si la tarifa no lo especifica. Comprueba dos veces. ',
-croquis:'Hazme un croquis técnico claro, estilo tarifa técnica, con todas las cotas necesarias. Usa solo medidas verificadas. '
+const query=document.getElementById('query');
+const statusEl=document.getElementById('status');
+const modeLabel=document.getElementById('modeLabel');
+const historyKey='tallerIA_history_v1';
+
+const presets={
+  armarios:'Consulta de trabajo sobre un armario. Usa la tarifa técnica ESENZIA 4.0 de Baixmoduls como referencia principal. No inventes ninguna medida y comprueba los datos dos veces. ',
+  cajones:'Consulta de trabajo sobre cajones interiores de armario. Usa las medidas técnicas disponibles y la tarifa ESENZIA 4.0 cuando corresponda. Comprueba dos veces antes de responder. ',
+  cajoneras:'Consulta de trabajo sobre una cajonera. Necesito medidas exactas de costados, frentes, sobre y distribución según la tarifa técnica ESENZIA 4.0. Comprueba dos veces. ',
+  tarifa:'Consulta la tarifa técnica ESENZIA 4.0 de Baixmoduls como fuente principal. Dame el dato exacto. Si la tarifa no lo especifica, dilo claramente y no inventes. Comprueba dos veces. ',
+  croquis:'Hazme un croquis técnico claro, estilo tarifa técnica, con cotas y medidas verificadas. Usa la tarifa ESENZIA 4.0 como referencia y no inventes datos. '
 };
-function status(t){st.textContent=t}
-function preset(k){q.value=p[k]||'';q.focus();status('Plantilla cargada')}
-function addTarifa(){q.value='Consulta la tarifa técnica ESENZIA 4.0 de Baixmoduls como fuente principal. No inventes ninguna medida. Comprueba dos veces los datos antes de responder. '+q.value.trim();status('Consulta preparada con la tarifa técnica')}
-function clearQ(){q.value='';q.focus();status('')}
-async function copyQ(){if(!q.value.trim()){status('Escribe una consulta primero');return}try{await navigator.clipboard.writeText(q.value.trim());status('Consulta copiada')}catch(e){q.select();document.execCommand('copy');status('Consulta copiada')}}
-function openGPT(){const t=q.value.trim();if(t){navigator.clipboard?.writeText(t).catch(()=>{});status('Consulta copiada. Pégala en ChatGPT.')}window.open('https://chatgpt.com/','_blank')}
-function dictate(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){status('El dictado no está disponible en este navegador');return}const r=new SR();r.lang='es-ES';r.interimResults=false;r.maxAlternatives=1;status('Escuchando…');r.onresult=e=>{q.value+=(q.value.trim()?' ':'')+e.results[0][0].transcript;status('Dictado añadido')};r.onerror=()=>status('No se pudo usar el dictado');r.start()}
-function toggleCalc(){document.getElementById('calc').classList.toggle('show');document.getElementById('expr').focus()}
-function calc(){const x=document.getElementById('expr').value.trim().replace(/,/g,'.'),o=document.getElementById('calcResult');if(!/^[0-9+\-*/().\s]+$/.test(x)){o.textContent='Operación no válida';return}try{o.textContent='Resultado: '+Function('"use strict";return ('+x+')')()}catch(e){o.textContent='No se pudo calcular'}}
+
+function setStatus(t){statusEl.textContent=t||''}
+
+function preset(type,el){
+  document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  query.value=presets[type]||'';
+  modeLabel.textContent='Modo '+(type.charAt(0).toUpperCase()+type.slice(1));
+  query.focus();
+  setStatus('Plantilla cargada');
+}
+
+function enforceTarifa(){
+  const rule='Usa la tarifa técnica ESENZIA 4.0 de Baixmoduls como fuente principal. No inventes ninguna medida. Comprueba dos veces todos los datos técnicos antes de responder. ';
+  if(!query.value.startsWith(rule)) query.value=rule+query.value.trim();
+  setStatus('Regla de tarifa técnica añadida');
+}
+
+function clearQuery(){
+  query.value='';
+  modeLabel.textContent='Modo libre';
+  document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active'));
+  query.focus();
+  setStatus('');
+}
+
+function fallbackCopy(text){
+  const t=document.createElement('textarea');
+  t.value=text;t.style.position='fixed';t.style.opacity='0';
+  document.body.appendChild(t);t.select();
+  try{document.execCommand('copy')}catch(e){}
+  t.remove();
+}
+
+async function copyText(text){
+  try{await navigator.clipboard.writeText(text)}catch(e){fallbackCopy(text)}
+}
+
+async function askChatGPT(){
+  const text=query.value.trim();
+  if(!text){setStatus('Escribe primero la consulta');query.focus();return}
+  await copyText(text);
+  pushHistory(text);
+  setStatus('Consulta copiada. Abriendo ChatGPT…');
+  const url='https://chatgpt.com/?q='+encodeURIComponent(text);
+  window.open(url,'_blank');
+}
+
+function dictate(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){setStatus('El dictado del navegador no está disponible aquí. Usa el micrófono del teclado.');return}
+  const rec=new SR();
+  rec.lang='es-ES';rec.interimResults=false;rec.maxAlternatives=1;
+  setStatus('Escuchando…');
+  rec.onresult=e=>{
+    const spoken=e.results[0][0].transcript;
+    query.value+=(query.value.trim()?' ':'')+spoken;
+    setStatus('Dictado añadido');
+  };
+  rec.onerror=()=>setStatus('No se pudo usar el dictado');
+  rec.start();
+}
+
+function toggleCalc(el){
+  document.getElementById('calcPanel').classList.toggle('show');
+  if(el)el.classList.toggle('active');
+  setTimeout(()=>document.getElementById('expr').focus(),50);
+}
+
+function calculate(){
+  const raw=document.getElementById('expr').value.trim().replace(/,/g,'.');
+  const out=document.getElementById('calcResult');
+  if(!raw){out.textContent='Escribe una operación';return}
+  if(!/^[0-9+\-*/().\s]+$/.test(raw)){out.textContent='Operación no válida';return}
+  try{
+    const value=Function('"use strict";return ('+raw+')')();
+    if(!Number.isFinite(value)) throw new Error();
+    out.textContent='Resultado: '+Number(value.toFixed(4));
+  }catch(e){out.textContent='No se pudo calcular'}
+}
+
+function getHistory(){
+  try{return JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){return[]}
+}
+function pushHistory(text){
+  let items=getHistory().filter(x=>x!==text);
+  items.unshift(text);
+  items=items.slice(0,6);
+  localStorage.setItem(historyKey,JSON.stringify(items));
+  renderHistory();
+}
+function saveQuery(){
+  const text=query.value.trim();
+  if(!text){setStatus('No hay ninguna consulta para guardar');return}
+  pushHistory(text);
+  document.getElementById('historyPanel').classList.add('show');
+  setStatus('Consulta guardada');
+}
+function renderHistory(){
+  const list=document.getElementById('historyList');
+  const items=getHistory();
+  if(!items.length){list.innerHTML='<div style="color:#7f93aa;font-size:12px">Aún no hay consultas guardadas.</div>';return}
+  list.innerHTML=items.map((x,i)=>'<button class="hist" onclick="loadHistory('+i+')">'+escapeHtml(x)+'</button>').join('');
+}
+function loadHistory(i){
+  const items=getHistory();
+  if(items[i]){query.value=items[i];query.focus();setStatus('Consulta recuperada')}
+}
+function clearHistory(){
+  localStorage.removeItem(historyKey);renderHistory();setStatus('Historial borrado')
+}
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))
+}
+function tick(){
+  const d=new Date();
+  document.getElementById('clock').textContent=d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+}
+tick();setInterval(tick,30000);renderHistory();
+
+query.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='Enter') askChatGPT();
+});
 </script>
 </body>
 </html>
