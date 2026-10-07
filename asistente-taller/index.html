@@ -261,9 +261,24 @@ function openLocal(type,el){
   if(el)el.classList.add('active');
   document.querySelectorAll('.localtool').forEach(p=>p.classList.remove('show'));
   const p=document.getElementById('local-'+type);
-  if(p){p.classList.add('show');setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'nearest'}),30)}
+  if(p){
+    p.classList.add('show');
+    setTimeout(()=>{
+      p.scrollIntoView({behavior:'smooth',block:'nearest'});
+      const focusMap={armarios:'armBox',cajones:'drawerBox',cajoneras:'chestBox',croquis:'sketchBox'};
+      const id=focusMap[type];
+      if(id) document.getElementById(id)?.focus();
+    },80);
+  }
   modeLabel.textContent='Herramienta '+type;
-  setStatus('Trabajando dentro de Taller IA');
+  const help={
+    armarios:'Escribe la medida de la caja y pulsa Calcular.',
+    cajones:'Escribe la medida de la caja y pulsa Sacar medidas. No abre ChatGPT.',
+    cajoneras:'Escribe la caja, elige 2 o 3 cajones y pulsa Calcular.',
+    tarifa:'Consulta los datos técnicos cargados aquí mismo.',
+    croquis:'Escribe la caja, elige cajones y pulsa Dibujar.'
+  };
+  setStatus(help[type]||'Trabajando dentro de Taller IA');
 }
 function nval(id){return Number(String(document.getElementById(id).value).replace(',','.'))}
 function mm(v){return Math.round(v)+' mm'}
