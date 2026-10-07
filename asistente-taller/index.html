@@ -96,11 +96,31 @@ input{
 .bottomnote{
   margin:13px 3px 0;color:#8195ad;font-size:11px;line-height:1.5;text-align:center
 }
+.localtool{display:none;margin-top:14px;padding:14px;border:1px solid #2d4864;border-radius:16px;background:#091827}
+.localtool.show{display:block}
+.localtool h3{margin:0 0 6px;font-size:17px}
+.localtool p{margin:0 0 12px;color:#91a6be;font-size:12px;line-height:1.45}
+.localrow{display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end}
+.localrow label{display:block;margin:0 0 6px;color:#c9d8ea;font-size:11px;font-weight:900}
+.localresult{display:none;margin-top:12px}
+.localresult.show{display:block}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.metric{padding:11px;border-radius:13px;background:#102238;border:1px solid #263e58}
+.metric small{display:block;color:#93a9c1;font-size:10px;font-weight:800;text-transform:uppercase}
+.metric strong{display:block;margin-top:4px;font-size:18px;color:#fff}
+.notice{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(243,201,105,.08);border:1px solid rgba(243,201,105,.2);color:#f8dda1;font-size:11px;line-height:1.45}
+.diagram{margin-top:12px;min-height:205px;border:1px dashed #496785;border-radius:15px;background:#071421;padding:16px;display:flex;align-items:center;justify-content:center}
+.cabinet{width:min(82%,380px);height:190px;border:3px solid #d9e8f8;position:relative;background:rgba(255,255,255,.025)}
+.topboard{height:18px;border-bottom:2px solid #d9e8f8;background:rgba(85,168,255,.12);display:flex;align-items:center;justify-content:center;font-size:10px;color:#a9d3ff}
+.drawer{height:48px;border-bottom:2px solid #9ab2ca;display:flex;align-items:center;justify-content:center;font-weight:900;color:#d9e8f8}
+.dimw{position:absolute;left:0;right:0;bottom:-27px;text-align:center;color:#f3c969;font-size:12px;font-weight:900}
+.imetric{color:#8cf0c4}
 @media(max-width:700px){
   .grid{grid-template-columns:repeat(2,1fr)}
   .actions{grid-template-columns:1fr}
   .topbar{align-items:flex-start}
   .tool{min-height:94px}
+  .localrow,.metrics{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -122,18 +142,64 @@ input{
     </div>
 
     <div class="grid">
-      <button class="tool" data-mode="armarios" onclick="preset('armarios',this)"><span class="ico">🗄️</span>ARMARIOS</button>
-      <button class="tool" data-mode="cajones" onclick="preset('cajones',this)"><span class="ico">📦</span>CAJONES</button>
-      <button class="tool" data-mode="cajoneras" onclick="preset('cajoneras',this)"><span class="ico">🗃️</span>CAJONERAS</button>
-      <button class="tool" data-mode="tarifa" onclick="preset('tarifa',this)"><span class="ico">📖</span>TARIFA</button>
-      <button class="tool" data-mode="croquis" onclick="preset('croquis',this)"><span class="ico">📐</span>CROQUIS</button>
+      <button class="tool" onclick="openLocal('armarios',this)"><span class="ico">🗄️</span>ARMARIOS</button>
+      <button class="tool" onclick="openLocal('cajones',this)"><span class="ico">📦</span>CAJONES</button>
+      <button class="tool" onclick="openLocal('cajoneras',this)"><span class="ico">🗃️</span>CAJONERAS</button>
+      <button class="tool" onclick="openLocal('tarifa',this)"><span class="ico">📖</span>TARIFA</button>
+      <button class="tool" onclick="openLocal('croquis',this)"><span class="ico">📐</span>CROQUIS</button>
       <button class="tool" onclick="toggleCalc(this)"><span class="ico">🧮</span>CALCULADORA</button>
     </div>
   </section>
 
   <section class="workspace">
+    <div id="local-armarios" class="localtool">
+      <h3>🗄️ Armarios</h3><p>Introduce la caja nominal. Te muestra el hueco interior aquí mismo.</p>
+      <div class="localrow"><div><label>CAJA (cm)</label><input id="armBox" inputmode="numeric" placeholder="100"></div><div></div><button class="btn primary" onclick="calcArmario()">Calcular</button></div>
+      <div id="armResult" class="localresult"></div>
+    </div>
+
+    <div id="local-cajones" class="localtool">
+      <h3>📦 Cajones de madera</h3><p>Medidas de fabricación según las reglas técnicas que ya tenemos verificadas.</p>
+      <div class="localrow"><div><label>CAJA DEL ARMARIO (cm)</label><input id="drawerBox" inputmode="numeric" placeholder="100"></div><div></div><button class="btn primary" onclick="calcDrawer()">Sacar medidas</button></div>
+      <div id="drawerResult" class="localresult"></div>
+    </div>
+
+    <div id="local-cajoneras" class="localtool">
+      <h3>🗃️ Cajoneras interiores</h3><p>Selecciona caja y número de cajones. Para 61–120 cm clasifica A2/B2/C2 automáticamente.</p>
+      <div class="localrow">
+        <div><label>CAJA (cm)</label><input id="chestBox" inputmode="numeric" placeholder="100"></div>
+        <div><label>CAJONES</label><select id="drawerCount" style="width:100%;border:1px solid #334b68;border-radius:13px;background:#071421;color:white;padding:13px"><option value="3">3 cajones · C3</option><option value="2">2 cajones · C2</option></select></div>
+        <button class="btn primary" onclick="calcChest()">Calcular</button>
+      </div>
+      <div id="chestResult" class="localresult"></div>
+    </div>
+
+    <div id="local-tarifa" class="localtool">
+      <h3>📖 Tarifa técnica</h3><p>Datos rápidos que ya están verificados en ESENZIA 4.0.</p>
+      <div class="metrics">
+        <div class="metric"><small>C3 alto total</small><strong>58,5 cm</strong></div>
+        <div class="metric"><small>Sobre</small><strong>3 cm</strong></div>
+        <div class="metric"><small>Fondo interior</small><strong>50 cm</strong></div>
+        <div class="metric"><small>C2 alto total</small><strong>40 cm</strong></div>
+        <div class="metric"><small>Frente cajón</small><strong>16 cm</strong></div>
+        <div class="metric"><small>Grupo B2</small><strong>76–100 cm</strong></div>
+      </div>
+      <div class="notice">Ejemplo: caja 100 → interior 96,1 cm → grupo B2 → cajonera C3.B2.</div>
+    </div>
+
+    <div id="local-croquis" class="localtool">
+      <h3>📐 Croquis rápido</h3><p>Esquema sencillo de cajonera con las cotas principales.</p>
+      <div class="localrow">
+        <div><label>CAJA (cm)</label><input id="sketchBox" inputmode="numeric" placeholder="100"></div>
+        <div><label>CAJONES</label><select id="sketchCount" style="width:100%;border:1px solid #334b68;border-radius:13px;background:#071421;color:white;padding:13px"><option value="3">3 cajones</option><option value="2">2 cajones</option></select></div>
+        <button class="btn primary" onclick="makeSketch()">Dibujar</button>
+      </div>
+      <div id="sketchMeta" class="localresult"></div>
+      <div id="diagram" class="diagram"><span style="color:#7f95ae">Introduce una caja y pulsa Dibujar</span></div>
+    </div>
+
     <div class="labelrow">
-      <label for="query">CONSULTA DE TRABAJO</label>
+      <label for="query">PREGUNTAR AL ASISTENTE</label>
       <span class="mode" id="modeLabel">Modo libre</span>
     </div>
 
@@ -147,7 +213,7 @@ input{
     <div class="actions">
       <button class="btn secondary" onclick="dictate()">🎙️ Dictar</button>
       <button class="btn secondary" onclick="saveQuery()">⭐ Guardar</button>
-      <button class="btn primary" onclick="askChatGPT()">✨ Preguntar a ChatGPT</button>
+      <button class="btn primary" onclick="askChatGPT()">✨ Abrir ChatGPT</button>
     </div>
 
     <div id="status" class="status"></div>
@@ -167,8 +233,8 @@ input{
     </div>
 
     <p class="bottomnote">
-      En consultas de trabajo sobre armarios: usar la tarifa técnica ESENZIA 4.0 como fuente principal,
-      no inventar medidas y comprobar los datos dos veces.
+      Los botones de arriba trabajan dentro de esta pantalla. Solo “Abrir ChatGPT” sale de la herramienta.
+      ESENZIA 4.0 es la referencia técnica: no inventar medidas y comprobar los datos dos veces.
     </p>
   </section>
 </main>
@@ -187,6 +253,55 @@ const presets={
   croquis:'Hazme un croquis técnico claro, estilo tarifa técnica, con cotas y medidas verificadas. Usa la tarifa ESENZIA 4.0 como referencia y no inventes datos. '
 };
 
+function openLocal(type,el){
+  document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.querySelectorAll('.localtool').forEach(p=>p.classList.remove('show'));
+  const p=document.getElementById('local-'+type);
+  if(p){p.classList.add('show');setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'nearest'}),30)}
+  modeLabel.textContent='Herramienta '+type;
+  setStatus('Trabajando dentro de Taller IA');
+}
+function nval(id){return Number(String(document.getElementById(id).value).replace(',','.'))}
+function mm(v){return Math.round(v)+' mm'}
+function cm(v){return (Math.round(v*10)/10).toFixed(1).replace('.',',')+' cm'}
+function metric(label,value){return '<div class="metric"><small>'+label+'</small><strong>'+value+'</strong></div>'}
+function localShow(id,html){const el=document.getElementById(id);el.innerHTML=html;el.classList.add('show')}
+function interiorMm(c){return c*10-39}
+function drawerBodyMm(c){return 50*Math.floor(c/5)-143}
+function drawerTrabaMm(c){return drawerBodyMm(c)-38}
+function drawerFrontMm(c){return drawerBodyMm(c)+44}
+function widthGroup(c){if(c>=61&&c<=75)return 'A2';if(c>=76&&c<=100)return 'B2';if(c>=101&&c<=120)return 'C2';return null}
+function calcArmario(){
+  const c=nval('armBox');
+  if(!Number.isFinite(c)||c<38||c>120)return localShow('armResult','<div class="notice">Introduce una caja entre 38 y 120 cm.</div>');
+  const h=interiorMm(c);
+  localShow('armResult','<div class="metrics">'+metric('Caja',cm(c))+metric('Hueco interior',mm(h))+metric('Hueco interior',cm(h/10))+'</div><div class="notice">Regla verificada: hueco = caja nominal − 39 mm.</div>');
+}
+function calcDrawer(){
+  const c=Math.floor(nval('drawerBox'));
+  if(!Number.isFinite(c)||c<38||c>120)return localShow('drawerResult','<div class="notice">Introduce una caja entre 38 y 120 cm.</div>');
+  const h=interiorMm(c),body=drawerBodyMm(c),tr=drawerTrabaMm(c),fr=drawerFrontMm(c);
+  let html='<div class="metrics">'+metric('Hueco',mm(h))+metric('Caja cajón',mm(body))+metric('Traba',mm(tr))+metric('Frente',mm(fr));
+  if(c===100)html+=metric('x2 Regleta','20 mm')+metric('Fondo','838 mm')+metric('DIF','26 mm');
+  html+='</div>';
+  html+=c===100?'<div class="notice">Caja 100 completa: 961 / 857 / x2 regleta 20 / 819 / 901 / 838 / DIF 26 mm.</div>':'<div class="notice">Para esta caja muestro solo los campos cuya regla tenemos confirmada. Fondo, regleta y DIF no se inventan.</div>';
+  localShow('drawerResult',html);
+}
+function calcChest(){
+  const c=nval('chestBox'),count=Number(document.getElementById('drawerCount').value),g=widthGroup(c);
+  if(!g)return localShow('chestResult','<div class="notice">Para esta calculadora usa cajas de 61 a 120 cm.</div>');
+  const inside=interiorMm(c)/10,total=count===3?58.5:40,side=total-3,code=(count===3?'C3.':'C2.')+g;
+  localShow('chestResult','<div class="metrics">'+metric('Código',code)+metric('Interior',cm(inside))+metric('Alto total',cm(total))+metric('Costado',cm(side))+metric('Sobre',cm(inside)+' × 50 × 3')+metric('Cajones',count+' × 16 cm')+'</div><div class="notice">Costado = alto total menos el sobre de 3 cm.</div>');
+}
+function makeSketch(){
+  const c=nval('sketchBox'),count=Number(document.getElementById('sketchCount').value),g=widthGroup(c),d=document.getElementById('diagram');
+  if(!g){d.innerHTML='<span style="color:#ff9ba0">Usa una caja de 61 a 120 cm.</span>';return}
+  const inside=interiorMm(c)/10,total=count===3?58.5:40,code=(count===3?'C3.':'C2.')+g;
+  let drawers='';for(let i=0;i<count;i++)drawers+='<div class="drawer">Cajón '+(i+1)+' · 16 cm</div>';
+  d.innerHTML='<div class="cabinet"><div class="topboard">SOBRE · 3 cm</div>'+drawers+'<div class="dimw">↔ '+cm(inside)+'</div></div>';
+  localShow('sketchMeta','<div class="metrics">'+metric('Código',code)+metric('Costado',cm(total-3))+metric('Alto total',cm(total))+'</div>');
+}
 function setStatus(t){statusEl.textContent=t||''}
 
 function preset(type,el){
@@ -208,6 +323,7 @@ function clearQuery(){
   query.value='';
   modeLabel.textContent='Modo libre';
   document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.localtool').forEach(p=>p.classList.remove('show'));
   query.focus();
   setStatus('');
 }
