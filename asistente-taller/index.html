@@ -75,7 +75,7 @@ textarea:focus{border-color:#55a8ff;box-shadow:0 0 0 3px rgba(85,168,255,.12)}
   border:0;border-radius:14px;padding:13px 12px;font-weight:900;cursor:pointer
 }
 .minibtn{background:#11233a;color:#dcecff;border:1px solid #304863;font-size:13px}
-.actions{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:9px;margin-top:10px}
+.actions{display:grid;grid-template-columns:1fr 1fr 1.2fr 1.2fr;gap:9px;margin-top:10px}
 .btn.secondary{background:#182b43;color:#eef6ff;border:1px solid #314966}
 .btn.primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:white;box-shadow:0 8px 20px rgba(31,119,232,.25)}
 .btn.green{background:linear-gradient(135deg,#3ed096,#178b63);color:white}
@@ -199,7 +199,7 @@ input{
     </div>
 
     <div class="labelrow">
-      <label for="query">PREGUNTAR AL ASISTENTE</label>
+      <label for="query">CONSULTA DENTRO DEL TALLER</label>
       <span class="mode" id="modeLabel">Modo libre</span>
     </div>
 
@@ -213,7 +213,8 @@ input{
     <div class="actions">
       <button class="btn secondary" onclick="dictate()">🎙️ Dictar</button>
       <button class="btn secondary" onclick="saveQuery()">⭐ Guardar</button>
-      <button class="btn primary" onclick="askChatGPT()">✨ Abrir ChatGPT</button>
+      <button class="btn green" onclick="resolveLocalQuery()">⚙️ Resolver aquí</button>
+      <button class="btn primary" onclick="askChatGPT()">✨ ChatGPT (consulta libre)</button>
     </div>
 
     <div id="status" class="status"></div>
@@ -233,7 +234,7 @@ input{
     </div>
 
     <p class="bottomnote">
-      Los botones de arriba trabajan dentro de esta pantalla. Solo “Abrir ChatGPT” sale de la herramienta.
+      Los botones de arriba y “Resolver aquí” trabajan dentro de esta pantalla. Solo “ChatGPT (consulta libre)” sale de la herramienta.
       ESENZIA 4.0 es la referencia técnica: no inventar medidas y comprobar los datos dos veces.
     </p>
   </section>
@@ -244,6 +245,7 @@ const query=document.getElementById('query');
 const statusEl=document.getElementById('status');
 const modeLabel=document.getElementById('modeLabel');
 const historyKey='tallerIA_history_v1';
+let currentLocalMode='';
 
 const presets={
   armarios:'Consulta de trabajo sobre un armario. Usa la tarifa técnica ESENZIA 4.0 de Baixmoduls como referencia principal. No inventes ninguna medida y comprueba los datos dos veces. ',
@@ -254,6 +256,7 @@ const presets={
 };
 
 function openLocal(type,el){
+  currentLocalMode=type;
   document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active'));
   if(el)el.classList.add('active');
   document.querySelectorAll('.localtool').forEach(p=>p.classList.remove('show'));
@@ -304,6 +307,70 @@ function makeSketch(){
 }
 function setStatus(t){statusEl.textContent=t||''}
 
+function extractMeasure(text){
+  const m=String(text).replace(',','.').match(/\b(\d{2,3}(?:\.\d+)?)\b/);
+  return m ? Number(m[1]) : NaN;
+}
+function extractDrawerCount(text){
+  const s=String(text).toLowerCase();
+  if(/\b2\s*(cajones?|caj)\b/.test(s)) return 2;
+  if(/\b3\s*(cajones?|caj)\b/.test(s)) return 3;
+  return 3;
+}
+function resolveLocalQuery(){
+  const text=query.value.trim();
+  if(!text){setStatus('Escribe la consulta, por ejemplo: caja de 100');query.focus();return}
+  if(!currentLocalMode){
+    setStatus('Primero pulsa ARMARIOS, CAJONES, CAJONERAS o CROQUIS.');
+    return;
+  }
+  const c=extractMeasure(text);
+
+  if(currentLocalMode==='cajones'){
+    if(!Number.isFinite(c)){setStatus('No encuentro la medida de la caja. Ejemplo: caja de 100');return}
+    document.getElementById('drawerBox').value=c;
+    calcDrawer();
+    document.getElementById('local-cajones').scrollIntoView({behavior:'smooth',block:'nearest'});
+    setStatus('Consulta resuelta aquí · Cajones');
+    return;
+  }
+
+  if(currentLocalMode==='armarios'){
+    if(!Number.isFinite(c)){setStatus('No encuentro la medida de la caja. Ejemplo: armario de 100');return}
+    document.getElementById('armBox').value=c;
+    calcArmario();
+    document.getElementById('local-armarios').scrollIntoView({behavior:'smooth',block:'nearest'});
+    setStatus('Consulta resuelta aquí · Armarios');
+    return;
+  }
+
+  if(currentLocalMode==='cajoneras'){
+    if(!Number.isFinite(c)){setStatus('No encuentro la medida de la caja. Ejemplo: caja 100 con 3 cajones');return}
+    const count=extractDrawerCount(text);
+    document.getElementById('chestBox').value=c;
+    document.getElementById('drawerCount').value=String(count);
+    calcChest();
+    document.getElementById('local-cajoneras').scrollIntoView({behavior:'smooth',block:'nearest'});
+    setStatus('Consulta resuelta aquí · Cajoneras');
+    return;
+  }
+
+  if(currentLocalMode==='croquis'){
+    if(!Number.isFinite(c)){setStatus('No encuentro la medida de la caja. Ejemplo: croquis caja 100 con 3 cajones');return}
+    const count=extractDrawerCount(text);
+    document.getElementById('sketchBox').value=c;
+    document.getElementById('sketchCount').value=String(count);
+    makeSketch();
+    document.getElementById('local-croquis').scrollIntoView({behavior:'smooth',block:'nearest'});
+    setStatus('Croquis generado aquí');
+    return;
+  }
+
+  if(currentLocalMode==='tarifa'){
+    setStatus('La consulta libre de TARIFA todavía no está cargada completa dentro de la web.');
+  }
+}
+
 function preset(type,el){
   document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active'));
   if(el)el.classList.add('active');
@@ -322,6 +389,7 @@ function enforceTarifa(){
 function clearQuery(){
   query.value='';
   modeLabel.textContent='Modo libre';
+  currentLocalMode='';
   document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.localtool').forEach(p=>p.classList.remove('show'));
   query.focus();
