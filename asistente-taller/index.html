@@ -293,7 +293,7 @@ function chestHtml(c,count){
  if(!g)return '<div class="notice">Para esta herramienta usa cajas de 61 a 120 cm.</div>';
  if(!Number.isInteger(count)||count<1||count>6)return '<div class="notice">Elige entre 1 y 6 cajones.</div>';
  const inside=interiorMm(c)/10,verified=[2,3].includes(count),standard=!reducedDepth(),total=verified?(count===3?58.5:40):null,code=verified?(count===3?'C3.':'C2.')+g:null;
- const metrics=metric('Número de cajones',pluralCajon(count),true)+metric('Hueco interior (ancho)',cm(inside))+metric('Código tarifa',code||'Por confirmar');
+ let metrics=metric('Número de cajones',pluralCajon(count),true)+metric('Hueco interior (ancho)',cm(inside))+metric('Código tarifa',code||'Por confirmar');
  if(verified){metrics+=metric('Costado (alto)',cm(total-3),true)+metric('Sobre (ancho)',cm(inside))+metric('Sobre (fondo)',standard?'50 cm':'Por confirmar')+metric('Sobre (grueso)','3 cm')+metric('Alto total',cm(total))+metric('Frentes',count+' × 16 cm')}
  else{metrics+=metric('Costado (alto)','Por confirmar')+metric('Sobre (fondo)','Por confirmar')+metric('Alto total','Por confirmar')}
  metrics+=depthMetrics();
