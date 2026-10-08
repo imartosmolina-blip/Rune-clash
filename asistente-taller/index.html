@@ -3,554 +3,184 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#08111d">
+<meta name="theme-color" content="#0a0d12">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Taller IA">
+<meta name="apple-mobile-web-app-title" content="Taller Baixmoduls">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>Asistente Taller</title>
+<title>Taller Baixmoduls</title>
 <style>
-:root{
-  --bg:#07101c;--bg2:#0b1625;--card:#101d2f;--card2:#16263b;--line:#2b405b;
-  --text:#f6f8fb;--muted:#9fb0c6;--blue:#55a8ff;--blue2:#1977e8;
-  --green:#43d79a;--gold:#f3c969;--red:#ff6b72;
-}
+:root{--bg:#090c11;--panel:#111720;--panel2:#171f2a;--line:#273241;--text:#f6f8fb;--muted:#8f9cad;--blue:#5faeff;--green:#4adea7;--gold:#f5c75f;--shadow:0 18px 44px rgba(0,0,0,.34)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
-body{
-  min-height:100dvh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  background:
-    radial-gradient(circle at 50% -10%,rgba(64,125,205,.22),transparent 36%),
-    linear-gradient(180deg,#07101c 0%,#0a1422 55%,#07101c 100%);
-}
-button,textarea,input{font:inherit}
-button{touch-action:manipulation}
-.app{max-width:980px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(30px + env(safe-area-inset-bottom))}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:17px}
-.brand{min-width:0}
-.eyebrow{display:flex;align-items:center;gap:8px;color:#9bcfff;font-size:11px;font-weight:900;letter-spacing:1.6px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px rgba(67,215,154,.85)}
-h1{margin:5px 0 0;font-size:clamp(30px,7vw,48px);letter-spacing:-1.2px}
-.subtitle{margin:5px 0 0;color:var(--muted);font-size:13px}
-.clock{
-  flex:0 0 auto;padding:10px 12px;border:1px solid var(--line);border-radius:14px;
-  background:rgba(15,29,47,.86);font-weight:900;color:#dcecff;min-width:70px;text-align:center
-}
-.hero{
-  border:1px solid rgba(79,129,183,.34);border-radius:22px;padding:16px;
-  background:linear-gradient(145deg,rgba(19,35,57,.96),rgba(9,20,34,.96));
-  box-shadow:0 16px 36px rgba(0,0,0,.28)
-}
-.hero-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.hero-title strong{font-size:16px}
-.tarifa{
-  color:#ffe39b;background:rgba(243,201,105,.09);border:1px solid rgba(243,201,105,.24);
-  border-radius:999px;padding:7px 10px;font-size:10px;font-weight:900;white-space:nowrap
-}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
-.tool{
-  min-height:102px;padding:12px 8px;border:1px solid var(--line);border-radius:17px;
-  background:linear-gradient(180deg,var(--card2),var(--card));color:white;font-weight:900;font-size:14px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer;
-  box-shadow:0 8px 18px rgba(0,0,0,.18);transition:.12s ease
-}
-.tool .ico{font-size:28px}
-.tool .ico-photo{width:76px;height:49px;display:block;overflow:hidden;border-radius:9px;border:1px solid rgba(255,255,255,.18);box-shadow:0 4px 10px rgba(0,0,0,.35)}
-.tool .ico-photo img{width:100%;height:100%;display:block;object-fit:cover}.tool:active{transform:scale(.97);filter:brightness(1.08)}
-.tool.active{border-color:#559eea;box-shadow:0 0 0 2px rgba(85,158,234,.12),0 9px 18px rgba(0,0,0,.22)}
-
-.workspace{
-  margin-top:14px;border:1px solid var(--line);border-radius:22px;padding:16px;
-  background:rgba(14,27,44,.94);box-shadow:0 14px 30px rgba(0,0,0,.23)
-}
-.labelrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
-label{font-size:12px;font-weight:900;color:#c9d8ea;letter-spacing:.4px}
-.mode{font-size:11px;color:#7fc0ff;font-weight:900}
-textarea{
-  width:100%;min-height:156px;resize:vertical;border:1px solid #334b68;border-radius:16px;
-  background:#071421;color:#fff;padding:14px 14px;font-size:16px;line-height:1.45;outline:none
-}
-textarea:focus{border-color:#55a8ff;box-shadow:0 0 0 3px rgba(85,168,255,.12)}
-.quickrow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
-.minibtn,.btn{
-  border:0;border-radius:14px;padding:13px 12px;font-weight:900;cursor:pointer
-}
-.minibtn{background:#11233a;color:#dcecff;border:1px solid #304863;font-size:13px}
-.actions{display:grid;grid-template-columns:1fr 1fr 1.2fr 1.2fr;gap:9px;margin-top:10px}
-.btn.secondary{background:#182b43;color:#eef6ff;border:1px solid #314966}
-.btn.primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:white;box-shadow:0 8px 20px rgba(31,119,232,.25)}
-.btn.green{background:linear-gradient(135deg,#3ed096,#178b63);color:white}
-.status{min-height:20px;margin-top:9px;color:#9bd0ff;font-size:12px;font-weight:800}
-.calc,.history{display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
-.calc.show,.history.show{display:block}
-.calcline{display:grid;grid-template-columns:1fr auto;gap:9px}
-input{
-  width:100%;border:1px solid #334b68;border-radius:13px;background:#071421;color:white;padding:13px;
-  font-size:16px;outline:none
-}
-.calcresult{margin-top:10px;padding:12px;border-radius:13px;background:#0b1b2d;color:#cfe6ff;font-weight:900;min-height:44px}
-.historylist{display:grid;gap:8px}
-.hist{
-  width:100%;text-align:left;padding:11px 12px;border-radius:12px;border:1px solid #293f58;
-  background:#0c1b2d;color:#dfeafa;font-size:12px;line-height:1.35;cursor:pointer
-}
-.bottomnote{
-  margin:13px 3px 0;color:#8195ad;font-size:11px;line-height:1.5;text-align:center
-}
-.localtool{display:none;margin-top:14px;padding:14px;border:1px solid #2d4864;border-radius:16px;background:#091827}
-.localtool.show{display:block}
-.localtool h3{margin:0 0 6px;font-size:17px}
-.localtool p{margin:0 0 12px;color:#91a6be;font-size:12px;line-height:1.45}
-.localrow{display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end}
-.localrow label{display:block;margin:0 0 6px;color:#c9d8ea;font-size:11px;font-weight:900}
-.localresult{display:none;margin-top:12px}
-.localresult.show{display:block}
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.metric{padding:11px;border-radius:13px;background:#102238;border:1px solid #263e58}
-.metric small{display:block;color:#93a9c1;font-size:10px;font-weight:800;text-transform:uppercase}
-.metric strong{display:block;margin-top:4px;font-size:18px;color:#fff}
-.notice{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(243,201,105,.08);border:1px solid rgba(243,201,105,.2);color:#f8dda1;font-size:11px;line-height:1.45}
-.diagram{margin-top:12px;min-height:205px;border:1px dashed #496785;border-radius:15px;background:#071421;padding:16px;display:flex;align-items:center;justify-content:center}
-.cabinet{width:min(82%,380px);height:190px;border:3px solid #d9e8f8;position:relative;background:rgba(255,255,255,.025)}
-.topboard{height:18px;border-bottom:2px solid #d9e8f8;background:rgba(85,168,255,.12);display:flex;align-items:center;justify-content:center;font-size:10px;color:#a9d3ff}
-.drawer{height:48px;border-bottom:2px solid #9ab2ca;display:flex;align-items:center;justify-content:center;font-weight:900;color:#d9e8f8}
-.dimw{position:absolute;left:0;right:0;bottom:-27px;text-align:center;color:#f3c969;font-size:12px;font-weight:900}
-.imetric{color:#8cf0c4}
-@media(max-width:700px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-  .actions{grid-template-columns:1fr}
-  .topbar{align-items:flex-start}
-  .tool{min-height:94px}
-  .localrow,.metrics{grid-template-columns:1fr}
-}
+html{background:var(--bg)}
+body{margin:0;min-height:100dvh;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(circle at 80% -8%,rgba(52,129,218,.22),transparent 34%),radial-gradient(circle at -10% 28%,rgba(58,205,169,.08),transparent 30%),linear-gradient(180deg,#090c11,#0b1017 55%,#090c11)}
+button,input,select,textarea{font:inherit} button{touch-action:manipulation}
+.app{max-width:1120px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 14px calc(104px + env(safe-area-inset-bottom))}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 2px 14px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brandmark{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;flex:0 0 auto;background:linear-gradient(145deg,#1f8bf5,#245dba);box-shadow:0 10px 26px rgba(34,126,225,.28);border:1px solid rgba(255,255,255,.13);font-size:25px}
+.brand h1{font-size:22px;line-height:1.1;margin:0;letter-spacing:-.45px}.brand p{margin:4px 0 0;color:var(--muted);font-size:11px;font-weight:700}
+.statuspill{display:flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid var(--line);border-radius:999px;background:rgba(15,21,30,.85);font-size:11px;font-weight:900;color:#dbe6f2;white-space:nowrap}
+.statusdot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+.hero{position:relative;overflow:hidden;padding:20px;border-radius:25px;border:1px solid #2b3849;background:linear-gradient(145deg,rgba(24,34,47,.98),rgba(12,18,26,.98));box-shadow:var(--shadow)}
+.hero:after{content:"";position:absolute;right:-68px;top:-92px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(73,154,247,.24),transparent 66%);pointer-events:none}
+.herohead{position:relative;z-index:1;display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.kicker{color:#88c7ff;font-size:10px;letter-spacing:1.5px;font-weight:950}
+.hero h2{margin:5px 0 3px;font-size:clamp(25px,7vw,39px);letter-spacing:-1.1px}.hero p{margin:0;color:var(--muted);font-size:13px}
+.reference{color:#ffe39a;background:rgba(245,199,95,.09);border:1px solid rgba(245,199,95,.25);padding:8px 10px;border-radius:12px;font-size:10px;font-weight:950;white-space:nowrap}
+.quick{position:relative;z-index:1;margin-top:17px;display:grid;grid-template-columns:1.35fr .8fr auto;gap:9px}
+.field label,.toolpanel label{display:block;margin:0 0 6px;color:#a9b8c9;font-size:10px;font-weight:950;letter-spacing:.45px}
+input,select,textarea{width:100%;border:1px solid #344256;background:#0a111a;color:#fff;border-radius:14px;outline:none;transition:.15s ease}
+input,select{height:50px;padding:0 13px;font-size:16px;font-weight:800}textarea{min-height:120px;padding:13px;resize:vertical;line-height:1.4}
+input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3px rgba(94,170,255,.12)}
+.primary{border:0;border-radius:14px;padding:0 17px;height:50px;align-self:end;color:#fff;font-weight:950;background:linear-gradient(135deg,#58aaff,#1875df);box-shadow:0 9px 22px rgba(31,120,229,.28);cursor:pointer}
+.primary:active,.card:active,.secondary:active,.navbtn:active{transform:scale(.98)}
+.sectiontitle{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:20px 3px 10px}.sectiontitle h3{margin:0;font-size:15px}.sectiontitle span{font-size:10px;color:#77869a;font-weight:850}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.card{min-height:132px;padding:15px;border:1px solid #293647;border-radius:20px;text-align:left;color:#fff;background:linear-gradient(160deg,#18222f,#101720);box-shadow:0 10px 25px rgba(0,0,0,.22);cursor:pointer;transition:.12s ease;position:relative;overflow:hidden}
+.card:before{content:"";position:absolute;inset:auto -30px -50px auto;width:110px;height:110px;border-radius:50%;background:rgba(89,171,255,.08)}
+.card .ico{font-size:29px;display:block;margin-bottom:18px}.card strong{display:block;font-size:14px}.card small{display:block;margin-top:4px;color:#8fa0b2;font-size:10px;line-height:1.25;font-weight:700}
+.card.active{border-color:#5faeff;background:linear-gradient(160deg,#1a314b,#101a27);box-shadow:0 0 0 2px rgba(95,174,255,.10),0 10px 25px rgba(0,0,0,.25)}
+.toolpanel{display:none;margin-top:12px;border:1px solid #2a3849;border-radius:23px;padding:17px;background:linear-gradient(160deg,rgba(18,25,35,.98),rgba(12,18,26,.98));box-shadow:var(--shadow)}
+.toolpanel.show{display:block}.paneltop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.paneltitle{display:flex;align-items:center;gap:10px}.paneltitle .bigico{font-size:27px}.paneltitle h3{margin:0;font-size:18px}.paneltitle p{margin:3px 0 0;color:var(--muted);font-size:10px}
+.close{border:1px solid #344355;background:#111a25;color:#aebdcd;width:36px;height:36px;border-radius:12px;cursor:pointer;font-weight:900}
+.formrow{display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end}.secondary{height:50px;border:1px solid #344355;background:#15202d;color:#e8f2fb;border-radius:14px;padding:0 15px;font-weight:900;cursor:pointer}
+.result{display:none;margin-top:14px}.result.show{display:block}.resultHero{padding:15px;border-radius:18px;border:1px solid #314158;background:linear-gradient(145deg,#101d2b,#0d151f)}
+.resultHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.resultHead strong{font-size:13px}.verified{font-size:9px;color:#83e7bd;font-weight:950;letter-spacing:.7px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{padding:12px;border-radius:14px;background:#151f2b;border:1px solid #273648;min-width:0}
+.metric small{display:block;color:#8596aa;font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.4px}.metric strong{display:block;margin-top:5px;font-size:20px;line-height:1.05;overflow-wrap:anywhere}
+.metric.important{background:linear-gradient(145deg,#14324a,#112538);border-color:#35678f}.metric.important strong{color:#8ed0ff}
+.notice{margin-top:9px;padding:10px 12px;border-radius:13px;border:1px solid rgba(245,199,95,.20);background:rgba(245,199,95,.07);color:#f3d999;font-size:10px;line-height:1.45;font-weight:700}
+.sketch{margin-top:10px;min-height:205px;border:1px solid #2b3b4d;border-radius:17px;background:#0a1119;padding:17px;display:flex;align-items:center;justify-content:center}
+.drawerSketch{width:min(92%,470px)}.drawerBody{height:135px;border:2px solid #dbe8f5;border-top:0;position:relative;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01))}
+.drawerFront{height:39px;border:2px solid #dbe8f5;background:#1b2b3e;display:grid;place-items:center;font-size:10px;font-weight:900}.drawerBottom{position:absolute;left:12px;right:12px;bottom:12px;height:62px;border:1px solid #637b96;background:rgba(116,215,255,.06);display:grid;place-items:center;color:#91a9c1;font-size:10px}
+.sideL,.sideR{position:absolute;top:10px;bottom:9px;width:11px;background:#e7eef6}.sideL{left:8px}.sideR{right:8px}.dimension{margin-top:20px;text-align:center;color:#f5ca69;font-size:11px;font-weight:950}
+.chestSketch{width:min(84%,390px);border:3px solid #dde8f3;background:rgba(255,255,255,.02)}.chestTop{height:18px;border-bottom:2px solid #cbd8e5;background:rgba(95,174,255,.13);display:grid;place-items:center;font-size:9px;color:#a8d6ff}
+.chestDrawer{height:48px;border-bottom:2px solid #8299af;display:grid;place-items:center;font-size:10px;font-weight:850}
+.tarifagrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tarifaitem{padding:14px;border-radius:15px;border:1px solid #2a394b;background:#131c27}.tarifaitem small{display:block;color:#8595a8;font-size:9px;font-weight:900;text-transform:uppercase}.tarifaitem strong{display:block;margin-top:5px;font-size:17px}
+.calcwrap{display:grid;grid-template-columns:1fr auto;gap:8px}.calcanswer{margin-top:9px;padding:14px;border-radius:14px;background:#0c1722;border:1px solid #263647;font-size:18px;font-weight:950;color:#9fd6ff}
+.history{margin-top:12px;display:grid;gap:7px}.hist{display:flex;justify-content:space-between;gap:10px;text-align:left;border:1px solid #273648;background:#101821;color:#dce6ef;border-radius:13px;padding:10px 12px;font-size:11px;cursor:pointer}.hist span:last-child{color:#73bfff;font-weight:900}
+.aiBlock{margin-top:12px}.aiActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.hint{margin-top:11px;color:#6f8093;font-size:9px;text-align:center;line-height:1.5}
+.nav{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(calc(100% - 24px),700px);display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px;border:1px solid rgba(63,79,98,.9);border-radius:19px;background:rgba(13,18,25,.91);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 16px 35px rgba(0,0,0,.36);z-index:20}
+.navbtn{border:0;background:transparent;color:#8e9caf;border-radius:13px;padding:8px 5px;font-size:9px;font-weight:900;cursor:pointer}.navbtn b{display:block;font-size:20px;margin-bottom:3px}.navbtn.active{background:#192432;color:#fff}
+.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(12px);background:#152231;color:#eaf4ff;border:1px solid #34495e;border-radius:999px;padding:9px 13px;font-size:10px;font-weight:850;opacity:0;pointer-events:none;transition:.18s;z-index:30;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:760px){.hero{padding:16px}.herohead{display:block}.reference{display:inline-block;margin-top:12px}.quick{grid-template-columns:1fr 1fr}.quick .field:first-child{grid-column:1/-1}.quick .primary{grid-column:1/-1}.cards{grid-template-columns:repeat(2,1fr)}.card{min-height:120px}.formrow{grid-template-columns:1fr 1fr}.formrow .primary,.formrow .secondary{grid-column:1/-1}.metrics,.tarifagrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:430px){.brandmark{width:43px;height:43px}.statuspill{padding:8px 9px}.statuspill .clocklabel{display:none}.hero h2{font-size:28px}.metrics{grid-template-columns:1fr 1fr}.metric strong{font-size:18px}}
 </style>
 </head>
 <body>
-<main class="app">
-  <header class="topbar">
-    <div class="brand">
-      <div class="eyebrow"><span class="dot"></span> ASISTENTE ACTIVO</div>
-      <h1>🛠️ Taller IA</h1>
-      <p class="subtitle">Tu panel rápido para el trabajo diario</p>
-    </div>
-    <div class="clock" id="clock">--:--</div>
-  </header>
+<main class="app" id="home">
+<header class="topbar">
+<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación</p></div></div>
+<div class="statuspill"><span class="statusdot"></span><span class="clocklabel">ACTIVO</span><span id="clock">--:--</span></div>
+</header>
 
-  <section class="hero">
-    <div class="hero-title">
-      <strong>¿Qué necesitas hacer?</strong>
-      <span class="tarifa">ESENZIA 4.0 · REFERENCIA</span>
-    </div>
+<section class="hero">
+<div class="herohead"><div><div class="kicker">CONSULTA RÁPIDA</div><h2>¿Qué estás fabricando?</h2><p>Mete la caja y saca las medidas sin salir de esta pantalla.</p></div><div class="reference">ESENZIA 4.0 · REFERENCIA</div></div>
+<div class="quick">
+<div class="field"><label>TIPO DE TRABAJO</label><select id="quickType"><option value="madera">Cajón de madera</option><option value="metalico">Cajón metálico</option><option value="joyero">Joyero</option><option value="cajonera3">Cajonera · 3 cajones</option><option value="cajonera2">Cajonera · 2 cajones</option><option value="armario">Armario · hueco interior</option></select></div>
+<div class="field"><label>CAJA (cm)</label><input id="quickBox" inputmode="decimal" placeholder="100"></div>
+<button class="primary" onclick="quickCalculate()">CALCULAR</button>
+</div>
+<div id="quickResult" class="result"></div>
+</section>
 
-    <div class="grid">
-      <button class="tool" onclick="openLocal('armarios',this)"><span class="ico">🗄️</span>ARMARIOS</button>
-      <button class="tool" onclick="openLocal('cajones',this)"><span class="ico ico-photo"><img src="data:image/jpeg;base64,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" alt="Cajón de madera montado"></span>CAJONES</button>
-      <button class="tool" onclick="openLocal('cajoneras',this)"><span class="ico">🗃️</span>CAJONERAS</button>
-      <button class="tool" onclick="openLocal('metalicas',this)"><span class="ico">🧰</span>CAJ. METÁLICAS</button>
-      <button class="tool" onclick="openLocal('tarifa',this)"><span class="ico">📖</span>TARIFA</button>
-      <button class="tool" onclick="openLocal('croquis',this)"><span class="ico">📐</span>CROQUIS</button>
-      <button class="tool" onclick="toggleCalc(this)"><span class="ico">🧮</span>CALCULADORA</button>
-    </div>
-  </section>
+<div class="sectiontitle"><h3>Herramientas del taller</h3><span>TOCA UNA OPCIÓN</span></div>
+<section class="cards">
+<button class="card" data-tool="madera" onclick="openTool('madera',this)"><span class="ico">🪵</span><strong>Cajón madera</strong><small>Traba, frente, fondo y regletas verificadas.</small></button>
+<button class="card" data-tool="metal" onclick="openTool('metal',this)"><span class="ico">🧰</span><strong>Metálica / Joyero</strong><small>Cálculo independiente del cajón de madera.</small></button>
+<button class="card" data-tool="cajonera" onclick="openTool('cajonera',this)"><span class="ico">🗃️</span><strong>Cajoneras</strong><small>2 o 3 cajones, costado y sobre.</small></button>
+<button class="card" data-tool="armario" onclick="openTool('armario',this)"><span class="ico">🚪</span><strong>Armarios</strong><small>Hueco interior desde la caja nominal.</small></button>
+<button class="card" data-tool="croquis" onclick="openTool('croquis',this)"><span class="ico">📐</span><strong>Croquis</strong><small>Esquema visual con cotas principales.</small></button>
+<button class="card" data-tool="tarifa" onclick="openTool('tarifa',this)"><span class="ico">📖</span><strong>Tarifa técnica</strong><small>Datos ESENZIA que ya están verificados.</small></button>
+<button class="card" data-tool="calc" onclick="openTool('calc',this)"><span class="ico">🧮</span><strong>Calculadora</strong><small>Operaciones rápidas en mm o cm.</small></button>
+<button class="card" data-tool="ia" onclick="openTool('ia',this)"><span class="ico">✨</span><strong>Consulta especial</strong><small>Solo para casos que no resuelve la herramienta.</small></button>
+</section>
 
-  <section class="workspace">
-    <div id="local-armarios" class="localtool">
-      <h3>🗄️ Armarios</h3><p>Introduce la caja nominal. Te muestra el hueco interior aquí mismo.</p>
-      <div class="localrow"><div><label>CAJA (cm)</label><input id="armBox" inputmode="numeric" placeholder="100"></div><div></div><button class="btn primary" onclick="calcArmario()">Calcular</button></div>
-      <div id="armResult" class="localresult"></div>
-    </div>
+<section id="tool-madera" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">🪵</span><div><h3>Cajón de madera</h3><p>Medidas de fabricación verificadas</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="formrow"><div><label>CAJA DEL ARMARIO (cm)</label><input id="drawerBox" inputmode="numeric" placeholder="100"></div><div></div><button class="primary" onclick="calcDrawer()">SACAR MEDIDAS</button></div><div id="drawerResult" class="result"></div>
+</section>
 
-    <div id="local-cajones" class="localtool">
-      <h3>📦 Cajones de madera</h3><p>Medidas de fabricación según las reglas técnicas que ya tenemos verificadas.</p>
-      <div class="localrow"><div><label>CAJA DEL ARMARIO (cm)</label><input id="drawerBox" inputmode="numeric" placeholder="100"></div><div></div><button class="btn primary" onclick="calcDrawer()">Sacar medidas</button></div>
-      <div id="drawerResult" class="localresult"></div>
-    </div>
+<section id="tool-metal" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">🧰</span><div><h3>Cajón metálico / Joyero</h3><p>Reglas específicas de este sistema</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="formrow"><div><label>CAJA (cm)</label><input id="metalBox" inputmode="decimal" placeholder="100"></div><div><label>TIPO</label><select id="metalType"><option value="metalico">Cajón metálico</option><option value="joyero">Joyero</option></select></div><button class="primary" onclick="calcMetal()">CALCULAR</button></div><div id="metalResult" class="result"></div>
+</section>
 
-    <div id="local-cajoneras" class="localtool">
-      <h3>🗃️ Cajoneras interiores</h3><p>Selecciona caja y número de cajones. Para 61–120 cm clasifica A2/B2/C2 automáticamente.</p>
-      <div class="localrow">
-        <div><label>CAJA (cm)</label><input id="chestBox" inputmode="numeric" placeholder="100"></div>
-        <div><label>CAJONES</label><select id="drawerCount" style="width:100%;border:1px solid #334b68;border-radius:13px;background:#071421;color:white;padding:13px"><option value="3">3 cajones · C3</option><option value="2">2 cajones · C2</option></select></div>
-        <button class="btn primary" onclick="calcChest()">Calcular</button>
-      </div>
-      <div id="chestResult" class="localresult"></div>
-    </div>
+<section id="tool-cajonera" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">🗃️</span><div><h3>Cajonera interior</h3><p>Distribución y medidas principales</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="formrow"><div><label>CAJA (cm)</label><input id="chestBox" inputmode="decimal" placeholder="100"></div><div><label>NÚMERO DE CAJONES</label><select id="drawerCount"><option value="3">3 cajones · C3</option><option value="2">2 cajones · C2</option></select></div><button class="primary" onclick="calcChest()">CALCULAR</button></div><div id="chestResult" class="result"></div>
+</section>
 
-    <div id="local-metalicas" class="localtool">
-      <h3>🧰 Cajoneras metálicas</h3>
-      <p>Cálculo específico para cajón metálico y joyero. No usa las reglas del cajón de madera.</p>
-      <div class="localrow">
-        <div><label>CAJA DEL ARMARIO (cm)</label><input id="metalBox" inputmode="decimal" placeholder="100"></div>
-        <div><label>TIPO</label><select id="metalType" style="width:100%;border:1px solid #334b68;border-radius:13px;background:#071421;color:white;padding:13px"><option value="metalico">Cajón metálico</option><option value="joyero">Joyero</option></select></div>
-        <button class="btn primary" onclick="calcMetalChest()">Sacar medidas</button>
-      </div>
-      <div id="metalResult" class="localresult"></div>
-    </div>
+<section id="tool-armario" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">🚪</span><div><h3>Armario</h3><p>Hueco interior desde la caja nominal</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="formrow"><div><label>CAJA (cm)</label><input id="armBox" inputmode="decimal" placeholder="100"></div><div></div><button class="primary" onclick="calcArmario()">CALCULAR</button></div><div id="armResult" class="result"></div>
+</section>
 
-    <div id="local-tarifa" class="localtool">
-      <h3>📖 Tarifa técnica</h3><p>Datos rápidos que ya están verificados en ESENZIA 4.0.</p>
-      <div class="metrics">
-        <div class="metric"><small>C3 alto total</small><strong>58,5 cm</strong></div>
-        <div class="metric"><small>Sobre</small><strong>3 cm</strong></div>
-        <div class="metric"><small>Fondo interior</small><strong>50 cm</strong></div>
-        <div class="metric"><small>C2 alto total</small><strong>40 cm</strong></div>
-        <div class="metric"><small>Frente cajón</small><strong>16 cm</strong></div>
-        <div class="metric"><small>Grupo B2</small><strong>76–100 cm</strong></div>
-      </div>
-      <div class="notice">Ejemplo: caja 100 → interior 96,1 cm → grupo B2 → cajonera C3.B2.</div>
-    </div>
+<section id="tool-croquis" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">📐</span><div><h3>Croquis rápido</h3><p>Cajonera interior estilo técnico</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="formrow"><div><label>CAJA (cm)</label><input id="sketchBox" inputmode="decimal" placeholder="100"></div><div><label>CAJONES</label><select id="sketchCount"><option value="3">3 cajones</option><option value="2">2 cajones</option></select></div><button class="primary" onclick="makeSketch()">DIBUJAR</button></div><div id="sketchMeta" class="result"></div><div class="sketch" id="diagram"><span style="color:#718296;font-size:11px">Introduce una caja y pulsa Dibujar.</span></div>
+</section>
 
-    <div id="local-croquis" class="localtool">
-      <h3>📐 Croquis rápido</h3><p>Esquema sencillo de cajonera con las cotas principales.</p>
-      <div class="localrow">
-        <div><label>CAJA (cm)</label><input id="sketchBox" inputmode="numeric" placeholder="100"></div>
-        <div><label>CAJONES</label><select id="sketchCount" style="width:100%;border:1px solid #334b68;border-radius:13px;background:#071421;color:white;padding:13px"><option value="3">3 cajones</option><option value="2">2 cajones</option></select></div>
-        <button class="btn primary" onclick="makeSketch()">Dibujar</button>
-      </div>
-      <div id="sketchMeta" class="localresult"></div>
-      <div id="diagram" class="diagram"><span style="color:#7f95ae">Introduce una caja y pulsa Dibujar</span></div>
-    </div>
+<section id="tool-tarifa" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">📖</span><div><h3>Tarifa técnica</h3><p>Solo datos ya comprobados</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="tarifagrid"><div class="tarifaitem"><small>C3 · alto total</small><strong>58,5 cm</strong></div><div class="tarifaitem"><small>Sobre</small><strong>3 cm</strong></div><div class="tarifaitem"><small>Fondo interior</small><strong>50 cm</strong></div><div class="tarifaitem"><small>C2 · alto total</small><strong>40 cm</strong></div><div class="tarifaitem"><small>Frente cajón</small><strong>16 cm</strong></div><div class="tarifaitem"><small>Grupo B2</small><strong>76–100 cm</strong></div></div>
+<div class="notice">Ejemplo verificado: caja 100 → interior 96,1 cm → grupo B2 → cajonera C3.B2. La web no completa medidas que no estén confirmadas.</div>
+</section>
 
-    <div class="labelrow">
-      <label for="query">CONSULTA DENTRO DEL TALLER</label>
-      <span class="mode" id="modeLabel">Modo libre</span>
-    </div>
+<section id="tool-calc" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">🧮</span><div><h3>Calculadora</h3><p>Operaciones rápidas</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="calcwrap"><input id="expr" inputmode="decimal" placeholder="Ej.: 1000 - 39"><button class="primary" onclick="calculate()">CALCULAR</button></div><div id="calcAnswer" class="calcanswer">Resultado</div>
+</section>
 
-    <textarea id="query" placeholder="Ejemplo: Tengo una caja de 100 cm. Quiero una cajonera de 3 cajones. Dime costados, frente y sobre según tarifa."></textarea>
+<section id="tool-ia" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">✨</span><div><h3>Consulta especial</h3><p>Para dudas que no estén automatizadas</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="aiBlock"><label>CONSULTA</label><textarea id="query" placeholder="Ejemplo: Tengo una caja de 100 cm y necesito una solución que no aparece en las herramientas."></textarea><div class="aiActions"><button class="secondary" onclick="enforceTarifa()">📖 Añadir regla de tarifa</button><button class="primary" onclick="askChatGPT()">ABRIR EN CHATGPT</button></div><div class="hint">Aquí sí se abre ChatGPT. Los cálculos normales se hacen directamente dentro del Taller.</div></div>
+</section>
 
-    <div class="quickrow">
-      <button class="minibtn" onclick="enforceTarifa()">📖 Usar tarifa técnica</button>
-      <button class="minibtn" onclick="clearQuery()">🧹 Limpiar</button>
-    </div>
-
-    <div class="actions">
-      <button class="btn secondary" onclick="dictate()">🎙️ Dictar</button>
-      <button class="btn secondary" onclick="saveQuery()">⭐ Guardar</button>
-      <button class="btn green" onclick="resolveLocalQuery()">⚙️ Resolver aquí</button>
-      <button class="btn primary" onclick="askChatGPT()">✨ ChatGPT (consulta libre)</button>
-    </div>
-
-    <div id="status" class="status"></div>
-
-    <div id="calcPanel" class="calc">
-      <div class="labelrow"><label for="expr">CALCULADORA RÁPIDA</label><span class="mode">mm / cm / operaciones</span></div>
-      <div class="calcline">
-        <input id="expr" inputmode="decimal" placeholder="Ej.: 1000 - 39 o 857 / 10">
-        <button class="btn green" onclick="calculate()">Calcular</button>
-      </div>
-      <div class="calcresult" id="calcResult">Resultado</div>
-    </div>
-
-    <div id="historyPanel" class="history">
-      <div class="labelrow"><label>CONSULTAS GUARDADAS</label><button class="minibtn" style="padding:7px 10px" onclick="clearHistory()">Borrar</button></div>
-      <div class="historylist" id="historyList"></div>
-    </div>
-
-    <p class="bottomnote">
-      Los botones de arriba y “Resolver aquí” trabajan dentro de esta pantalla. Solo “ChatGPT (consulta libre)” sale de la herramienta.
-      ESENZIA 4.0 es la referencia técnica: no inventar medidas y comprobar los datos dos veces.
-    </p>
-  </section>
+<div class="sectiontitle"><h3>Últimos cálculos</h3><span>ACCESO RÁPIDO</span></div><div class="history" id="historyList"></div>
 </main>
 
+<nav class="nav"><button class="navbtn active" onclick="goHome(this)"><b>⌂</b>Inicio</button><button class="navbtn" onclick="navTool('tarifa',this)"><b>📖</b>Tarifa</button><button class="navbtn" onclick="navTool('calc',this)"><b>🧮</b>Calcular</button><button class="navbtn" onclick="navTool('ia',this)"><b>✨</b>Consulta</button></nav>
+<div class="toast" id="toast"></div>
+
 <script>
-const query=document.getElementById('query');
-const statusEl=document.getElementById('status');
-const modeLabel=document.getElementById('modeLabel');
-const historyKey='tallerIA_history_v1';
-let currentLocalMode='';
-
-const presets={
-  armarios:'Consulta de trabajo sobre un armario. Usa la tarifa técnica ESENZIA 4.0 de Baixmoduls como referencia principal. No inventes ninguna medida y comprueba los datos dos veces. ',
-  cajones:'Consulta de trabajo sobre cajones interiores de armario. Usa las medidas técnicas disponibles y la tarifa ESENZIA 4.0 cuando corresponda. Comprueba dos veces antes de responder. ',
-  cajoneras:'Consulta de trabajo sobre una cajonera. Necesito medidas exactas de costados, frentes, sobre y distribución según la tarifa técnica ESENZIA 4.0. Comprueba dos veces. ',
-  tarifa:'Consulta la tarifa técnica ESENZIA 4.0 de Baixmoduls como fuente principal. Dame el dato exacto. Si la tarifa no lo especifica, dilo claramente y no inventes. Comprueba dos veces. ',
-  croquis:'Hazme un croquis técnico claro, estilo tarifa técnica, con cotas y medidas verificadas. Usa la tarifa ESENZIA 4.0 como referencia y no inventes datos. '
-};
-
-function openLocal(type,el){
-  currentLocalMode=type;
-  document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active'));
-  if(el)el.classList.add('active');
-  document.querySelectorAll('.localtool').forEach(p=>p.classList.remove('show'));
-  const p=document.getElementById('local-'+type);
-  if(p){
-    p.classList.add('show');
-    setTimeout(()=>{
-      p.scrollIntoView({behavior:'smooth',block:'nearest'});
-      const focusMap={armarios:'armBox',cajones:'drawerBox',cajoneras:'chestBox',metalicas:'metalBox',croquis:'sketchBox'};
-      const id=focusMap[type];
-      if(id) document.getElementById(id)?.focus();
-    },80);
-  }
-  modeLabel.textContent='Herramienta '+type;
-  const help={
-    armarios:'Escribe la medida de la caja y pulsa Calcular.',
-    cajones:'Escribe la medida de la caja y pulsa Sacar medidas. No abre ChatGPT.',
-    cajoneras:'Escribe la caja, elige 2 o 3 cajones y pulsa Calcular.',
-    metalicas:'Escribe la caja, elige cajón metálico o joyero y pulsa Sacar medidas.',
-    tarifa:'Consulta los datos técnicos cargados aquí mismo.',
-    croquis:'Escribe la caja, elige cajones y pulsa Dibujar.'
-  };
-  setStatus(help[type]||'Trabajando dentro de Taller IA');
-}
-function nval(id){return Number(String(document.getElementById(id).value).replace(',','.'))}
+const historyKey='tallerV2_history';
+function val(id){return Number(String(document.getElementById(id).value).replace(',','.'))}
 function mm(v){return Math.round(v)+' mm'}
 function cm(v){return (Math.round(v*10)/10).toFixed(1).replace('.',',')+' cm'}
-function metric(label,value){return '<div class="metric"><small>'+label+'</small><strong>'+value+'</strong></div>'}
-function localShow(id,html){const el=document.getElementById(id);el.innerHTML=html;el.classList.add('show')}
 function interiorMm(c){return c*10-39}
 function drawerBodyMm(c){return 50*Math.floor(c/5)-143}
 function drawerTrabaMm(c){return drawerBodyMm(c)-38}
 function drawerFrontMm(c){return drawerBodyMm(c)+44}
-function widthGroup(c){if(c>=61&&c<=75)return 'A2';if(c>=76&&c<=100)return 'B2';if(c>=101&&c<=120)return 'C2';return null}
-function calcArmario(){
-  const c=nval('armBox');
-  if(!Number.isFinite(c)||c<38||c>120)return localShow('armResult','<div class="notice">Introduce una caja entre 38 y 120 cm.</div>');
-  const h=interiorMm(c);
-  localShow('armResult','<div class="metrics">'+metric('Caja',cm(c))+metric('Hueco interior',mm(h))+metric('Hueco interior',cm(h/10))+'</div><div class="notice">Regla verificada: hueco = caja nominal − 39 mm.</div>');
-}
-function calcDrawer(){
-  const c=Math.floor(nval('drawerBox'));
-  if(!Number.isFinite(c)||c<38||c>120)return localShow('drawerResult','<div class="notice">Introduce una caja entre 38 y 120 cm.</div>');
-  const h=interiorMm(c),body=drawerBodyMm(c),tr=drawerTrabaMm(c),fr=drawerFrontMm(c);
-  let html='<div class="metrics">'+metric('Hueco',mm(h))+metric('Caja cajón',mm(body))+metric('Traba',mm(tr))+metric('Frente',mm(fr));
-  if(c===100)html+=metric('x2 Regleta','20 mm')+metric('Fondo','838 mm')+metric('DIF','26 mm');
-  html+='</div>';
-  html+=c===100?'<div class="notice">Caja 100 completa: 961 / 857 / x2 regleta 20 / 819 / 901 / 838 / DIF 26 mm.</div>':'<div class="notice">Para esta caja muestro solo los campos cuya regla tenemos confirmada. Fondo, regleta y DIF no se inventan.</div>';
-  localShow('drawerResult',html);
-}
-function calcMetalChest(){
-  const c=nval('metalBox');
-  const type=document.getElementById('metalType').value;
-  if(!Number.isFinite(c)||c<=16.1)return localShow('metalResult','<div class="notice">Introduce una medida de caja válida.</div>');
-  const trabaAncho=c-16.1;
-  const fondoAncho=c-14;
-  const trabaAlto=type==='joyero'?5.8:9;
-  const tipo=type==='joyero'?'Joyero':'Cajón metálico';
-  localShow('metalResult',
-    '<div class="metrics">'
-    +metric('Tipo',tipo)
-    +metric('Traba',cm(trabaAncho)+' × '+cm(trabaAlto))
-    +metric('Fondo',cm(fondoAncho)+' × 43,8 cm')
-    +'</div>'
-    +'<div class="notice">Regla técnica: TRABA = caja − 16,1 cm. FONDO = caja − 14 cm. Altura traba: '+(type==='joyero'?'5,8 cm':'9 cm')+'. Profundidad fondo: 43,8 cm.</div>'
-  );
-}
-
-function calcChest(){
-  const c=nval('chestBox'),count=Number(document.getElementById('drawerCount').value),g=widthGroup(c);
-  if(!g)return localShow('chestResult','<div class="notice">Para esta calculadora usa cajas de 61 a 120 cm.</div>');
-  const inside=interiorMm(c)/10,total=count===3?58.5:40,side=total-3,code=(count===3?'C3.':'C2.')+g;
-  localShow('chestResult','<div class="metrics">'+metric('Código',code)+metric('Interior',cm(inside))+metric('Alto total',cm(total))+metric('Costado',cm(side))+metric('Sobre',cm(inside)+' × 50 × 3')+metric('Cajones',count+' × 16 cm')+'</div><div class="notice">Costado = alto total menos el sobre de 3 cm.</div>');
-}
-function makeSketch(){
-  const c=nval('sketchBox'),count=Number(document.getElementById('sketchCount').value),g=widthGroup(c),d=document.getElementById('diagram');
-  if(!g){d.innerHTML='<span style="color:#ff9ba0">Usa una caja de 61 a 120 cm.</span>';return}
-  const inside=interiorMm(c)/10,total=count===3?58.5:40,code=(count===3?'C3.':'C2.')+g;
-  let drawers='';for(let i=0;i<count;i++)drawers+='<div class="drawer">Cajón '+(i+1)+' · 16 cm</div>';
-  d.innerHTML='<div class="cabinet"><div class="topboard">SOBRE · 3 cm</div>'+drawers+'<div class="dimw">↔ '+cm(inside)+'</div></div>';
-  localShow('sketchMeta','<div class="metrics">'+metric('Código',code)+metric('Costado',cm(total-3))+metric('Alto total',cm(total))+'</div>');
-}
-function setStatus(t){statusEl.textContent=t||''}
-
-function extractMeasure(text){
-  const m=String(text).replace(',','.').match(/\b(\d{2,3}(?:\.\d+)?)\b/);
-  return m ? Number(m[1]) : NaN;
-}
-function extractDrawerCount(text){
-  const s=String(text).toLowerCase();
-  if(/\b2\s*(cajones?|caj)\b/.test(s)) return 2;
-  if(/\b3\s*(cajones?|caj)\b/.test(s)) return 3;
-  return 3;
-}
-function resolveLocalQuery(){
-  const text=query.value.trim();
-  if(!text){setStatus('Escribe la consulta, por ejemplo: caja de 100');query.focus();return}
-  if(!currentLocalMode){
-    setStatus('Primero pulsa ARMARIOS, CAJONES, CAJONERAS, CAJ. METÁLICAS o CROQUIS.');
-    return;
-  }
-  const c=extractMeasure(text);
-
-  if(currentLocalMode==='cajones'){
-    if(!Number.isFinite(c)){setStatus('No encuentro la medida de la caja. Ejemplo: caja de 100');return}
-    document.getElementById('drawerBox').value=c;
-    calcDrawer();
-    document.getElementById('local-cajones').scrollIntoView({behavior:'smooth',block:'nearest'});
-    setStatus('Consulta resuelta aquí · Cajones');
-    return;
-  }
-
-  if(currentLocalMode==='armarios'){
-    if(!Number.isFinite(c)){setStatus('No encuentro la medida de la caja. Ejemplo: armario de 100');return}
-    document.getElementById('armBox').value=c;
-    calcArmario();
-    document.getElementById('local-armarios').scrollIntoView({behavior:'smooth',block:'nearest'});
-    setStatus('Consulta resuelta aquí · Armarios');
-    return;
-  }
-
-  if(currentLocalMode==='cajoneras'){
-    if(!Number.isFinite(c)){setStatus('No encuentro la medida de la caja. Ejemplo: caja 100 con 3 cajones');return}
-    const count=extractDrawerCount(text);
-    document.getElementById('chestBox').value=c;
-    document.getElementById('drawerCount').value=String(count);
-    calcChest();
-    document.getElementById('local-cajoneras').scrollIntoView({behavior:'smooth',block:'nearest'});
-    setStatus('Consulta resuelta aquí · Cajoneras');
-    return;
-  }
-
-  if(currentLocalMode==='metalicas'){
-    if(!Number.isFinite(c)){setStatus('No encuentro la medida de la caja. Ejemplo: cajón metálico caja 100');return}
-    document.getElementById('metalBox').value=c;
-    document.getElementById('metalType').value=/joyero/i.test(text)?'joyero':'metalico';
-    calcMetalChest();
-    document.getElementById('local-metalicas').scrollIntoView({behavior:'smooth',block:'nearest'});
-    setStatus('Consulta resuelta aquí · Cajoneras metálicas');
-    return;
-  }
-
-  if(currentLocalMode==='croquis'){
-    if(!Number.isFinite(c)){setStatus('No encuentro la medida de la caja. Ejemplo: croquis caja 100 con 3 cajones');return}
-    const count=extractDrawerCount(text);
-    document.getElementById('sketchBox').value=c;
-    document.getElementById('sketchCount').value=String(count);
-    makeSketch();
-    document.getElementById('local-croquis').scrollIntoView({behavior:'smooth',block:'nearest'});
-    setStatus('Croquis generado aquí');
-    return;
-  }
-
-  if(currentLocalMode==='tarifa'){
-    setStatus('La consulta libre de TARIFA todavía no está cargada completa dentro de la web.');
-  }
-}
-
-function preset(type,el){
-  document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active'));
-  if(el)el.classList.add('active');
-  query.value=presets[type]||'';
-  modeLabel.textContent='Modo '+(type.charAt(0).toUpperCase()+type.slice(1));
-  query.focus();
-  setStatus('Plantilla cargada');
-}
-
-function enforceTarifa(){
-  const rule='Usa la tarifa técnica ESENZIA 4.0 de Baixmoduls como fuente principal. No inventes ninguna medida. Comprueba dos veces todos los datos técnicos antes de responder. ';
-  if(!query.value.startsWith(rule)) query.value=rule+query.value.trim();
-  setStatus('Regla de tarifa técnica añadida');
-}
-
-function clearQuery(){
-  query.value='';
-  modeLabel.textContent='Modo libre';
-  currentLocalMode='';
-  document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.localtool').forEach(p=>p.classList.remove('show'));
-  query.focus();
-  setStatus('');
-}
-
-function fallbackCopy(text){
-  const t=document.createElement('textarea');
-  t.value=text;t.style.position='fixed';t.style.opacity='0';
-  document.body.appendChild(t);t.select();
-  try{document.execCommand('copy')}catch(e){}
-  t.remove();
-}
-
-async function copyText(text){
-  try{await navigator.clipboard.writeText(text)}catch(e){fallbackCopy(text)}
-}
-
-async function askChatGPT(){
-  const text=query.value.trim();
-  if(!text){setStatus('Escribe primero la consulta');query.focus();return}
-  await copyText(text);
-  pushHistory(text);
-  setStatus('Consulta copiada. Abriendo ChatGPT…');
-  const url='https://chatgpt.com/?q='+encodeURIComponent(text);
-  window.open(url,'_blank');
-}
-
-function dictate(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){setStatus('El dictado del navegador no está disponible aquí. Usa el micrófono del teclado.');return}
-  const rec=new SR();
-  rec.lang='es-ES';rec.interimResults=false;rec.maxAlternatives=1;
-  setStatus('Escuchando…');
-  rec.onresult=e=>{
-    const spoken=e.results[0][0].transcript;
-    query.value+=(query.value.trim()?' ':'')+spoken;
-    setStatus('Dictado añadido');
-  };
-  rec.onerror=()=>setStatus('No se pudo usar el dictado');
-  rec.start();
-}
-
-function toggleCalc(el){
-  document.getElementById('calcPanel').classList.toggle('show');
-  if(el)el.classList.toggle('active');
-  setTimeout(()=>document.getElementById('expr').focus(),50);
-}
-
-function calculate(){
-  const raw=document.getElementById('expr').value.trim().replace(/,/g,'.');
-  const out=document.getElementById('calcResult');
-  if(!raw){out.textContent='Escribe una operación';return}
-  if(!/^[0-9+\-*/().\s]+$/.test(raw)){out.textContent='Operación no válida';return}
-  try{
-    const value=Function('"use strict";return ('+raw+')')();
-    if(!Number.isFinite(value)) throw new Error();
-    out.textContent='Resultado: '+Number(value.toFixed(4));
-  }catch(e){out.textContent='No se pudo calcular'}
-}
-
-function getHistory(){
-  try{return JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){return[]}
-}
-function pushHistory(text){
-  let items=getHistory().filter(x=>x!==text);
-  items.unshift(text);
-  items=items.slice(0,6);
-  localStorage.setItem(historyKey,JSON.stringify(items));
-  renderHistory();
-}
-function saveQuery(){
-  const text=query.value.trim();
-  if(!text){setStatus('No hay ninguna consulta para guardar');return}
-  pushHistory(text);
-  document.getElementById('historyPanel').classList.add('show');
-  setStatus('Consulta guardada');
-}
-function renderHistory(){
-  const list=document.getElementById('historyList');
-  const items=getHistory();
-  if(!items.length){list.innerHTML='<div style="color:#7f93aa;font-size:12px">Aún no hay consultas guardadas.</div>';return}
-  list.innerHTML=items.map((x,i)=>'<button class="hist" onclick="loadHistory('+i+')">'+escapeHtml(x)+'</button>').join('');
-}
-function loadHistory(i){
-  const items=getHistory();
-  if(items[i]){query.value=items[i];query.focus();setStatus('Consulta recuperada')}
-}
-function clearHistory(){
-  localStorage.removeItem(historyKey);renderHistory();setStatus('Historial borrado')
-}
-function escapeHtml(s){
-  return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))
-}
-function tick(){
-  const d=new Date();
-  document.getElementById('clock').textContent=d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
-}
-tick();setInterval(tick,30000);renderHistory();
-
-query.addEventListener('keydown',e=>{
-  if((e.metaKey||e.ctrlKey)&&e.key==='Enter') askChatGPT();
-});
+function widthGroup(c){if(c>=61&&c<=75)return'A2';if(c>=76&&c<=100)return'B2';if(c>=101&&c<=120)return'C2';return null}
+function metric(label,value,important=false){return '<div class="metric'+(important?' important':'')+'"><small>'+label+'</small><strong>'+value+'</strong></div>'}
+function resultWrap(title,metrics,note=''){return '<div class="resultHero"><div class="resultHead"><strong>'+title+'</strong><span class="verified">✓ DATOS VERIFICADOS</span></div><div class="metrics">'+metrics+'</div>'+(note?'<div class="notice">'+note+'</div>':'')+'</div>'}
+function showResult(id,html){const el=document.getElementById(id);el.innerHTML=html;el.classList.add('show')}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),1900)}
+function addHistory(type,box,summary){let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){}items=items.filter(x=>!(x.type===type&&x.box===box));items.unshift({type,box,summary});items=items.slice(0,5);localStorage.setItem(historyKey,JSON.stringify(items));renderHistory()}
+function renderHistory(){const el=document.getElementById('historyList');let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){}if(!items.length){el.innerHTML='<div style="color:#718195;font-size:10px;padding:3px">Todavía no hay cálculos guardados.</div>';return}el.innerHTML=items.map((x,i)=>'<button class="hist" onclick="repeatHistory('+i+')"><span><b>'+escapeHtml(x.type)+'</b> · caja '+escapeHtml(String(x.box))+' cm<br><small style="color:#7f90a4">'+escapeHtml(x.summary)+'</small></span><span>ABRIR ›</span></button>').join('')}
+function repeatHistory(i){let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){};const x=items[i];if(!x)return;document.getElementById('quickBox').value=x.box;const map={'Cajón madera':'madera','Cajón metálico':'metalico','Joyero':'joyero','Cajonera 3':'cajonera3','Cajonera 2':'cajonera2','Armario':'armario'};document.getElementById('quickType').value=map[x.type]||'madera';quickCalculate();window.scrollTo({top:0,behavior:'smooth'})}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function openTool(name,btn){document.querySelectorAll('.toolpanel').forEach(x=>x.classList.remove('show'));document.querySelectorAll('.card').forEach(x=>x.classList.remove('active'));const p=document.getElementById('tool-'+name);if(!p)return;p.classList.add('show');const b=btn||document.querySelector('[data-tool="'+name+'"]');if(b)b.classList.add('active');setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'start'}),40)}
+function closeTools(){document.querySelectorAll('.toolpanel').forEach(x=>x.classList.remove('show'));document.querySelectorAll('.card').forEach(x=>x.classList.remove('active'))}
+function goHome(btn){closeTools();document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function navTool(name,btn){document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');openTool(name)}
+function calcArmario(){const c=val('armBox');if(!Number.isFinite(c)||c<38||c>120)return showResult('armResult','<div class="notice">Introduce una caja entre 38 y 120 cm.</div>');const h=interiorMm(c);showResult('armResult',resultWrap('Armario · caja '+cm(c),metric('Hueco interior',mm(h),true)+metric('Hueco',cm(h/10)),'Regla verificada: hueco = caja nominal − 39 mm.'));addHistory('Armario',c,'Hueco '+mm(h))}
+function drawerHtml(c){const h=interiorMm(c),body=drawerBodyMm(c),tr=drawerTrabaMm(c),fr=drawerFrontMm(c);let metrics=metric('Hueco',mm(h))+metric('Caja cajón',mm(body))+metric('Traba',mm(tr),true)+metric('Frente',mm(fr),true);let note='Para esta caja se muestran únicamente las medidas cuya regla está confirmada. Fondo, regleta y DIF no se inventan.';if(c===100){metrics+=metric('x2 Regleta','20 mm')+metric('Fondo','838 mm',true)+metric('DIF','26 mm');note='Caja 100 verificada: 961 / 857 / x2 regleta 20 / traba 819 / frente 901 / fondo 838 / DIF 26 mm.'}const sketch='<div class="sketch"><div class="drawerSketch"><div class="drawerFront">FRENTE · '+mm(fr)+'</div><div class="drawerBody"><span class="sideL"></span><span class="sideR"></span><div class="drawerBottom">FONDO / PIEZA INTERIOR</div></div><div class="dimension">↔ TRABA '+mm(tr)+'</div></div></div>';return resultWrap('Cajón madera · caja '+c+' cm',metrics,note)+sketch}
+function calcDrawer(){const c=Math.floor(val('drawerBox'));if(!Number.isFinite(c)||c<38||c>120)return showResult('drawerResult','<div class="notice">Introduce una caja entre 38 y 120 cm.</div>');showResult('drawerResult',drawerHtml(c));addHistory('Cajón madera',c,'Traba '+mm(drawerTrabaMm(c))+' · frente '+mm(drawerFrontMm(c)))}
+function metalHtml(c,type){const trabaAncho=c-16.1,fondoAncho=c-14,trabaAlto=type==='joyero'?5.8:9,tipo=type==='joyero'?'Joyero':'Cajón metálico';const metrics=metric('Traba',cm(trabaAncho)+' × '+cm(trabaAlto),true)+metric('Fondo',cm(fondoAncho)+' × 43,8 cm',true)+metric('Tipo',tipo);const note='Regla técnica: TRABA = caja − 16,1 cm. FONDO = caja − 14 cm. Altura traba: '+(type==='joyero'?'5,8 cm':'9 cm')+'. Profundidad fondo: 43,8 cm.';return resultWrap(tipo+' · caja '+cm(c),metrics,note)}
+function calcMetal(){const c=val('metalBox'),type=document.getElementById('metalType').value;if(!Number.isFinite(c)||c<=16.1)return showResult('metalResult','<div class="notice">Introduce una caja válida.</div>');showResult('metalResult',metalHtml(c,type));addHistory(type==='joyero'?'Joyero':'Cajón metálico',c,'Traba '+cm(c-16.1)+' · fondo '+cm(c-14))}
+function chestHtml(c,count){const g=widthGroup(c);if(!g)return '<div class="notice">Para esta herramienta usa cajas de 61 a 120 cm.</div>';const inside=interiorMm(c)/10,total=count===3?58.5:40,side=total-3,code=(count===3?'C3.':'C2.')+g;const metrics=metric('Código',code,true)+metric('Interior',cm(inside))+metric('Costado',cm(side),true)+metric('Sobre',cm(inside)+' × 50 × 3')+metric('Alto total',cm(total))+metric('Cajones',count+' × 16 cm');let drawers='';for(let i=0;i<count;i++)drawers+='<div class="chestDrawer">CAJÓN '+(i+1)+' · 16 cm</div>';const sketch='<div class="sketch"><div><div class="chestSketch"><div class="chestTop">SOBRE · 3 cm</div>'+drawers+'</div><div class="dimension">↔ '+cm(inside)+' · COSTADO '+cm(side)+'</div></div></div>';return resultWrap('Cajonera '+count+' cajones · '+code,metrics,'Costado = alto total menos el sobre de 3 cm.')+sketch}
+function calcChest(){const c=val('chestBox'),count=Number(document.getElementById('drawerCount').value),g=widthGroup(c);if(!g)return showResult('chestResult','<div class="notice">Para esta herramienta usa cajas de 61 a 120 cm.</div>');showResult('chestResult',chestHtml(c,count));addHistory('Cajonera '+count,c,'Código '+(count===3?'C3.':'C2.')+g+' · costado '+cm((count===3?58.5:40)-3))}
+function makeSketch(){const c=val('sketchBox'),count=Number(document.getElementById('sketchCount').value),g=widthGroup(c),d=document.getElementById('diagram');if(!g){d.innerHTML='<span style="color:#ff9298;font-size:11px">Usa una caja de 61 a 120 cm.</span>';return}const inside=interiorMm(c)/10,total=count===3?58.5:40,code=(count===3?'C3.':'C2.')+g;let drawers='';for(let i=0;i<count;i++)drawers+='<div class="chestDrawer">CAJÓN '+(i+1)+' · 16 cm</div>';d.innerHTML='<div><div class="chestSketch"><div class="chestTop">SOBRE · 3 cm</div>'+drawers+'</div><div class="dimension">↔ '+cm(inside)+' · COSTADO '+cm(total-3)+'</div></div>';showResult('sketchMeta',resultWrap('Croquis · '+code,metric('Código',code,true)+metric('Costado',cm(total-3))+metric('Alto total',cm(total))))}
+function quickCalculate(){const type=document.getElementById('quickType').value,c=val('quickBox'),out='quickResult';if(!Number.isFinite(c))return showResult(out,'<div class="notice">Introduce primero la medida de la caja.</div>');if(type==='madera'){if(c<38||c>120)return showResult(out,'<div class="notice">Usa una caja entre 38 y 120 cm.</div>');const ci=Math.floor(c);showResult(out,drawerHtml(ci));addHistory('Cajón madera',ci,'Traba '+mm(drawerTrabaMm(ci))+' · frente '+mm(drawerFrontMm(ci)))}else if(type==='metalico'||type==='joyero'){if(c<=16.1)return showResult(out,'<div class="notice">Introduce una caja válida.</div>');showResult(out,metalHtml(c,type));addHistory(type==='joyero'?'Joyero':'Cajón metálico',c,'Traba '+cm(c-16.1)+' · fondo '+cm(c-14))}else if(type==='cajonera3'||type==='cajonera2'){const count=type==='cajonera3'?3:2,g=widthGroup(c);showResult(out,chestHtml(c,count));if(g)addHistory('Cajonera '+count,c,'Código '+(count===3?'C3.':'C2.')+g)}else if(type==='armario'){if(c<38||c>120)return showResult(out,'<div class="notice">Usa una caja entre 38 y 120 cm.</div>');const h=interiorMm(c);showResult(out,resultWrap('Armario · caja '+cm(c),metric('Hueco interior',mm(h),true)+metric('Hueco',cm(h/10)),'Regla verificada: hueco = caja nominal − 39 mm.'));addHistory('Armario',c,'Hueco '+mm(h))}toast('Cálculo listo')}
+function calculate(){const raw=document.getElementById('expr').value.trim().replace(/,/g,'.'),out=document.getElementById('calcAnswer');if(!raw)return out.textContent='Escribe una operación';if(!/^[0-9+\-*/().\s]+$/.test(raw))return out.textContent='Operación no válida';try{const value=Function('"use strict";return ('+raw+')')();if(!Number.isFinite(value))throw new Error();out.textContent='Resultado: '+Number(value.toFixed(4))}catch(e){out.textContent='No se pudo calcular'}}
+function enforceTarifa(){const q=document.getElementById('query'),rule='Usa la tarifa técnica ESENZIA 4.0 de Baixmoduls como fuente principal. No inventes ninguna medida y comprueba dos veces los datos técnicos antes de responder. ';if(!q.value.startsWith(rule))q.value=rule+q.value.trim();toast('Regla técnica añadida')}
+async function copyText(text){try{await navigator.clipboard.writeText(text)}catch(e){}}
+async function askChatGPT(){const q=document.getElementById('query'),text=q.value.trim();if(!text){toast('Escribe primero la consulta');q.focus();return}await copyText(text);toast('Abriendo ChatGPT…');window.open('https://chatgpt.com/?q='+encodeURIComponent(text),'_blank')}
+function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
+document.getElementById('quickBox').addEventListener('keydown',e=>{if(e.key==='Enter')quickCalculate()});document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter')calculate()});tick();setInterval(tick,30000);renderHistory();
 </script>
 </body>
 </html>
