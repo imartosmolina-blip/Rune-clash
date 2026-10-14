@@ -75,7 +75,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 <body>
 <main class="app" id="home">
 <header class="topbar">
-<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v2.8</p></div></div>
+<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v2.9</p></div></div>
 <div class="statuspill"><span class="statusdot"></span><span class="clocklabel">ACTIVO</span><span id="clock">--:--</span></div>
 </header>
 
@@ -270,11 +270,14 @@ function specialDrawerTrabaMm(huecoMm){return Number((huecoMm-102).toFixed(6))}
 function specialDrawerBodyMm(huecoMm){return Number((specialDrawerTrabaMm(huecoMm)+38).toFixed(6))}
 const SPECIAL_FRONT_OVERLAP_PER_SIDE_MM=10;
 function specialDrawerFrontMm(huecoMm){
- // Confirmado por taller: frente = caja cajón montada + 26 mm guías + 38 mm costados cajonera + 10 mm por lado de solape
+ // Regla del taller para cajonera ESPECIAL de madera:
+ // Hueco = caja cajón montada + 26 mm guías + 38 mm costados de cajonera.
+ // El frente tapa 10 mm de cada costado, contados DESDE el borde interior,
+ // sin volver a sumar los 38 mm completos de los costados.
  if(!Number.isFinite(huecoMm)||huecoMm<=102)return null;
  const box=specialDrawerBodyMm(huecoMm);
- const front=Number((box+26+38+2*SPECIAL_FRONT_OVERLAP_PER_SIDE_MM).toFixed(6));
- return front>huecoMm?front:null;
+ const front=Number((box+26+2*SPECIAL_FRONT_OVERLAP_PER_SIDE_MM).toFixed(6));
+ return front>0&&front<huecoMm?front:null;
 }
 function drawerTrabaMm(c){const b=drawerBodyMm(c);return b===null?null:b-38}
 function drawerFrontMm(c){const b=drawerBodyMm(c);return b===null?null:b+44}
@@ -345,16 +348,16 @@ function woodAssemblySketch(c,count,special=false){
  }
  if(special){
    // Dos costados de la cajonera por detrás de los frentes, para dibujar el solape real.
-   svg+='<rect x="86" y="'+top+'" width="18" height="'+(count*row)+'" fill="#547087" stroke="#b4c6d7" stroke-width="1.5"/>';
-   svg+='<rect x="436" y="'+top+'" width="18" height="'+(count*row)+'" fill="#547087" stroke="#b4c6d7" stroke-width="1.5"/>';
+   svg+='<rect x="78" y="'+top+'" width="26" height="'+(count*row)+'" fill="#547087" stroke="#b4c6d7" stroke-width="1.5"/>';
+   svg+='<rect x="436" y="'+top+'" width="26" height="'+(count*row)+'" fill="#547087" stroke="#b4c6d7" stroke-width="1.5"/>';
    svg+='<text x="113" y="91" fill="#f5cb6e" font-size="12" text-anchor="middle" font-weight="bold">SOLAPE IZQ. 10 mm</text>';
    svg+='<text x="427" y="91" fill="#f5cb6e" font-size="12" text-anchor="middle" font-weight="bold">SOLAPE DER. 10 mm</text>';
  }
  for(let i=0;i<count;i++){
    const y=top+row*i+4;
-   svg+='<rect x="'+(special?76:86)+'" y="'+y+'" width="'+(special?388:368)+'" height="56" rx="2" fill="#193049" stroke="#e1ecf7" stroke-width="2"/>';
-   if(special){svg+='<rect x="76" y="'+(y+3)+'" width="10" height="50" fill="#f5cb6e" fill-opacity="0.55"/>';svg+='<rect x="454" y="'+(y+3)+'" width="10" height="50" fill="#f5cb6e" fill-opacity="0.55"/>';}
-   svg+='<rect x="'+(special?81:91)+'" y="'+(y+5)+'" width="'+(special?378:358)+'" height="46" fill="none" stroke="#8196ab" stroke-width="1"/>';
+   svg+='<rect x="'+(special?91:86)+'" y="'+y+'" width="'+(special?358:368)+'" height="56" rx="2" fill="#193049" stroke="#e1ecf7" stroke-width="2"/>';
+   if(special){svg+='<rect x="91" y="'+(y+3)+'" width="13" height="50" fill="#f5cb6e" fill-opacity="0.55"/>';svg+='<rect x="436" y="'+(y+3)+'" width="13" height="50" fill="#f5cb6e" fill-opacity="0.55"/>';}
+   svg+='<rect x="'+(special?96:91)+'" y="'+(y+5)+'" width="'+(special?348:358)+'" height="46" fill="none" stroke="#8196ab" stroke-width="1"/>';
    svg+='<text x="270" y="'+(y+19)+'" text-anchor="middle" font-size="10" fill="#adc2d9">FRENTE · CAJÓN '+(i+1)+'</text>';
    svg+='<text x="270" y="'+(y+39)+'" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">'+label(front)+'</text>';
  }
@@ -363,7 +366,7 @@ function woodAssemblySketch(c,count,special=false){
  svg+='<text x="270" y="'+(y+22)+'" text-anchor="middle" fill="#c7d7e5" font-size="12">CAJA CAJÓN: '+label(body)+'</text>';
  svg+='<text x="270" y="'+(y+44)+'" text-anchor="middle" fill="#a6b7c9" font-size="11">'+(special?'Alto del frente especial: por confirmar':tall!==null?'ALTO TOTAL C'+count+': '+cm(tall)+' · SOBRE 3 cm':'Alto total: pendiente de verificar')+'</text>';
  svg+='<text x="270" y="'+(y+66)+'" text-anchor="middle" fill="#7f93a8" font-size="10">Vista esquemática sin escala · cotas de ancho en mm</text></svg>';
- const note=special?'Frente según regla de taller: caja de cajón montada ('+label(body)+') + 26 mm de guías + 38 mm por los costados de cajonera + 20 mm por solape (10 mm a la izquierda y 10 mm a la derecha) = '+label(front)+'. Es '+mm(2*SPECIAL_FRONT_OVERLAP_PER_SIDE_MM)+' más ancho que el hueco. Solapes destacados en amarillo. Aplicar solo a madera especial; revisar las demás cotas de fabricación.':'Regleta izquierda y derecha dibujadas en amarillo. '+(reg===null?'La anchura de ambas está pendiente de comprobar para esta caja.':'Cada regleta lateral: '+label(reg)+'.')+' El dibujo muestra las '+count+' unidades realmente seleccionadas.';
+ const note=special?'Frente = caja montada ('+label(body)+') + 26 mm guías + 20 mm de solape (10 mm sobre cada costado) = '+label(front)+'. El hueco exterior mide '+mm(h)+' y el frente queda '+mm(h-front)+' MÁS ESTRECHO: 9 mm sin cubrir a cada lado. El frente NO sobresale del hueco. Zonas solapadas sobre los costados en amarillo.':'Regleta izquierda y derecha dibujadas en amarillo. '+(reg===null?'La anchura de ambas está pendiente de comprobar para esta caja.':'Cada regleta lateral: '+label(reg)+'.')+' El dibujo muestra las '+count+' unidades realmente seleccionadas.';
  return '<div class="sketch" style="display:block;padding:12px">'+svg+'<div class="notice">'+note+'</div></div>';
 }
 
@@ -372,8 +375,8 @@ function drawerHtml(c,count=1,special=false){
  if(special){
   const h=interiorMm(c),tr=specialDrawerTrabaMm(h),body=specialDrawerBodyMm(h),fr=specialDrawerFrontMm(h);
   if(!validSpecialHueco(h/10)||fr===null)return '<div class="notice">Comprueba la medida del hueco y la viabilidad de esta cajonera especial.</div>';
-  const metrics=metric('Cantidad',pluralCajon(count))+metric('Hueco interior',mm(h),true)+metric('Traba por cajón',mm(tr),true)+metric('Caja cajón montada',mm(body),true)+metric('Frente por cajón',mm(fr),true)+metric('Solape lateral izquierdo','10 mm')+metric('Solape lateral derecho','10 mm')+depthMetrics();
-  const note='Regla del taller para CAJONERA ESPECIAL DE MADERA: traba = hueco − (2 × 19 mm costados cajonera + 2 × 19 mm costados cajón + 2 × 13 mm guías) = hueco − 102 mm. Caja del cajón montada = traba + 38 mm. Frente = caja del cajón montada + 26 mm de guías + 38 mm de los costados de cajonera + 20 mm de solape (10 mm sobre cada costado). Así, el frente = hueco + 20 mm, no es igual que el hueco. Regla aportada y confirmada para el taller; medidas de profundidades y holguras adicionales no contrastadas en tarifa. '+depthNote();
+  const metrics=metric('Cantidad',pluralCajon(count))+metric('Hueco interior',mm(h),true)+metric('Traba por cajón',mm(tr),true)+metric('Caja cajón montada',mm(body),true)+metric('Frente por cajón',mm(fr),true)+metric('Solape sobre costado izq.','10 mm')+metric('Solape sobre costado der.','10 mm')+metric('Margen exterior izquierdo','9 mm')+metric('Margen exterior derecho','9 mm')+depthMetrics();
+  const note='Regla del taller para CAJONERA ESPECIAL DE MADERA: traba = hueco − 102 mm (2 × 19 mm de costados de cajonera + 2 × 19 mm de costados de cajón + 2 × 13 mm de guías). Caja del cajón montada = traba + 38 mm. FRENTE = caja montada + 26 mm de guías + 20 mm de solape (10 mm de solape sobre cada costado de cajonera). NO se suman otra vez los 38 mm de los costados. Por tanto, frente = hueco − 18 mm: el frente es 9 mm más estrecho por cada extremo exterior. Según regla del taller; verificar otras cotas y holguras antes de fabricación. '+depthNote();
   return resultWrap('Madera especial · '+pluralCajon(count),metrics,note,false)+woodAssemblySketch(c,count,true);
  }
  if(!isTariffNominalWidth(c))return resultWrap('Madera · estándar',metric('Caja indicada',cm(c)), 'El catálogo utiliza anchos de caja en pasos de 1 cm. La medida indicada no es estándar: selecciona «Cajonera especial» e indica el hueco real, sin redondear.',false);
@@ -464,7 +467,7 @@ function quickCalculate(){
   if((special&&!validSpecialHueco(raw))||(!special&&(c<38||c>120)))return showResult(out,'<div class="notice">Introduce una medida válida: hueco especial mayor de 10,2 cm o caja estándar entre 38 y 120 cm.</div>');
   const ci=c,g=widthGroup(ci);
   const chest=!special&&g&&isTariffNominalWidth(ci)?chestHtml(ci,count,false):'';
-  showResult(out,(special?'<div class="notice">Medida especial: frente = hueco + 20 mm (solapa 10 mm sobre cada costado de la cajonera). Sin redondeos ni caja estándar.</div>':measureBanner(measure,raw,c))+drawerHtml(ci,count,special)+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
+  showResult(out,(special?'<div class="notice">Medida especial: frente = hueco − 18 mm. Solapa 10 mm sobre cada costado de 19 mm; deja 9 mm libres hacia el exterior por lado. Sin redondeos.</div>':measureBanner(measure,raw,c))+drawerHtml(ci,count,special)+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
   addHistory('Cajones madera',ci,woodSummary(ci,special),count,measure,special?'special':'standard');
  }else if(type==='metalico'||type==='joyero'){
   if(c<=16.1)return showResult(out,'<div class="notice">Introduce una caja válida.</div>');
