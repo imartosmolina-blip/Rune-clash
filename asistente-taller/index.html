@@ -32,7 +32,7 @@ button,input,select,textarea{font:inherit} button{touch-action:manipulation}
 .depthFirst .field select{border-color:#548bc1;background:#101e30}
 .depthInfo{min-height:50px;border:1px solid #36536d;border-radius:14px;background:#0f1d2a;padding:9px 13px;display:flex;flex-direction:column;justify-content:center;color:#dcecff;font-size:11px;line-height:1.35}
 .depthInfo b{color:#8fd2ff;font-size:13px}
-.quick{position:relative;z-index:1;margin-top:11px;display:grid;grid-template-columns:1.15fr .8fr .8fr 1fr auto;gap:9px}
+.quick{position:relative;z-index:1;margin-top:11px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.quick .quickWidth{grid-column:span 3}.quick .primary{grid-column:span 1}
 .field label,.toolpanel label{display:block;margin:0 0 6px;color:#a9b8c9;font-size:10px;font-weight:950;letter-spacing:.45px}
 input,select,textarea{width:100%;border:1px solid #344256;background:#0a111a;color:#fff;border-radius:14px;outline:none;transition:.15s ease}
 input,select{height:50px;padding:0 13px;font-size:16px;font-weight:800}textarea{min-height:120px;padding:13px;resize:vertical;line-height:1.4}
@@ -75,7 +75,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 <body>
 <main class="app" id="home">
 <header class="topbar">
-<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación</p></div></div>
+<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v2.4</p></div></div>
 <div class="statuspill"><span class="statusdot"></span><span class="clocklabel">ACTIVO</span><span id="clock">--:--</span></div>
 </header>
 
@@ -186,6 +186,8 @@ function onQuickTypeChange(){
  syncWoodModeVisibility();
  const type=document.getElementById('quickType').value;
  setCountOptions('quickCount',type,undefined);
+ if(type==='madera'&&document.getElementById('quickWoodMode').value==='special')document.getElementById('quickMeasure').value='hueco';
+ onQuickMeasureChange();
  saveQuickConfiguration();
  if(document.getElementById('quickResult').classList.contains('show')&&document.getElementById('quickBox').value.trim())quickCalculate();
 }
@@ -256,6 +258,7 @@ function specialDrawerBodyMm(huecoMm){return Number((specialDrawerTrabaMm(huecoM
 function specialDrawerFrontMm(huecoMm){return Number((specialDrawerBodyMm(huecoMm)+26+38).toFixed(6))}
 function drawerTrabaMm(c){const b=drawerBodyMm(c);return b===null?null:b-38}
 function drawerFrontMm(c){const b=drawerBodyMm(c);return b===null?null:b+44}
+function isTariffNominalWidth(c){return Number.isFinite(c)&&Math.abs(c-Math.round(c))<1e-8}
 function widthGroup(c){if(c>=61&&c<=75)return'A2';if(c>=76&&c<=100)return'B2';if(c>=101&&c<=120)return'C2';return null}
 function metric(label,value,important=false){return '<div class="metric'+(important?' important':'')+'"><small>'+label+'</small><strong>'+value+'</strong></div>'}
 function resultWrap(title,metrics,note='',verified=true){return '<div class="resultHero"><div class="resultHead"><strong>'+title+'</strong><span class="verified">'+(verified?'✓ COTAS COMPROBADAS':'⚠ COTAS PENDIENTES')+'</span></div><div class="metrics">'+metrics+'</div>'+(note?'<div class="notice">'+note+'</div>':'')+'</div>'}
@@ -350,7 +353,7 @@ function drawerHtml(c,count=1,special=false){
  if(chestTotalCm(count)===null)note+=' La tarifa no confirma aquí la altura total ni los costados de una cajonera de '+count+' cajones.';else metrics+=metric('Alto total C'+count,cm(chestTotalCm(count)));
  note+=' '+depthNote();
  const sketch=woodAssemblySketch(c,count,false);
- return resultWrap('Madera · '+pluralCajon(count)+' · caja '+c+' cm',metrics,note,!reduced)+sketch;
+ return resultWrap('Madera · '+pluralCajon(count)+' · caja '+c+' cm',metrics,note,!reduced&&Math.abs(c-100)<1e-8)+sketch;
 }
 function woodSummary(c,special){return special?'Traba '+mm(specialDrawerTrabaMm(interiorMm(c)))+' · frente '+mm(specialDrawerFrontMm(interiorMm(c))):isTabulatedWoodWidth(c)?'Traba '+mm(drawerTrabaMm(c))+' · frente '+mm(drawerFrontMm(c)):'Despiece estándar no confirmado'}
 function calcDrawer(){
@@ -374,7 +377,7 @@ function calcMetal(){
 }
 function chestHtml(c,count,withSketch=true){
  const g=widthGroup(c);
- if(!g)return '<div class="notice">Para esta herramienta usa cajas de 61 a 120 cm.</div>';
+ if(!g||!isTariffNominalWidth(c))return '<div class="notice">La cajonera estándar requiere una caja de 61 a 120 cm en pasos de 1 cm, según la tarifa. Para una medida fuera de ese catálogo, selecciona «Cajonera especial».</div>';
  if(!Number.isInteger(count)||count<1||count>6)return '<div class="notice">Elige entre 1 y 6 cajones.</div>';
  const total=chestTotalCm(count),verified=total!==null,standard=!reducedDepth(),code=verified?'C'+count+'.'+g:null,inside=interiorMm(c)/10;
  let metrics=metric('Número de cajones',pluralCajon(count),true)+metric('Hueco interior (ancho)',cm(inside))+metric('Código tarifa',code||'Por confirmar');
@@ -396,7 +399,7 @@ function calcChest(){
    addHistory('Cajones madera',c,woodSummary(c,true),count,'hueco','special');
  }else{
    const g=widthGroup(c);
-   if(!g)return showResult('chestResult','<div class="notice">Para cajonera estándar usa caja de 61 a 120 cm.</div>');
+   if(!g||!isTariffNominalWidth(c))return showResult('chestResult','<div class="notice">Cajonera estándar: caja de 61 a 120 cm en pasos de 1 cm. Para una medida no catalogada, selecciona «Cajonera especial».</div>');
    showResult('chestResult',chestHtml(c,count));
    addHistory('Cajones madera',c,pluralCajon(count)+(chestTotalCm(count)!==null?' · código C'+count+'.'+g:' · alto por confirmar'),count);
  }
@@ -412,7 +415,7 @@ function makeSketch(){
    return;
  }
  const g=widthGroup(c);
- if(!g){d.innerHTML='<span style="color:#ff9298;font-size:11px">Usa caja de 61 a 120 cm para la cajonera estándar.</span>';return}
+ if(!g||!isTariffNominalWidth(c)){d.innerHTML='<span style="color:#ff9298;font-size:11px">Estándar: caja de 61 a 120 cm en pasos de 1 cm. Para otras medidas, elige especial.</span>';return}
  const total=chestTotalCm(count),verified=total!==null,code=verified?'C'+count+'.'+g:'Por confirmar';
  d.innerHTML=woodAssemblySketch(c,count,false);
  const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Código',code)+metric('Costado (alto)',verified?cm(total-3):'Por confirmar')+metric('Alto total',verified?cm(total):'Por confirmar')+metric('Sobre (fondo)',verified&&!reducedDepth()?'50 cm':'Por confirmar')+depthMetrics();
@@ -426,7 +429,7 @@ function quickCalculate(){
  if(type==='madera'){
   if(c<38||c>120)return showResult(out,'<div class="notice">Usa una caja entre 38 y 120 cm.</div>');
   const ci=c,g=widthGroup(ci),special=document.getElementById('quickWoodMode').value==='special';
-  const chest=!special&&g?chestHtml(ci,count,false):'';
+  const chest=!special&&g&&isTariffNominalWidth(ci)?chestHtml(ci,count,false):'';
   showResult(out,measureBanner(measure,raw,c)+drawerHtml(ci,count,special)+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
   addHistory('Cajones madera',ci,woodSummary(ci,special),count,measure,special?'special':'standard');
  }else if(type==='metalico'||type==='joyero'){
@@ -442,7 +445,7 @@ async function copyText(text){try{await navigator.clipboard.writeText(text)}catc
 async function askChatGPT(){const q=document.getElementById('query'),text=q.value.trim();if(!text){toast('Escribe primero la consulta');q.focus();return}await copyText(text);toast('Abriendo ChatGPT…');window.open('https://chatgpt.com/?q='+encodeURIComponent(text),'_blank')}
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
 document.getElementById('quickBox').addEventListener('keydown',e=>{if(e.key==='Enter')quickCalculate()});document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter')calculate()});try{const stored=localStorage.getItem(depthKey);if(depthProfiles[stored])document.getElementById('armDepth').value=stored}catch(e){}
-try{const settings=JSON.parse(localStorage.getItem(configurationKey)||'{}');if(permittedCounts(settings.type).includes(settings.count)&&['madera','metalico','joyero'].includes(settings.type)){document.getElementById('quickType').value=settings.type;setCountOptions('quickCount',settings.type,settings.count);document.getElementById('quickWoodMode').value=settings.woodMode==='special'?'special':'standard';if(['caja','hueco'].includes(settings.measure))document.getElementById('quickMeasure').value=settings.measure}else setCountOptions('quickCount','madera',3)}catch(e){setCountOptions('quickCount','madera',3)}
+try{const settings=JSON.parse(localStorage.getItem(configurationKey)||'{}');if(permittedCounts(settings.type).includes(settings.count)&&['madera','metalico','joyero'].includes(settings.type)){document.getElementById('quickType').value=settings.type;setCountOptions('quickCount',settings.type,settings.count);document.getElementById('quickWoodMode').value=settings.woodMode==='special'?'special':'standard';if(['caja','hueco'].includes(settings.measure))document.getElementById('quickMeasure').value=settings.measure;else if(settings.woodMode==='special'&&settings.type==='madera')document.getElementById('quickMeasure').value='hueco'}else setCountOptions('quickCount','madera',3)}catch(e){setCountOptions('quickCount','madera',3)}
 syncWoodModeVisibility();onQuickMeasureChange();onArmMeasureChange();onMetalTypeChange();onDepthChange();tick();setInterval(tick,30000);renderHistory();
 </script>
 </body>
