@@ -75,7 +75,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 <body>
 <main class="app" id="home">
 <header class="topbar">
-<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v2.6</p></div></div>
+<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v2.7</p></div></div>
 <div class="statuspill"><span class="statusdot"></span><span class="clocklabel">ACTIVO</span><span id="clock">--:--</span></div>
 </header>
 
@@ -94,7 +94,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 <div class="field" id="quickWoodModeField"><label for="quickWoodMode">CONFIGURACIÓN DE MADERA</label><select id="quickWoodMode" onchange="onQuickWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div>
 <div class="field"><label for="quickCount">3 · CANTIDAD DE CAJONES</label><select id="quickCount" onchange="onQuickCountChange()"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div>
 <div class="field"><label for="quickMeasure">4 · MEDIDA DE PARTIDA</label><select id="quickMeasure" onchange="onQuickMeasureChange()"><option value="caja">Caja del armario</option><option value="hueco">Hueco interior</option></select></div>
-<div class="field" id="quickFaceGapField" style="display:none"><label for="quickFaceGap">DESCUENTO TOTAL DEL FRENTE (mm)</label><input id="quickFaceGap" inputmode="decimal" placeholder="Sin definir"></div>
+<div class="field" id="quickFaceGapField" style="display:none"><label for="quickFaceGap">DIFERENCIA FRENTE − HUECO (mm, CON SIGNO)</label><input id="quickFaceGap" inputmode="decimal" placeholder="Sin definir"></div>
 <div class="field quickWidth"><label for="quickBox" id="quickBoxLabel">5 · ANCHO CAJA (cm)</label><input id="quickBox" inputmode="decimal" placeholder="100"></div>
 <button class="primary" onclick="quickCalculate()">CALCULAR</button>
 </div>
@@ -115,7 +115,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 
 <section id="tool-madera" class="toolpanel">
 <div class="paneltop"><div class="paneltitle"><span class="bigico">🪵</span><div><h3>Cajón de madera</h3><p>Medidas de fabricación verificadas</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
-<div class="field" style="margin-bottom:10px"><label for="woodMode">CONFIGURACIÓN DE MADERA</label><select id="woodMode" onchange="onWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="field" id="drawerFaceGapField" style="display:none;margin-bottom:10px"><label for="drawerFaceGap">DESCUENTO TOTAL DEL FRENTE RESPECTO AL HUECO (mm)</label><input id="drawerFaceGap" inputmode="decimal" placeholder="Sin definir"></div><div class="formrow"><div><label id="drawerBoxLabel">CAJA DEL ARMARIO (cm)</label><input id="drawerBox" inputmode="decimal" placeholder="100"></div><div><label>CANTIDAD DE CAJONES</label><select id="woodCount"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="calcDrawer()">SACAR MEDIDAS</button></div><div id="drawerResult" class="result"></div>
+<div class="field" style="margin-bottom:10px"><label for="woodMode">CONFIGURACIÓN DE MADERA</label><select id="woodMode" onchange="onWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="field" id="drawerFaceGapField" style="display:none;margin-bottom:10px"><label for="drawerFaceGap">DIFERENCIA FRENTE − HUECO (mm, CON SIGNO)</label><input id="drawerFaceGap" inputmode="decimal" placeholder="Sin definir"></div><div class="formrow"><div><label id="drawerBoxLabel">CAJA DEL ARMARIO (cm)</label><input id="drawerBox" inputmode="decimal" placeholder="100"></div><div><label>CANTIDAD DE CAJONES</label><select id="woodCount"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="calcDrawer()">SACAR MEDIDAS</button></div><div id="drawerResult" class="result"></div>
 </section>
 
 <section id="tool-metal" class="toolpanel">
@@ -125,7 +125,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 
 <section id="tool-cajonera" class="toolpanel">
 <div class="paneltop"><div class="paneltitle"><span class="bigico">🗃️</span><div><h3>Cajonera interior</h3><p>Distribución y medidas principales</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
-<div class="field" style="margin-bottom:10px"><label for="chestMode">CONFIGURACIÓN DE MADERA</label><select id="chestMode" onchange="onChestModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="field" id="chestFaceGapField" style="display:none;margin-bottom:10px"><label for="chestFaceGap">DESCUENTO TOTAL DEL FRENTE RESPECTO AL HUECO (mm)</label><input id="chestFaceGap" inputmode="decimal" placeholder="Sin definir"></div><div class="formrow"><div><label id="chestBoxLabel">CAJA (cm)</label><input id="chestBox" inputmode="decimal" placeholder="100"></div><div><label>NÚMERO DE CAJONES</label><select id="drawerCount"><option value="1">1 cajón · C1</option><option value="2">2 cajones · C2</option><option value="3" selected>3 cajones · C3</option><option value="4">4 cajones · C4</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="calcChest()">CALCULAR</button></div><div id="chestResult" class="result"></div>
+<div class="field" style="margin-bottom:10px"><label for="chestMode">CONFIGURACIÓN DE MADERA</label><select id="chestMode" onchange="onChestModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="field" id="chestFaceGapField" style="display:none;margin-bottom:10px"><label for="chestFaceGap">DIFERENCIA FRENTE − HUECO (mm, CON SIGNO)</label><input id="chestFaceGap" inputmode="decimal" placeholder="Sin definir"></div><div class="formrow"><div><label id="chestBoxLabel">CAJA (cm)</label><input id="chestBox" inputmode="decimal" placeholder="100"></div><div><label>NÚMERO DE CAJONES</label><select id="drawerCount"><option value="1">1 cajón · C1</option><option value="2">2 cajones · C2</option><option value="3" selected>3 cajones · C3</option><option value="4">4 cajones · C4</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="calcChest()">CALCULAR</button></div><div id="chestResult" class="result"></div>
 </section>
 
 <section id="tool-armario" class="toolpanel">
@@ -135,7 +135,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 
 <section id="tool-croquis" class="toolpanel">
 <div class="paneltop"><div class="paneltitle"><span class="bigico">📐</span><div><h3>Croquis rápido</h3><p>Cajonera interior estilo técnico</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
-<div class="field" style="margin-bottom:10px"><label for="sketchMode">CONFIGURACIÓN DE MADERA</label><select id="sketchMode" onchange="onSketchModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="field" id="sketchFaceGapField" style="display:none;margin-bottom:10px"><label for="sketchFaceGap">DESCUENTO TOTAL DEL FRENTE RESPECTO AL HUECO (mm)</label><input id="sketchFaceGap" inputmode="decimal" placeholder="Sin definir"></div><div class="formrow"><div><label id="sketchBoxLabel">CAJA (cm)</label><input id="sketchBox" inputmode="decimal" placeholder="100"></div><div><label>CAJONES</label><select id="sketchCount"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="makeSketch()">DIBUJAR</button></div><div id="sketchMeta" class="result"></div><div class="sketch" id="diagram"><span style="color:#718296;font-size:11px">Introduce una caja y pulsa Dibujar.</span></div>
+<div class="field" style="margin-bottom:10px"><label for="sketchMode">CONFIGURACIÓN DE MADERA</label><select id="sketchMode" onchange="onSketchModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="field" id="sketchFaceGapField" style="display:none;margin-bottom:10px"><label for="sketchFaceGap">DIFERENCIA FRENTE − HUECO (mm, CON SIGNO)</label><input id="sketchFaceGap" inputmode="decimal" placeholder="Sin definir"></div><div class="formrow"><div><label id="sketchBoxLabel">CAJA (cm)</label><input id="sketchBox" inputmode="decimal" placeholder="100"></div><div><label>CAJONES</label><select id="sketchCount"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="makeSketch()">DIBUJAR</button></div><div id="sketchMeta" class="result"></div><div class="sketch" id="diagram"><span style="color:#718296;font-size:11px">Introduce una caja y pulsa Dibujar.</span></div>
 </section>
 
 <section id="tool-tarifa" class="toolpanel">
@@ -277,11 +277,11 @@ function getFaceGap(id){
  return Number.isFinite(n)?n:null;
 }
 function specialDrawerFrontMm(huecoMm,faceGapMm=null){
- // La anterior fórmula caja cajón + 26 + 38 producía FRENTE = HUECO.
- // Se requiere descuento frontal TOTAL positivo, establecido para el trabajo concreto.
- if(!Number.isFinite(huecoMm)||!Number.isFinite(faceGapMm)||faceGapMm<=0||faceGapMm>=huecoMm)return null;
- const front=Number((huecoMm-faceGapMm).toFixed(6));
- return front<huecoMm&&front>0?front:null;
+ // No se ha confirmado la relación del frente respecto al hueco. Diferencia firmada, NO holgura asumida.
+ // Valor negativo: menor que el hueco. Valor positivo: mayor que el hueco. Cero: error de cálculo.
+ if(!Number.isFinite(huecoMm)||!Number.isFinite(faceGapMm)||faceGapMm===0)return null;
+ const front=Number((huecoMm+faceGapMm).toFixed(6));
+ return Number.isFinite(front)&&front>0&&Math.abs(front-huecoMm)>1e-8?front:null;
 }
 function drawerTrabaMm(c){const b=drawerBodyMm(c);return b===null?null:b-38}
 function drawerFrontMm(c){const b=drawerBodyMm(c);return b===null?null:b+44}
@@ -362,7 +362,7 @@ function woodAssemblySketch(c,count,special=false,faceGapMm=null){
  svg+='<text x="270" y="'+(y+22)+'" text-anchor="middle" fill="#c7d7e5" font-size="12">CAJA CAJÓN: '+label(body)+'</text>';
  svg+='<text x="270" y="'+(y+44)+'" text-anchor="middle" fill="#a6b7c9" font-size="11">'+(special?'Alto del frente especial: por confirmar':tall!==null?'ALTO TOTAL C'+count+': '+cm(tall)+' · SOBRE 3 cm':'Alto total: pendiente de verificar')+'</text>';
  svg+='<text x="270" y="'+(y+66)+'" text-anchor="middle" fill="#7f93a8" font-size="10">Vista esquemática sin escala · cotas de ancho en mm</text></svg>';
- const note=special?(front===null?'FRENTE POR CONFIRMAR: las fórmulas anteriores daban frente = hueco, una medida inválida. Indica un descuento frontal total positivo y comprobado para calcularlo.':'FRENTE = HUECO − DESCUENTO TOTAL: '+mm(h)+' − '+mm(faceGapMm)+' = '+mm(front)+'.')+' Las regletas estándar no se aplican automáticamente a la cajonera especial.':'Regleta izquierda y derecha dibujadas en amarillo. '+(reg===null?'La anchura de ambas está pendiente de comprobar para esta caja.':'Cada regleta lateral: '+label(reg)+'.')+' El dibujo muestra las '+count+' unidades realmente seleccionadas.';
+ const note=special?(front===null?'FRENTE POR CONFIRMAR: las fórmulas anteriores daban frente = hueco, una medida inválida. Indica una diferencia comprobada entre el frente y el hueco, positiva si sobresale y negativa si es menor. Cero no se acepta.':'FRENTE = HUECO + DIFERENCIA FIRMADA: '+mm(h)+' + ('+mm(faceGapMm)+') = '+mm(front)+'.')+' Las regletas estándar no se aplican automáticamente a la cajonera especial.':'Regleta izquierda y derecha dibujadas en amarillo. '+(reg===null?'La anchura de ambas está pendiente de comprobar para esta caja.':'Cada regleta lateral: '+label(reg)+'.')+' El dibujo muestra las '+count+' unidades realmente seleccionadas.';
  return '<div class="sketch" style="display:block;padding:12px">'+svg+'<div class="notice">'+note+'</div></div>';
 }
 
@@ -371,8 +371,8 @@ function drawerHtml(c,count=1,special=false,faceGapMm=null){
  if(special){
   const h=interiorMm(c),tr=specialDrawerTrabaMm(h),body=specialDrawerBodyMm(h),fr=specialDrawerFrontMm(h,faceGapMm);
   if(!validSpecialHueco(h/10))return '<div class="notice">El hueco debe superar 10,2 cm para que la traba calculada sea positiva. Comprueba la viabilidad del herraje y la fabricación.</div>';
-  const metrics=metric('Cantidad',pluralCajon(count))+metric('Hueco real (ancho)',mm(h),true)+metric('Caja cajón (ancho)',mm(body))+metric('Traba por cajón',mm(tr),true)+metric('Frente por cajón',fr===null?'POR CONFIRMAR':mm(fr),fr!==null)+metric('Descuento frontal total',fr===null?'Sin validar':mm(faceGapMm))+depthMetrics();
-  const note='CÁLCULO ESPECIAL: traba = hueco − 102 mm (2 × 19 mm costados de cajonera + 2 × 19 mm costados cajón + 2 × 13 mm guías). Caja cajón = traba + 38 mm. ATENCIÓN: la fórmula previa de frente = caja cajón + 26 + 38 daba exactamente el hueco y no es válida sin una corrección. '+(fr===null?'No se ofrece medida de frente hasta introducir y validar el descuento frontal total.':'Frente corregido = hueco − descuento frontal total. Se trata de una cota ajustada a la holgura indicada, no verificada con la tarifa.')+' No se redondea la medida ni se aplica una caja estándar. Comprueba ajuste, guías y profundidad antes de fabricar. '+depthNote();
+  const metrics=metric('Cantidad',pluralCajon(count))+metric('Hueco real (ancho)',mm(h),true)+metric('Caja cajón (ancho)',mm(body))+metric('Traba por cajón',mm(tr),true)+metric('Frente por cajón',fr===null?'POR CONFIRMAR':mm(fr),fr!==null)+metric('Diferencia frente − hueco',fr===null?'Sin validar':mm(faceGapMm))+depthMetrics();
+  const note='CÁLCULO ESPECIAL: traba = hueco − 102 mm (2 × 19 mm costados de cajonera + 2 × 19 mm costados cajón + 2 × 13 mm guías). Caja cajón = traba + 38 mm. ATENCIÓN: la fórmula previa de frente = caja cajón + 26 + 38 daba exactamente el hueco y no es válida sin una corrección. '+(fr===null?'No se ofrece medida de frente hasta introducir una diferencia comprobada distinta de cero.':'Frente calculado = hueco + diferencia firmada indicada, no verificada con la tarifa.')+' No se redondea la medida ni se aplica una caja estándar. Comprueba ajuste, guías y profundidad antes de fabricar. '+depthNote();
   return resultWrap('Madera · '+pluralCajon(count)+' · medida especial',metrics,note,false)+woodAssemblySketch(c,count,true,faceGapMm);
  }
  if(!isTariffNominalWidth(c))return resultWrap('Madera · estándar',metric('Caja indicada',cm(c)), 'El catálogo utiliza anchos de caja en pasos de 1 cm. La medida indicada no es estándar: selecciona «Cajonera especial» e indica el hueco real, sin redondear.',false);
@@ -466,7 +466,7 @@ function quickCalculate(){
   const ci=c,g=widthGroup(ci);
   const chest=!special&&g&&isTariffNominalWidth(ci)?chestHtml(ci,count,false):'';
   const gap=special?getFaceGap('quickFaceGap'):null;
-  showResult(out,(special?'<div class="notice">Medida especial: calculada desde el hueco real, sin redondear ni elegir caja estándar. El frente requiere descuento frontal.</div>':measureBanner(measure,raw,c))+drawerHtml(ci,count,special,gap)+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
+  showResult(out,(special?'<div class="notice">Medida especial: calculada desde el hueco real, sin redondear ni elegir caja estándar. El frente requiere su diferencia comprobada respecto al hueco.</div>':measureBanner(measure,raw,c))+drawerHtml(ci,count,special,gap)+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
   addHistory('Cajones madera',ci,woodSummary(ci,special,gap),count,measure,special?'special':'standard',gap);
  }else if(type==='metalico'||type==='joyero'){
   if(c<=16.1)return showResult(out,'<div class="notice">Introduce una caja válida.</div>');
