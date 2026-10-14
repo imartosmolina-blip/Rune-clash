@@ -80,7 +80,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 </header>
 
 <section class="hero">
-<div class="herohead"><div><div class="kicker">CONSULTA RÁPIDA</div><h2>¿Qué estás fabricando?</h2><p>Primero selecciona el fondo. Después indica el trabajo y la anchura de caja.</p></div><div class="reference">ESENZIA 4.0 · REFERENCIA</div></div>
+<div class="herohead"><div><div class="kicker">CONSULTA RÁPIDA</div><h2>¿Qué estás fabricando?</h2><p>Primero selecciona el fondo. Después indica el trabajo y la medida de caja o hueco.</p></div><div class="reference">ESENZIA 4.0 · REFERENCIA</div></div>
 <div class="depthFirst">
   <div class="field"><label for="armDepth">1 · FONDO DEL ARMARIO</label><select id="armDepth" onchange="onDepthChange()">
   <optgroup label="Correderos"><option value="cor68">Corredero · fondo 68 cm · caja 58 cm</option><option value="cor65">Corredero · fondo 65 cm · caja 55 cm</option></optgroup>
@@ -175,7 +175,7 @@ function setCountOptions(selectId,type,preferred){
  return count;
 }
 function saveQuickConfiguration(){try{localStorage.setItem(configurationKey,JSON.stringify({type:document.getElementById('quickType').value,count:Number(document.getElementById('quickCount').value),measure:document.getElementById('quickMeasure').value}))}catch(e){}}
-function boxFromMeasure(value,measure){return measure==='hueco'?value+3.9:value}
+function boxFromMeasure(value,measure){return measure==='hueco'?Number((value+3.9).toFixed(8)):value}
 function onQuickMeasureChange(){const m=document.getElementById('quickMeasure').value;const input=document.getElementById('quickBox');document.getElementById('quickBoxLabel').textContent=m==='hueco'?'5 · ANCHO HUECO (cm)':'5 · ANCHO CAJA (cm)';input.placeholder=m==='hueco'?'96,1':'100';saveQuickConfiguration();if(document.getElementById('quickResult').classList.contains('show')&&input.value.trim())quickCalculate()}
 function onArmMeasureChange(){const m=document.getElementById('armMeasure').value;const input=document.getElementById('armBox');document.getElementById('armBoxLabel').textContent=m==='hueco'?'ANCHO HUECO (cm)':'ANCHO CAJA (cm)';input.placeholder=m==='hueco'?'96,1':'100';if(document.getElementById('armResult').classList.contains('show')&&input.value.trim())calcArmario()}
 function measureBanner(measure,value,box){return measure==='hueco'?'<div class="notice">Partiendo de hueco: <b>'+cm(value)+'</b> → caja calculada <b>'+cm(box)+'</b> (hueco + 39 mm).</div>':''}
@@ -220,15 +220,16 @@ function onDepthChange(){
  if(document.getElementById('sketchMeta').classList.contains('show') && document.getElementById('sketchBox').value.trim())makeSketch();
 }
 function val(id){return Number(String(document.getElementById(id).value).replace(',','.'))}
-function mm(v){return Math.round(v)+' mm'}
-function cm(v){return (Math.round(v*10)/10).toFixed(1).replace('.',',')+' cm'}
+function mm(v){return Number(v.toFixed(6)).toLocaleString('es-ES',{maximumFractionDigits:6})+' mm'}
+function cm(v){return Number(v.toFixed(6)).toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:6})+' cm'}
 function interiorMm(c){return c*10-39}
-function drawerBodyMm(c){return 50*Math.floor(c/5)-143}
-function drawerTrabaMm(c){return drawerBodyMm(c)-38}
-function drawerFrontMm(c){return drawerBodyMm(c)+44}
+function isTabulatedWoodWidth(c){return Number.isFinite(c)&&Math.abs(c/5-Math.round(c/5))<1e-9}
+function drawerBodyMm(c){return isTabulatedWoodWidth(c)?c*10-143:null}
+function drawerTrabaMm(c){const b=drawerBodyMm(c);return b===null?null:b-38}
+function drawerFrontMm(c){const b=drawerBodyMm(c);return b===null?null:b+44}
 function widthGroup(c){if(c>=61&&c<=75)return'A2';if(c>=76&&c<=100)return'B2';if(c>=101&&c<=120)return'C2';return null}
 function metric(label,value,important=false){return '<div class="metric'+(important?' important':'')+'"><small>'+label+'</small><strong>'+value+'</strong></div>'}
-function resultWrap(title,metrics,note='',verified=true){return '<div class="resultHero"><div class="resultHead"><strong>'+title+'</strong><span class="verified">'+(verified?'✓ COTAS COMPROBADAS':'⚠ FONDO A REVISAR')+'</span></div><div class="metrics">'+metrics+'</div>'+(note?'<div class="notice">'+note+'</div>':'')+'</div>'}
+function resultWrap(title,metrics,note='',verified=true){return '<div class="resultHero"><div class="resultHead"><strong>'+title+'</strong><span class="verified">'+(verified?'✓ COTAS COMPROBADAS':'⚠ COTAS PENDIENTES')+'</span></div><div class="metrics">'+metrics+'</div>'+(note?'<div class="notice">'+note+'</div>':'')+'</div>'}
 function showResult(id,html){const el=document.getElementById(id);el.innerHTML=html;el.classList.add('show')}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),1900)}
 function addHistory(type,box,summary,count){
@@ -264,6 +265,7 @@ function navTool(name,btn){document.querySelectorAll('.navbtn').forEach(x=>x.cla
 function calcArmario(){const raw=val('armBox'),measure=document.getElementById('armMeasure').value,c=boxFromMeasure(raw,measure);if(!Number.isFinite(raw)||!Number.isFinite(c)||c<38||c>120)return showResult('armResult','<div class="notice">Introduce una medida válida. La caja resultante debe estar entre 38 y 120 cm.</div>');const h=interiorMm(c);const title=measure==='hueco'?'Armario · hueco '+cm(raw):'Armario · caja '+cm(c);const metrics=metric('Caja armario',cm(c),measure==='hueco')+metric('Hueco interior',mm(h),measure==='caja')+depthMetrics();const note=(measure==='hueco'?'Caja = hueco + 39 mm. ':'Hueco = ancho de caja − 39 mm. ')+depthNote();showResult('armResult',resultWrap(title,metrics,note,!reducedDepth()));addHistory('Armario',c,'Hueco '+mm(h))}
 function drawerHtml(c,count=1){
  if(!Number.isInteger(count)||count<1||count>6)return '<div class="notice">Elige entre 1 y 6 cajones de madera.</div>';
+ if(!isTabulatedWoodWidth(c))return resultWrap('Madera · '+pluralCajon(count)+' · medida especial',metric('Caja calculada',cm(c))+metric('Hueco exacto',mm(interiorMm(c)),true)+metric('Traba / frente','Por confirmar')+depthMetrics(),'Se conserva tu medida exacta, sin ajustarla a un ancho estándar. La tarifa (pág. 236) admite anchos cada 1 cm, pero no documenta aquí la fórmula del despiece de madera para este hueco. Falta confirmar las holguras, regletas y descuentos del sistema antes de dar medidas de corte.',false);
  const h=interiorMm(c),body=drawerBodyMm(c),tr=drawerTrabaMm(c),fr=drawerFrontMm(c),reduced=reducedDepth();
  let metrics=metric('Cantidad',pluralCajon(count),true)+metric('Hueco (ancho)',mm(h))+metric('Caja cajón (ancho)',mm(body))+metric('Traba por cajón',mm(tr),true)+metric('Frente por cajón',mm(fr),true);
  let note='Las cotas corresponden a cada cajón y se aplican a las '+count+' unidades. La altura total de la cajonera no se deduce de multiplicar una pieza.';
@@ -275,10 +277,10 @@ function drawerHtml(c,count=1){
  return resultWrap('Madera · '+pluralCajon(count)+' · caja '+c+' cm',metrics,note,!reduced)+sketch;
 }
 function calcDrawer(){
- const c=Math.floor(val('drawerBox')),count=Number(document.getElementById('woodCount').value);
+ const c=val('drawerBox'),count=Number(document.getElementById('woodCount').value);
  if(!Number.isFinite(c)||c<38||c>120)return showResult('drawerResult','<div class="notice">Introduce una caja entre 38 y 120 cm.</div>');
  showResult('drawerResult',drawerHtml(c,count));
- addHistory('Cajones madera',c,'Traba '+mm(drawerTrabaMm(c))+' · frente '+mm(drawerFrontMm(c)),count);
+ addHistory('Cajones madera',c,isTabulatedWoodWidth(c)?'Traba '+mm(drawerTrabaMm(c))+' · frente '+mm(drawerFrontMm(c)):'Hueco '+mm(interiorMm(c))+' · despiece pendiente',count);
 }
 function metalHtml(c,type,count=1){
  if(!permittedCounts(type).includes(count))return '<div class="notice">Cantidad de cajones no disponible para este tipo.</div>';
@@ -329,10 +331,10 @@ function quickCalculate(){
  if(!document.getElementById('quickBox').value.trim()||!Number.isFinite(raw)||!Number.isFinite(c))return showResult(out,'<div class="notice">Introduce una medida válida.</div>');
  if(type==='madera'){
   if(c<38||c>120)return showResult(out,'<div class="notice">Usa una caja entre 38 y 120 cm.</div>');
-  const ci=Math.floor(c),g=widthGroup(ci);
+  const ci=c,g=widthGroup(ci);
   const chest=g?chestHtml(ci,count):'';
   showResult(out,measureBanner(measure,raw,c)+drawerHtml(ci,count)+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
-  addHistory('Cajones madera',ci,pluralCajon(count)+' · traba '+mm(drawerTrabaMm(ci))+' · frente '+mm(drawerFrontMm(ci)),count);
+  addHistory('Cajones madera',ci,isTabulatedWoodWidth(ci)?pluralCajon(count)+' · traba '+mm(drawerTrabaMm(ci))+' · frente '+mm(drawerFrontMm(ci)):'Hueco '+mm(interiorMm(ci))+' · despiece pendiente',count);
  }else if(type==='metalico'||type==='joyero'){
   if(c<=16.1)return showResult(out,'<div class="notice">Introduce una caja válida.</div>');
   showResult(out,measureBanner(measure,raw,c)+metalHtml(c,type,count));
