@@ -91,7 +91,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 </div>
 <div class="quick">
 <div class="field"><label for="quickType">2 · TIPO DE TRABAJO</label><select id="quickType" onchange="onQuickTypeChange()"><option value="madera">Cajones de madera</option><option value="metalico">Cajones metálicos</option><option value="joyero">Joyero</option></select></div>
-<div class="field" id="quickWoodModeField"><label for="quickWoodMode">CONFIGURACIÓN DE MADERA</label><select id="quickWoodMode" onchange="onQuickCountChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div>
+<div class="field" id="quickWoodModeField"><label for="quickWoodMode">CONFIGURACIÓN DE MADERA</label><select id="quickWoodMode" onchange="onQuickWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div>
 <div class="field"><label for="quickCount">3 · CANTIDAD DE CAJONES</label><select id="quickCount" onchange="onQuickCountChange()"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div>
 <div class="field"><label for="quickMeasure">4 · MEDIDA DE PARTIDA</label><select id="quickMeasure" onchange="onQuickMeasureChange()"><option value="caja">Caja del armario</option><option value="hueco">Hueco interior</option></select></div>
 <div class="field quickWidth"><label for="quickBox" id="quickBoxLabel">5 · ANCHO CAJA (cm)</label><input id="quickBox" inputmode="decimal" placeholder="100"></div>
@@ -114,7 +114,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 
 <section id="tool-madera" class="toolpanel">
 <div class="paneltop"><div class="paneltitle"><span class="bigico">🪵</span><div><h3>Cajón de madera</h3><p>Medidas de fabricación verificadas</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
-<div class="field" style="margin-bottom:10px"><label for="woodMode">CONFIGURACIÓN DE MADERA</label><select id="woodMode" onchange="onWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="formrow"><div><label id="drawerBoxLabel">CAJA DEL ARMARIO (cm)</label><input id="drawerBox" inputmode="numeric" placeholder="100"></div><div><label>CANTIDAD DE CAJONES</label><select id="woodCount"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="calcDrawer()">SACAR MEDIDAS</button></div><div id="drawerResult" class="result"></div>
+<div class="field" style="margin-bottom:10px"><label for="woodMode">CONFIGURACIÓN DE MADERA</label><select id="woodMode" onchange="onWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="formrow"><div><label id="drawerBoxLabel">CAJA DEL ARMARIO (cm)</label><input id="drawerBox" inputmode="decimal" placeholder="100"></div><div><label>CANTIDAD DE CAJONES</label><select id="woodCount"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="calcDrawer()">SACAR MEDIDAS</button></div><div id="drawerResult" class="result"></div>
 </section>
 
 <section id="tool-metal" class="toolpanel">
@@ -124,7 +124,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 
 <section id="tool-cajonera" class="toolpanel">
 <div class="paneltop"><div class="paneltitle"><span class="bigico">🗃️</span><div><h3>Cajonera interior</h3><p>Distribución y medidas principales</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
-<div class="formrow"><div><label>CAJA (cm)</label><input id="chestBox" inputmode="decimal" placeholder="100"></div><div><label>NÚMERO DE CAJONES</label><select id="drawerCount"><option value="1">1 cajón</option><option value="2">2 cajones · C2</option><option value="3" selected>3 cajones · C3</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="calcChest()">CALCULAR</button></div><div id="chestResult" class="result"></div>
+<div class="field" style="margin-bottom:10px"><label for="chestMode">CONFIGURACIÓN DE MADERA</label><select id="chestMode" onchange="onChestModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="formrow"><div><label id="chestBoxLabel">CAJA (cm)</label><input id="chestBox" inputmode="decimal" placeholder="100"></div><div><label>NÚMERO DE CAJONES</label><select id="drawerCount"><option value="1">1 cajón · C1</option><option value="2">2 cajones · C2</option><option value="3" selected>3 cajones · C3</option><option value="4">4 cajones · C4</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="calcChest()">CALCULAR</button></div><div id="chestResult" class="result"></div>
 </section>
 
 <section id="tool-armario" class="toolpanel">
@@ -134,13 +134,13 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 
 <section id="tool-croquis" class="toolpanel">
 <div class="paneltop"><div class="paneltitle"><span class="bigico">📐</span><div><h3>Croquis rápido</h3><p>Cajonera interior estilo técnico</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
-<div class="formrow"><div><label>CAJA (cm)</label><input id="sketchBox" inputmode="decimal" placeholder="100"></div><div><label>CAJONES</label><select id="sketchCount"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="makeSketch()">DIBUJAR</button></div><div id="sketchMeta" class="result"></div><div class="sketch" id="diagram"><span style="color:#718296;font-size:11px">Introduce una caja y pulsa Dibujar.</span></div>
+<div class="field" style="margin-bottom:10px"><label for="sketchMode">CONFIGURACIÓN DE MADERA</label><select id="sketchMode" onchange="onSketchModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="formrow"><div><label id="sketchBoxLabel">CAJA (cm)</label><input id="sketchBox" inputmode="decimal" placeholder="100"></div><div><label>CAJONES</label><select id="sketchCount"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="makeSketch()">DIBUJAR</button></div><div id="sketchMeta" class="result"></div><div class="sketch" id="diagram"><span style="color:#718296;font-size:11px">Introduce una caja y pulsa Dibujar.</span></div>
 </section>
 
 <section id="tool-tarifa" class="toolpanel">
 <div class="paneltop"><div class="paneltitle"><span class="bigico">📖</span><div><h3>Tarifa técnica</h3><p>Solo datos ya comprobados</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
-<div class="tarifagrid"><div class="tarifaitem"><small>C3 · alto total</small><strong>58,5 cm</strong></div><div class="tarifaitem"><small>Sobre</small><strong>3 cm</strong></div><div class="tarifaitem"><small>Fondo sobre cajonera</small><strong id="tarifaFondo">50 cm (caja 58)</strong></div><div class="tarifaitem"><small>C2 · alto total</small><strong>40 cm</strong></div><div class="tarifaitem"><small>Frente cajón</small><strong>16 cm</strong></div><div class="tarifaitem"><small>Grupo B2</small><strong>76–100 cm</strong></div></div>
-<div class="notice">Ejemplo verificado: caja 100 → interior 96,1 cm → grupo B2 → cajonera C3.B2. La profundidad de los interiores se verifica según el fondo elegido; los interiores afectados por reducción requieren adaptación.</div>
+<div class="tarifagrid"><div class="tarifaitem"><small>C1 · alto total</small><strong>21,5 cm</strong></div><div class="tarifaitem"><small>C4 · alto total</small><strong>77 cm</strong></div><div class="tarifaitem"><small>C3 · alto total</small><strong>58,5 cm</strong></div><div class="tarifaitem"><small>Sobre</small><strong>3 cm</strong></div><div class="tarifaitem"><small>Fondo sobre cajonera</small><strong id="tarifaFondo">50 cm (caja 58)</strong></div><div class="tarifaitem"><small>C2 · alto total</small><strong>40 cm</strong></div><div class="tarifaitem"><small>Frente cajón</small><strong>16 cm</strong></div><div class="tarifaitem"><small>Grupo B2</small><strong>76–100 cm</strong></div></div>
+<div class="notice">Alturas de cajoneras de madera C1–C4 verificadas en tarifa, pág. 236. C5 y C6 no se extrapolan. Ejemplo verificado: caja 100 → interior 96,1 cm → grupo B2 → cajonera C3.B2. La profundidad de los interiores se verifica según el fondo elegido; los interiores afectados por reducción requieren adaptación.</div>
 </section>
 
 <section id="tool-calc" class="toolpanel">
@@ -193,6 +193,28 @@ function onQuickCountChange(){
  saveQuickConfiguration();
  if(document.getElementById('quickResult').classList.contains('show')&&document.getElementById('quickBox').value.trim())quickCalculate();
 }
+function onQuickWoodModeChange(){
+ const special=document.getElementById('quickWoodMode').value==='special';
+ document.getElementById('quickMeasure').value=special?'hueco':'caja';
+ const input=document.getElementById('quickBox');input.value='';
+ document.getElementById('quickResult').classList.remove('show');
+ onQuickMeasureChange();
+ toast(special?'Especial: introduce el hueco real':'Estándar: introduce la caja');
+}
+function onChestModeChange(){
+ const special=document.getElementById('chestMode').value==='special';
+ document.getElementById('chestBoxLabel').textContent=special?'ANCHO DEL HUECO INTERIOR (cm)':'CAJA (cm)';
+ const input=document.getElementById('chestBox');input.value='';input.placeholder=special?'93,7':'100';
+ document.getElementById('chestResult').classList.remove('show');
+}
+function onSketchModeChange(){
+ const special=document.getElementById('sketchMode').value==='special';
+ document.getElementById('sketchBoxLabel').textContent=special?'ANCHO DEL HUECO INTERIOR (cm)':'CAJA (cm)';
+ const input=document.getElementById('sketchBox');input.value='';input.placeholder=special?'93,7':'100';
+ document.getElementById('sketchMeta').classList.remove('show');
+ document.getElementById('diagram').innerHTML='<span style="color:#718296;font-size:11px">Introduce una medida y pulsa Dibujar.</span>';
+}
+
 function onMetalTypeChange(){
  setCountOptions('metalCount',document.getElementById('metalType').value,1);
  if(document.getElementById('metalResult').classList.contains('show')&&document.getElementById('metalBox').value.trim())calcMetal();
@@ -271,25 +293,44 @@ function closeTools(){document.querySelectorAll('.toolpanel').forEach(x=>x.class
 function goHome(btn){closeTools();document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
 function navTool(name,btn){document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');openTool(name)}
 function calcArmario(){const raw=val('armBox'),measure=document.getElementById('armMeasure').value,c=boxFromMeasure(raw,measure);if(!Number.isFinite(raw)||!Number.isFinite(c)||c<38||c>120)return showResult('armResult','<div class="notice">Introduce una medida válida. La caja resultante debe estar entre 38 y 120 cm.</div>');const h=interiorMm(c);const title=measure==='hueco'?'Armario · hueco '+cm(raw):'Armario · caja '+cm(c);const metrics=metric('Caja armario',cm(c),measure==='hueco')+metric('Hueco interior',mm(h),measure==='caja')+depthMetrics();const note=(measure==='hueco'?'Caja = hueco + 39 mm. ':'Hueco = ancho de caja − 39 mm. ')+depthNote();showResult('armResult',resultWrap(title,metrics,note,!reducedDepth()));addHistory('Armario',c,'Hueco '+mm(h))}
-function standardRegletaMm(c){return c===100?20:null}
+function standardRegletaMm(c){return Math.abs(c-100)<1e-8?20:null}
+function chestTotalCm(count){return ({1:21.5,2:40,3:58.5,4:77})[count]??null}
 function woodAssemblySketch(c,count,special=false){
- const front=special?specialDrawerFrontMm(interiorMm(c)):isTabulatedWoodWidth(c)?drawerFrontMm(c):null;
- const traba=special?specialDrawerTrabaMm(interiorMm(c)):isTabulatedWoodWidth(c)?drawerTrabaMm(c):null;
- const reg=standardRegletaMm(c),top=92,row=64,bottom=top+count*row,height=bottom+76;
- const frontLabel=front===null?'FRENTE · POR CONFIRMAR':'FRENTE · '+mm(front);
- let svg='<svg viewBox="0 0 480 '+height+'" role="img" aria-label="Vista frontal de '+count+' cajones'+(special?' especiales':' con regletas laterales')+'" style="width:100%;max-width:520px;display:block;font-family:Arial,sans-serif"><text x="240" y="24" text-anchor="middle" fill="#e5eef7" font-size="16" font-weight="bold">VISTA FRONTAL · '+count+' CAJONES</text>';
+ const h=interiorMm(c);
+ const front=special?specialDrawerFrontMm(h):isTabulatedWoodWidth(c)?drawerFrontMm(c):null;
+ const body=special?specialDrawerBodyMm(h):isTabulatedWoodWidth(c)?drawerBodyMm(c):null;
+ const traba=special?specialDrawerTrabaMm(h):isTabulatedWoodWidth(c)?drawerTrabaMm(c):null;
+ const reg=special?null:standardRegletaMm(c),tall=chestTotalCm(count);
+ const row=65,top=102,height=top+row*count+148;
+ const label=v=>v===null?'POR CONFIRMAR':mm(v);
+ let svg='<svg viewBox="0 0 540 '+height+'" role="img" aria-label="Croquis frontal, '+count+' cajones de madera, '+(special?'especial':'estándar')+'" style="width:100%;max-width:600px;display:block;margin:auto;font-family:Arial,sans-serif">';
+ svg+='<text x="270" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#f3f7ff">CAJONERA DE '+count+' '+(count===1?'CAJÓN':'CAJONES')+'</text>';
+ svg+='<text x="270" y="44" text-anchor="middle" font-size="12" fill="#8bc6ff">'+(special?'ESPECIAL · MEDIDA REAL DEL HUECO':'ESTÁNDAR · CAJA '+cm(c))+'</text>';
+ svg+='<path d="M70 64 V77 M470 64 V77 M70 70 H470" stroke="#91c5ef" stroke-width="1.5" fill="none"/>';
+ svg+='<rect x="218" y="60" width="104" height="21" rx="4" fill="#101c28"/><text x="270" y="75" fill="#9acfff" font-size="12" font-weight="bold" text-anchor="middle">HUECO '+mm(h)+'</text>';
+ svg+='<rect x="59" y="'+(top-3)+'" width="422" height="'+(count*row+8)+'" rx="2" fill="none" stroke="#6d829a" stroke-width="2"/>';
  if(!special){
-  const label=reg===null?'COTA PENDIENTE':mm(reg);
-  svg+='<text x="90" y="50" text-anchor="middle" fill="#f5c75f" font-size="12">REGLETA IZQ.</text><text x="90" y="68" text-anchor="middle" fill="#f5c75f" font-size="14" font-weight="bold">'+label+'</text><path d="M90 74 L60 86 L60 92" fill="none" stroke="#f5c75f"/><text x="390" y="50" text-anchor="middle" fill="#f5c75f" font-size="12">REGLETA DER.</text><text x="390" y="68" text-anchor="middle" fill="#f5c75f" font-size="14" font-weight="bold">'+label+'</text><path d="M390 74 L420 86 L420 92" fill="none" stroke="#f5c75f"/>';
-  for(const x of [50,410])svg+='<rect x="'+x+'" y="'+top+'" width="20" height="'+(count*row)+'" fill="#5b4925" stroke="#f5c75f" stroke-width="2"'+(reg===null?' stroke-dasharray="5 4"':'')+'/>';
+   for(const x of [65,459])svg+='<rect x="'+x+'" y="'+top+'" width="16" height="'+(count*row)+'" fill="#74613e" stroke="#f5cb6e" stroke-width="1.6" '+(reg===null?'stroke-dasharray="5 3"':'')+'/>';
+   svg+='<path d="M73 '+(top-4)+' L73 89 L150 89 M467 '+(top-4)+' L467 89 L390 89" fill="none" stroke="#f5cb6e" stroke-width="1.5"/>';
+   svg+='<text x="148" y="85" text-anchor="end" font-size="11" font-weight="bold" fill="#f5cb6e">IZQ. '+label(reg)+'</text>';
+   svg+='<text x="392" y="85" text-anchor="start" font-size="11" font-weight="bold" fill="#f5cb6e">DER. '+label(reg)+'</text>';
  }
  for(let i=0;i<count;i++){
-  const y=top+i*row;
-  svg+='<g data-drawer="'+(i+1)+'"><rect x="80" y="'+y+'" width="320" height="58" rx="3" fill="#1b2b3e" stroke="#dbe8f5" stroke-width="2"/><text x="240" y="'+(y+21)+'" text-anchor="middle" fill="#93a9bf" font-size="12">CAJÓN '+(i+1)+'</text><text x="240" y="'+(y+43)+'" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="bold">'+frontLabel+'</text></g>';
+   const y=top+row*i+4;
+   svg+='<rect x="'+(special?76:86)+'" y="'+y+'" width="'+(special?388:368)+'" height="56" rx="2" fill="#193049" stroke="#e1ecf7" stroke-width="2"/>';
+   svg+='<rect x="'+(special?81:91)+'" y="'+(y+5)+'" width="'+(special?378:358)+'" height="46" fill="none" stroke="#8196ab" stroke-width="1"/>';
+   svg+='<text x="270" y="'+(y+19)+'" text-anchor="middle" font-size="10" fill="#adc2d9">FRENTE · CAJÓN '+(i+1)+'</text>';
+   svg+='<text x="270" y="'+(y+39)+'" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">'+label(front)+'</text>';
  }
- svg+='<text x="240" y="'+(bottom+29)+'" text-anchor="middle" fill="#f5c75f" font-size="15" font-weight="bold">'+(traba===null?'TRABA · POR CONFIRMAR':'TRABA POR CAJÓN · '+mm(traba))+'</text><text x="240" y="'+(bottom+54)+'" text-anchor="middle" fill="#93a9bf" font-size="11">Esquema sin escala · altura total no representada</text></svg>';
- return '<div class="sketch" style="display:block;padding:12px">'+svg+(!special?'<div class="notice">Regletas laterales resaltadas en amarillo; posición esquemática. '+(reg===null?'Medida pendiente de verificar para esta caja.':'Cada lado: '+mm(reg)+'.')+'</div>':'')+'</div>';
+ const y=top+row*count+24;
+ svg+='<text x="270" y="'+y+'" text-anchor="middle" fill="#f6cf77" font-size="12" font-weight="bold">TRABA POR CAJÓN: '+label(traba)+'</text>';
+ svg+='<text x="270" y="'+(y+22)+'" text-anchor="middle" fill="#c7d7e5" font-size="12">CAJA CAJÓN: '+label(body)+'</text>';
+ svg+='<text x="270" y="'+(y+44)+'" text-anchor="middle" fill="#a6b7c9" font-size="11">'+(special?'Alto del frente especial: por confirmar':tall!==null?'ALTO TOTAL C'+count+': '+cm(tall)+' · SOBRE 3 cm':'Alto total: pendiente de verificar')+'</text>';
+ svg+='<text x="270" y="'+(y+66)+'" text-anchor="middle" fill="#7f93a8" font-size="10">Vista esquemática sin escala · cotas de ancho en mm</text></svg>';
+ const note=special?'Cada cajón lleva un frente de '+label(front)+'. Según la regla de taller, coincide numéricamente con el hueco indicado, pero es la cota del FRENTE. Las regletas estándar no se aplican automáticamente a la cajonera especial.':'Regleta izquierda y derecha dibujadas en amarillo. '+(reg===null?'La anchura de ambas está pendiente de comprobar para esta caja.':'Cada regleta lateral: '+label(reg)+'.')+' El dibujo muestra las '+count+' unidades realmente seleccionadas.';
+ return '<div class="sketch" style="display:block;padding:12px">'+svg+'<div class="notice">'+note+'</div></div>';
 }
+
 function drawerHtml(c,count=1,special=false){
  if(!Number.isInteger(count)||count<1||count>6)return '<div class="notice">Elige entre 1 y 6 cajones de madera.</div>';
  if(special){
@@ -306,7 +347,7 @@ function drawerHtml(c,count=1,special=false){
  if(c===100){metrics+=metric('Regleta izquierda','20 mm')+metric('Regleta derecha','20 mm')+metric('Fondo cajón (ancho)','838 mm')+metric('DIF','26 mm');note+=' Caja de ancho 100 cm: otras cotas verificadas para cajón de madera.'}
  if(c!==100)metrics+=metric('Regleta izquierda','Por confirmar')+metric('Regleta derecha','Por confirmar');
  metrics+=depthMetrics()+metric('Fondo cajón (prof.)','Consultar medida');
- if(![2,3].includes(count))note+=' La tarifa no confirma aquí la altura total ni los costados de una cajonera de '+count+' cajones.';
+ if(chestTotalCm(count)===null)note+=' La tarifa no confirma aquí la altura total ni los costados de una cajonera de '+count+' cajones.';else metrics+=metric('Alto total C'+count,cm(chestTotalCm(count)));
  note+=' '+depthNote();
  const sketch=woodAssemblySketch(c,count,false);
  return resultWrap('Madera · '+pluralCajon(count)+' · caja '+c+' cm',metrics,note,!reduced)+sketch;
@@ -335,32 +376,49 @@ function chestHtml(c,count,withSketch=true){
  const g=widthGroup(c);
  if(!g)return '<div class="notice">Para esta herramienta usa cajas de 61 a 120 cm.</div>';
  if(!Number.isInteger(count)||count<1||count>6)return '<div class="notice">Elige entre 1 y 6 cajones.</div>';
- const inside=interiorMm(c)/10,verified=[2,3].includes(count),standard=!reducedDepth(),total=verified?(count===3?58.5:40):null,code=verified?(count===3?'C3.':'C2.')+g:null;
+ const total=chestTotalCm(count),verified=total!==null,standard=!reducedDepth(),code=verified?'C'+count+'.'+g:null,inside=interiorMm(c)/10;
  let metrics=metric('Número de cajones',pluralCajon(count),true)+metric('Hueco interior (ancho)',cm(inside))+metric('Código tarifa',code||'Por confirmar');
- if(verified){metrics+=metric('Costado (alto)',cm(total-3),true)+metric('Sobre (ancho)',cm(inside))+metric('Sobre (fondo)',standard?'50 cm':'Por confirmar')+metric('Sobre (grueso)','3 cm')+metric('Alto total',cm(total))+metric('Frentes',count+' × 16 cm')}
- else{metrics+=metric('Costado (alto)','Por confirmar')+metric('Sobre (fondo)','Por confirmar')+metric('Alto total','Por confirmar')}
+ if(verified){
+   metrics+=metric('Costado (alto)',cm(total-3),true)+metric('Sobre (ancho)',cm(inside))+metric('Sobre (fondo)',standard?'50 cm':'Por confirmar')+metric('Sobre (grueso)','3 cm')+metric('Alto total',cm(total))+metric('Frentes',count+' × 16 cm');
+ }else{
+   metrics+=metric('Costado (alto)','Por confirmar')+metric('Sobre (fondo)','Por confirmar')+metric('Alto total','Por confirmar');
+ }
  metrics+=depthMetrics();
- let drawers='';for(let i=0;i<count;i++)drawers+='<div class="chestDrawer" style="height:'+(count>4?34:48)+'px">CAJÓN '+(i+1)+(verified?' · 16 cm':'')+'</div>';
- const sketch=woodAssemblySketch(c,count,false);
- const note=verified?'Cajonera estándar de '+count+' cajones confirmada en tarifa. '+depthNote():'La tarifa consultada documenta las configuraciones de 2 y 3 cajones. Esta configuración de '+count+' cajones está disponible en el selector para el taller, pero NO se asigna un alto, código ni costados sin comprobación adicional. '+depthNote();
- return resultWrap('Cajonera madera · '+pluralCajon(count),metrics,note,verified&&standard)+(withSketch?sketch:'');
+ const note=verified?'Cajonera C'+count+' documentada en ESENZIA 4.0, página 236. '+depthNote():'Configuración de '+count+' cajones representada, pero sin asignarle un alto ni un código no comprobados en la tarifa. '+depthNote();
+ return resultWrap('Cajonera madera · '+pluralCajon(count),metrics,note,verified&&standard)+(withSketch?woodAssemblySketch(c,count,false):'');
 }
+
 function calcChest(){
- const c=val('chestBox'),count=Number(document.getElementById('drawerCount').value),g=widthGroup(c);
- if(!g)return showResult('chestResult','<div class="notice">Para esta herramienta usa cajas de 61 a 120 cm.</div>');
- showResult('chestResult',chestHtml(c,count));
- const code=[2,3].includes(count)?' · código C'+count+'.'+g:' · alto por confirmar';
- addHistory('Cajones madera',c,pluralCajon(count)+code,count);
+ const raw=val('chestBox'),special=document.getElementById('chestMode').value==='special',c=boxFromMeasure(raw,special?'hueco':'caja'),count=Number(document.getElementById('drawerCount').value);
+ if(!document.getElementById('chestBox').value.trim()||!Number.isFinite(c)||c<38||c>120)return showResult('chestResult','<div class="notice">Introduce una medida válida; la caja equivalente debe estar entre 38 y 120 cm.</div>');
+ if(special){
+   showResult('chestResult',drawerHtml(c,count,true));
+   addHistory('Cajones madera',c,woodSummary(c,true),count,'hueco','special');
+ }else{
+   const g=widthGroup(c);
+   if(!g)return showResult('chestResult','<div class="notice">Para cajonera estándar usa caja de 61 a 120 cm.</div>');
+   showResult('chestResult',chestHtml(c,count));
+   addHistory('Cajones madera',c,pluralCajon(count)+(chestTotalCm(count)!==null?' · código C'+count+'.'+g:' · alto por confirmar'),count);
+ }
 }
 function makeSketch(){
- const c=val('sketchBox'),count=Number(document.getElementById('sketchCount').value),g=widthGroup(c),d=document.getElementById('diagram');
- if(!g){d.innerHTML='<span style="color:#ff9298;font-size:11px">Usa una caja de 61 a 120 cm.</span>';return}
- const verified=[2,3].includes(count),total=verified?(count===3?58.5:40):null,standard=!reducedDepth(),code=verified?'C'+count+'.'+g:'Por confirmar';
- let drawers='';for(let i=0;i<count;i++)drawers+='<div class="chestDrawer" style="height:'+(count>4?34:48)+'px">CAJÓN '+(i+1)+(verified?' · 16 cm':'')+'</div>';
+ const raw=val('sketchBox'),special=document.getElementById('sketchMode').value==='special',c=boxFromMeasure(raw,special?'hueco':'caja'),count=Number(document.getElementById('sketchCount').value),d=document.getElementById('diagram');
+ if(!document.getElementById('sketchBox').value.trim()||!Number.isFinite(c)||c<38||c>120){d.innerHTML='<span style="color:#ff9298;font-size:11px">Introduce una medida válida.</span>';return}
+ if(special){
+   const h=interiorMm(c);
+   d.innerHTML=woodAssemblySketch(c,count,true);
+   const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Hueco real',mm(h))+metric('Frente por cajón',mm(specialDrawerFrontMm(h)),true)+metric('Traba por cajón',mm(specialDrawerTrabaMm(h)))+depthMetrics();
+   showResult('sketchMeta',resultWrap('Croquis especial · '+pluralCajon(count),metrics,'Cotas según las reglas específicas de taller. No aplicar cotas de cajonera estándar.',false));
+   return;
+ }
+ const g=widthGroup(c);
+ if(!g){d.innerHTML='<span style="color:#ff9298;font-size:11px">Usa caja de 61 a 120 cm para la cajonera estándar.</span>';return}
+ const total=chestTotalCm(count),verified=total!==null,code=verified?'C'+count+'.'+g:'Por confirmar';
  d.innerHTML=woodAssemblySketch(c,count,false);
- const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Código',code)+metric('Costado (alto)',verified?cm(total-3):'Por confirmar')+metric('Alto total',verified?cm(total):'Por confirmar')+metric('Sobre (fondo)',verified&&standard?'50 cm':'Por confirmar')+depthMetrics();
- showResult('sketchMeta',resultWrap('Croquis cajonera · '+pluralCajon(count),metrics,(verified?'Configuración tabulada. ':'Croquis orientativo, sin cotas de altura verificadas. ')+depthNote(),verified&&standard));
+ const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Código',code)+metric('Costado (alto)',verified?cm(total-3):'Por confirmar')+metric('Alto total',verified?cm(total):'Por confirmar')+metric('Sobre (fondo)',verified&&!reducedDepth()?'50 cm':'Por confirmar')+depthMetrics();
+ showResult('sketchMeta',resultWrap('Croquis cajonera · '+pluralCajon(count),metrics,(verified?'Configuración documentada en tarifa. ':'Croquis orientativo, sin cotas de altura verificadas. ')+depthNote(),verified&&!reducedDepth()));
 }
+
 function quickCalculate(){
  const type=document.getElementById('quickType').value,raw=val('quickBox'),measure=document.getElementById('quickMeasure').value,c=boxFromMeasure(raw,measure),count=Number(document.getElementById('quickCount').value),out='quickResult';
  if(!permittedCounts(type).includes(count))return showResult(out,'<div class="notice">Esta cantidad no está disponible para el tipo de cajón seleccionado.</div>');
