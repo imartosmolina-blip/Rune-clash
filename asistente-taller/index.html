@@ -225,19 +225,20 @@ function cm(v){return Number(v.toFixed(6)).toLocaleString('es-ES',{minimumFracti
 function interiorMm(c){return c*10-39}
 function isTabulatedWoodWidth(c){return Number.isFinite(c)&&Math.abs(c/5-Math.round(c/5))<1e-9}
 function drawerBodyMm(c){return isTabulatedWoodWidth(c)?c*10-143:null}
-function drawerTrabaMm(c){const b=drawerBodyMm(c);return b===null?null:b-38}
+function specialDrawerTrabaMm(huecoMm){return Number((huecoMm-102).toFixed(6))}
+function drawerTrabaMm(c){const b=drawerBodyMm(c);return b===null?specialDrawerTrabaMm(interiorMm(c)):b-38}
 function drawerFrontMm(c){const b=drawerBodyMm(c);return b===null?null:b+44}
 function widthGroup(c){if(c>=61&&c<=75)return'A2';if(c>=76&&c<=100)return'B2';if(c>=101&&c<=120)return'C2';return null}
 function metric(label,value,important=false){return '<div class="metric'+(important?' important':'')+'"><small>'+label+'</small><strong>'+value+'</strong></div>'}
 function resultWrap(title,metrics,note='',verified=true){return '<div class="resultHero"><div class="resultHead"><strong>'+title+'</strong><span class="verified">'+(verified?'✓ COTAS COMPROBADAS':'⚠ COTAS PENDIENTES')+'</span></div><div class="metrics">'+metrics+'</div>'+(note?'<div class="notice">'+note+'</div>':'')+'</div>'}
 function showResult(id,html){const el=document.getElementById(id);el.innerHTML=html;el.classList.add('show')}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),1900)}
-function addHistory(type,box,summary,count){
+function addHistory(type,box,summary,count,measure='caja'){
  let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){}
  const p=getDepth();
  const q=Number.isInteger(count)?count:null;
  items=items.filter(x=>!(x.type===type&&x.box===box&&x.depth===p.key&&(x.count??null)===q));
- items.unshift({type,box,summary,depth:p.key,count:q});
+ items.unshift({type,box,summary,depth:p.key,count:q,measure});
  items=items.slice(0,5);try{localStorage.setItem(historyKey,JSON.stringify(items))}catch(e){}renderHistory();
 }
 function renderHistory(){
@@ -250,7 +251,7 @@ function repeatHistory(i){
  let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){}
  const x=items[i];if(!x)return;
  if(depthProfiles[x.depth]){document.getElementById('armDepth').value=x.depth;onDepthChange()}
- document.getElementById('quickMeasure').value='caja';onQuickMeasureChange();document.getElementById('quickBox').value=x.box;
+ document.getElementById('quickMeasure').value=x.measure==='hueco'?'hueco':'caja';onQuickMeasureChange();document.getElementById('quickBox').value=x.measure==='hueco'?Number((x.box-3.9).toFixed(8)):x.box;
  let type={'Cajón madera':'madera','Cajones madera':'madera','Cajón metálico':'metalico','Joyero':'joyero','Cajonera 3':'madera','Cajonera 2':'madera','Armario':'madera'}[x.type]||'madera';
  document.getElementById('quickType').value=type;
  let count=x.count||(x.type==='Cajonera 2'?2:x.type==='Cajonera 3'?3:1);
@@ -263,9 +264,15 @@ function closeTools(){document.querySelectorAll('.toolpanel').forEach(x=>x.class
 function goHome(btn){closeTools();document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
 function navTool(name,btn){document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');openTool(name)}
 function calcArmario(){const raw=val('armBox'),measure=document.getElementById('armMeasure').value,c=boxFromMeasure(raw,measure);if(!Number.isFinite(raw)||!Number.isFinite(c)||c<38||c>120)return showResult('armResult','<div class="notice">Introduce una medida válida. La caja resultante debe estar entre 38 y 120 cm.</div>');const h=interiorMm(c);const title=measure==='hueco'?'Armario · hueco '+cm(raw):'Armario · caja '+cm(c);const metrics=metric('Caja armario',cm(c),measure==='hueco')+metric('Hueco interior',mm(h),measure==='caja')+depthMetrics();const note=(measure==='hueco'?'Caja = hueco + 39 mm. ':'Hueco = ancho de caja − 39 mm. ')+depthNote();showResult('armResult',resultWrap(title,metrics,note,!reducedDepth()));addHistory('Armario',c,'Hueco '+mm(h))}
-function drawerHtml(c,count=1){
+function drawerHtml(c,count=1,special=!isTabulatedWoodWidth(c)){
  if(!Number.isInteger(count)||count<1||count>6)return '<div class="notice">Elige entre 1 y 6 cajones de madera.</div>';
- if(!isTabulatedWoodWidth(c))return resultWrap('Madera · '+pluralCajon(count)+' · medida especial',metric('Caja calculada',cm(c))+metric('Hueco exacto',mm(interiorMm(c)),true)+metric('Traba / frente','Por confirmar')+depthMetrics(),'Se conserva tu medida exacta, sin ajustarla a un ancho estándar. La tarifa (pág. 236) admite anchos cada 1 cm, pero no documenta aquí la fórmula del despiece de madera para este hueco. Falta confirmar las holguras, regletas y descuentos del sistema antes de dar medidas de corte.',false);
+ if(special){
+  const h=interiorMm(c),tr=specialDrawerTrabaMm(h);
+  const metrics=metric('Cantidad',pluralCajon(count))+metric('Hueco exacto',mm(h),true)+metric('Traba por cajón',mm(tr),true)+metric('Frente por cajón','Por confirmar')+depthMetrics();
+  const note='Regla de taller confirmada por Iván para huecos especiales: traba = hueco − 102 mm. Descuento: 2 × 19 mm de costados de cajonera + 2 × 19 mm de costados de cajón + 2 × 13 mm de guías. Se conserva la medida exacta. Frente y profundidad de las piezas pendientes de confirmar. '+depthNote();
+  const sketch='<div class="sketch"><div class="drawerSketch"><div class="drawerFront">FRENTE · POR CONFIRMAR</div><div class="drawerBody"><span class="sideL"></span><span class="sideR"></span><div class="drawerBottom">HUECO · '+mm(h)+'</div></div><div class="dimension">↔ TRABA '+mm(tr)+' · '+pluralCajon(count)+'</div></div></div>';
+  return resultWrap('Madera · '+pluralCajon(count)+' · medida especial',metrics,note,false)+sketch;
+ }
  const h=interiorMm(c),body=drawerBodyMm(c),tr=drawerTrabaMm(c),fr=drawerFrontMm(c),reduced=reducedDepth();
  let metrics=metric('Cantidad',pluralCajon(count),true)+metric('Hueco (ancho)',mm(h))+metric('Caja cajón (ancho)',mm(body))+metric('Traba por cajón',mm(tr),true)+metric('Frente por cajón',mm(fr),true);
  let note='Las cotas corresponden a cada cajón y se aplican a las '+count+' unidades. La altura total de la cajonera no se deduce de multiplicar una pieza.';
@@ -280,7 +287,7 @@ function calcDrawer(){
  const c=val('drawerBox'),count=Number(document.getElementById('woodCount').value);
  if(!Number.isFinite(c)||c<38||c>120)return showResult('drawerResult','<div class="notice">Introduce una caja entre 38 y 120 cm.</div>');
  showResult('drawerResult',drawerHtml(c,count));
- addHistory('Cajones madera',c,isTabulatedWoodWidth(c)?'Traba '+mm(drawerTrabaMm(c))+' · frente '+mm(drawerFrontMm(c)):'Hueco '+mm(interiorMm(c))+' · despiece pendiente',count);
+ addHistory('Cajones madera',c,isTabulatedWoodWidth(c)?'Traba '+mm(drawerTrabaMm(c))+' · frente '+mm(drawerFrontMm(c)):'Traba '+mm(drawerTrabaMm(c))+' · frente pendiente',count);
 }
 function metalHtml(c,type,count=1){
  if(!permittedCounts(type).includes(count))return '<div class="notice">Cantidad de cajones no disponible para este tipo.</div>';
@@ -333,8 +340,8 @@ function quickCalculate(){
   if(c<38||c>120)return showResult(out,'<div class="notice">Usa una caja entre 38 y 120 cm.</div>');
   const ci=c,g=widthGroup(ci);
   const chest=g?chestHtml(ci,count):'';
-  showResult(out,measureBanner(measure,raw,c)+drawerHtml(ci,count)+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
-  addHistory('Cajones madera',ci,isTabulatedWoodWidth(ci)?pluralCajon(count)+' · traba '+mm(drawerTrabaMm(ci))+' · frente '+mm(drawerFrontMm(ci)):'Hueco '+mm(interiorMm(ci))+' · despiece pendiente',count);
+  showResult(out,measureBanner(measure,raw,c)+drawerHtml(ci,count,measure==='hueco'||!isTabulatedWoodWidth(ci))+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
+  addHistory('Cajones madera',ci,measure==='hueco'||!isTabulatedWoodWidth(ci)?'Traba '+mm(specialDrawerTrabaMm(interiorMm(ci)))+' · frente pendiente':pluralCajon(count)+' · traba '+mm(drawerTrabaMm(ci))+' · frente '+mm(drawerFrontMm(ci)),count,measure);
  }else if(type==='metalico'||type==='joyero'){
   if(c<=16.1)return showResult(out,'<div class="notice">Introduce una caja válida.</div>');
   showResult(out,measureBanner(measure,raw,c)+metalHtml(c,type,count));
