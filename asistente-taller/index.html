@@ -32,7 +32,7 @@ button,input,select,textarea{font:inherit} button{touch-action:manipulation}
 .depthFirst .field select{border-color:#548bc1;background:#101e30}
 .depthInfo{min-height:50px;border:1px solid #36536d;border-radius:14px;background:#0f1d2a;padding:9px 13px;display:flex;flex-direction:column;justify-content:center;color:#dcecff;font-size:11px;line-height:1.35}
 .depthInfo b{color:#8fd2ff;font-size:13px}
-.quick{position:relative;z-index:1;margin-top:11px;display:grid;grid-template-columns:1.2fr .85fr .85fr auto;gap:9px}
+.quick{position:relative;z-index:1;margin-top:11px;display:grid;grid-template-columns:1.15fr .8fr .8fr 1fr auto;gap:9px}
 .field label,.toolpanel label{display:block;margin:0 0 6px;color:#a9b8c9;font-size:10px;font-weight:950;letter-spacing:.45px}
 input,select,textarea{width:100%;border:1px solid #344256;background:#0a111a;color:#fff;border-radius:14px;outline:none;transition:.15s ease}
 input,select{height:50px;padding:0 13px;font-size:16px;font-weight:800}textarea{min-height:120px;padding:13px;resize:vertical;line-height:1.4}
@@ -68,7 +68,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 .nav{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(calc(100% - 24px),700px);display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px;border:1px solid rgba(63,79,98,.9);border-radius:19px;background:rgba(13,18,25,.91);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 16px 35px rgba(0,0,0,.36);z-index:20}
 .navbtn{border:0;background:transparent;color:#8e9caf;border-radius:13px;padding:8px 5px;font-size:9px;font-weight:900;cursor:pointer}.navbtn b{display:block;font-size:20px;margin-bottom:3px}.navbtn.active{background:#192432;color:#fff}
 .toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(12px);background:#152231;color:#eaf4ff;border:1px solid #34495e;border-radius:999px;padding:9px 13px;font-size:10px;font-weight:850;opacity:0;pointer-events:none;transition:.18s;z-index:30;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media(max-width:760px){.depthFirst{grid-template-columns:1fr}.hero{padding:16px}.herohead{display:block}.reference{display:inline-block;margin-top:12px}.quick{grid-template-columns:1fr 1fr}.quick .field:first-child{grid-column:1/-1}.quick .primary{grid-column:1/-1}.cards{grid-template-columns:repeat(2,1fr)}.card{min-height:120px}.formrow{grid-template-columns:1fr 1fr}.formrow .primary,.formrow .secondary{grid-column:1/-1}.metrics,.tarifagrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.depthFirst{grid-template-columns:1fr}.hero{padding:16px}.herohead{display:block}.reference{display:inline-block;margin-top:12px}.quick{grid-template-columns:1fr 1fr}.quick .field:first-child{grid-column:1/-1}.quick .quickWidth{grid-column:1/-1}.quick .primary{grid-column:1/-1}.cards{grid-template-columns:repeat(2,1fr)}.card{min-height:120px}.formrow{grid-template-columns:1fr 1fr}.formrow .primary,.formrow .secondary{grid-column:1/-1}.metrics,.tarifagrid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:430px){.brandmark{width:43px;height:43px}.statuspill{padding:8px 9px}.statuspill .clocklabel{display:none}.hero h2{font-size:28px}.metrics{grid-template-columns:1fr 1fr}.metric strong{font-size:18px}}
 </style>
 </head>
@@ -92,7 +92,8 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 <div class="quick">
 <div class="field"><label for="quickType">2 · TIPO DE TRABAJO</label><select id="quickType" onchange="onQuickTypeChange()"><option value="madera">Cajones de madera</option><option value="metalico">Cajones metálicos</option><option value="joyero">Joyero</option></select></div>
 <div class="field"><label for="quickCount">3 · CANTIDAD DE CAJONES</label><select id="quickCount" onchange="onQuickCountChange()"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div>
-<div class="field"><label for="quickBox">4 · ANCHO CAJA (cm)</label><input id="quickBox" inputmode="decimal" placeholder="100"></div>
+<div class="field"><label for="quickMeasure">4 · MEDIDA DE PARTIDA</label><select id="quickMeasure" onchange="onQuickMeasureChange()"><option value="caja">Caja del armario</option><option value="hueco">Hueco interior</option></select></div>
+<div class="field quickWidth"><label for="quickBox" id="quickBoxLabel">5 · ANCHO CAJA (cm)</label><input id="quickBox" inputmode="decimal" placeholder="100"></div>
 <button class="primary" onclick="quickCalculate()">CALCULAR</button>
 </div>
 <div id="quickResult" class="result"></div>
@@ -127,7 +128,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 
 <section id="tool-armario" class="toolpanel">
 <div class="paneltop"><div class="paneltitle"><span class="bigico">🚪</span><div><h3>Armario</h3><p>Hueco interior desde la caja nominal</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
-<div class="formrow"><div><label>CAJA (cm)</label><input id="armBox" inputmode="decimal" placeholder="100"></div><div></div><button class="primary" onclick="calcArmario()">CALCULAR</button></div><div id="armResult" class="result"></div>
+<div class="formrow"><div><label>MEDIDA DE PARTIDA</label><select id="armMeasure" onchange="onArmMeasureChange()"><option value="caja">Caja del armario</option><option value="hueco">Hueco interior</option></select></div><div><label id="armBoxLabel">ANCHO CAJA (cm)</label><input id="armBox" inputmode="decimal" placeholder="100"></div><button class="primary" onclick="calcArmario()">CALCULAR</button></div><div id="armResult" class="result"></div>
 </section>
 
 <section id="tool-croquis" class="toolpanel">
@@ -173,7 +174,11 @@ function setCountOptions(selectId,type,preferred){
  node.disabled=type==='joyero';
  return count;
 }
-function saveQuickConfiguration(){try{localStorage.setItem(configurationKey,JSON.stringify({type:document.getElementById('quickType').value,count:Number(document.getElementById('quickCount').value)}))}catch(e){}}
+function saveQuickConfiguration(){try{localStorage.setItem(configurationKey,JSON.stringify({type:document.getElementById('quickType').value,count:Number(document.getElementById('quickCount').value),measure:document.getElementById('quickMeasure').value}))}catch(e){}}
+function boxFromMeasure(value,measure){return measure==='hueco'?value+3.9:value}
+function onQuickMeasureChange(){const m=document.getElementById('quickMeasure').value;const input=document.getElementById('quickBox');document.getElementById('quickBoxLabel').textContent=m==='hueco'?'5 · ANCHO HUECO (cm)':'5 · ANCHO CAJA (cm)';input.placeholder=m==='hueco'?'96,1':'100';saveQuickConfiguration();if(document.getElementById('quickResult').classList.contains('show')&&input.value.trim())quickCalculate()}
+function onArmMeasureChange(){const m=document.getElementById('armMeasure').value;const input=document.getElementById('armBox');document.getElementById('armBoxLabel').textContent=m==='hueco'?'ANCHO HUECO (cm)':'ANCHO CAJA (cm)';input.placeholder=m==='hueco'?'96,1':'100';if(document.getElementById('armResult').classList.contains('show')&&input.value.trim())calcArmario()}
+function measureBanner(measure,value,box){return measure==='hueco'?'<div class="notice">Partiendo de hueco: <b>'+cm(value)+'</b> → caja calculada <b>'+cm(box)+'</b> (hueco + 39 mm).</div>':''}
 function onQuickTypeChange(){
  const type=document.getElementById('quickType').value;
  setCountOptions('quickCount',type,undefined);
@@ -244,7 +249,7 @@ function repeatHistory(i){
  let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){}
  const x=items[i];if(!x)return;
  if(depthProfiles[x.depth]){document.getElementById('armDepth').value=x.depth;onDepthChange()}
- document.getElementById('quickBox').value=x.box;
+ document.getElementById('quickMeasure').value='caja';onQuickMeasureChange();document.getElementById('quickBox').value=x.box;
  let type={'Cajón madera':'madera','Cajones madera':'madera','Cajón metálico':'metalico','Joyero':'joyero','Cajonera 3':'madera','Cajonera 2':'madera','Armario':'madera'}[x.type]||'madera';
  document.getElementById('quickType').value=type;
  let count=x.count||(x.type==='Cajonera 2'?2:x.type==='Cajonera 3'?3:1);
@@ -256,7 +261,7 @@ function openTool(name,btn){document.querySelectorAll('.toolpanel').forEach(x=>x
 function closeTools(){document.querySelectorAll('.toolpanel').forEach(x=>x.classList.remove('show'));document.querySelectorAll('.card').forEach(x=>x.classList.remove('active'))}
 function goHome(btn){closeTools();document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
 function navTool(name,btn){document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');openTool(name)}
-function calcArmario(){const c=val('armBox');if(!Number.isFinite(c)||c<38||c>120)return showResult('armResult','<div class="notice">Introduce una caja entre 38 y 120 cm.</div>');const h=interiorMm(c);showResult('armResult',resultWrap('Armario · ancho '+cm(c),metric('Hueco interior',mm(h),true)+depthMetrics(), 'Hueco = ancho de caja − 39 mm. '+depthNote(),!reducedDepth()));addHistory('Armario',c,'Hueco '+mm(h))}
+function calcArmario(){const raw=val('armBox'),measure=document.getElementById('armMeasure').value,c=boxFromMeasure(raw,measure);if(!Number.isFinite(raw)||!Number.isFinite(c)||c<38||c>120)return showResult('armResult','<div class="notice">Introduce una medida válida. La caja resultante debe estar entre 38 y 120 cm.</div>');const h=interiorMm(c);const title=measure==='hueco'?'Armario · hueco '+cm(raw):'Armario · caja '+cm(c);const metrics=metric('Caja armario',cm(c),measure==='hueco')+metric('Hueco interior',mm(h),measure==='caja')+depthMetrics();const note=(measure==='hueco'?'Caja = hueco + 39 mm. ':'Hueco = ancho de caja − 39 mm. ')+depthNote();showResult('armResult',resultWrap(title,metrics,note,!reducedDepth()));addHistory('Armario',c,'Hueco '+mm(h))}
 function drawerHtml(c,count=1){
  if(!Number.isInteger(count)||count<1||count>6)return '<div class="notice">Elige entre 1 y 6 cajones de madera.</div>';
  const h=interiorMm(c),body=drawerBodyMm(c),tr=drawerTrabaMm(c),fr=drawerFrontMm(c),reduced=reducedDepth();
@@ -319,18 +324,18 @@ function makeSketch(){
  showResult('sketchMeta',resultWrap('Croquis cajonera · '+pluralCajon(count),metrics,(verified?'Configuración tabulada. ':'Croquis orientativo, sin cotas de altura verificadas. ')+depthNote(),verified&&standard));
 }
 function quickCalculate(){
- const type=document.getElementById('quickType').value,c=val('quickBox'),count=Number(document.getElementById('quickCount').value),out='quickResult';
+ const type=document.getElementById('quickType').value,raw=val('quickBox'),measure=document.getElementById('quickMeasure').value,c=boxFromMeasure(raw,measure),count=Number(document.getElementById('quickCount').value),out='quickResult';
  if(!permittedCounts(type).includes(count))return showResult(out,'<div class="notice">Esta cantidad no está disponible para el tipo de cajón seleccionado.</div>');
- if(!document.getElementById('quickBox').value.trim()||!Number.isFinite(c))return showResult(out,'<div class="notice">Introduce la medida de la caja.</div>');
+ if(!document.getElementById('quickBox').value.trim()||!Number.isFinite(raw)||!Number.isFinite(c))return showResult(out,'<div class="notice">Introduce una medida válida.</div>');
  if(type==='madera'){
   if(c<38||c>120)return showResult(out,'<div class="notice">Usa una caja entre 38 y 120 cm.</div>');
   const ci=Math.floor(c),g=widthGroup(ci);
   const chest=g?chestHtml(ci,count):'';
-  showResult(out,drawerHtml(ci,count)+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
+  showResult(out,measureBanner(measure,raw,c)+drawerHtml(ci,count)+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
   addHistory('Cajones madera',ci,pluralCajon(count)+' · traba '+mm(drawerTrabaMm(ci))+' · frente '+mm(drawerFrontMm(ci)),count);
  }else if(type==='metalico'||type==='joyero'){
   if(c<=16.1)return showResult(out,'<div class="notice">Introduce una caja válida.</div>');
-  showResult(out,metalHtml(c,type,count));
+  showResult(out,measureBanner(measure,raw,c)+metalHtml(c,type,count));
   addHistory(type==='joyero'?'Joyero':'Cajón metálico',c,'Traba por cajón '+cm(c-16.1)+' · fondo ancho '+cm(c-14),count);
  }else return showResult(out,'<div class="notice">Tipo de trabajo no disponible.</div>');
  saveQuickConfiguration();toast('Cálculo listo');
@@ -341,8 +346,8 @@ async function copyText(text){try{await navigator.clipboard.writeText(text)}catc
 async function askChatGPT(){const q=document.getElementById('query'),text=q.value.trim();if(!text){toast('Escribe primero la consulta');q.focus();return}await copyText(text);toast('Abriendo ChatGPT…');window.open('https://chatgpt.com/?q='+encodeURIComponent(text),'_blank')}
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
 document.getElementById('quickBox').addEventListener('keydown',e=>{if(e.key==='Enter')quickCalculate()});document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter')calculate()});try{const stored=localStorage.getItem(depthKey);if(depthProfiles[stored])document.getElementById('armDepth').value=stored}catch(e){}
-try{const settings=JSON.parse(localStorage.getItem(configurationKey)||'{}');if(permittedCounts(settings.type).includes(settings.count)&&['madera','metalico','joyero'].includes(settings.type)){document.getElementById('quickType').value=settings.type;setCountOptions('quickCount',settings.type,settings.count)}else setCountOptions('quickCount','madera',3)}catch(e){setCountOptions('quickCount','madera',3)}
-onMetalTypeChange();onDepthChange();tick();setInterval(tick,30000);renderHistory();
+try{const settings=JSON.parse(localStorage.getItem(configurationKey)||'{}');if(permittedCounts(settings.type).includes(settings.count)&&['madera','metalico','joyero'].includes(settings.type)){document.getElementById('quickType').value=settings.type;setCountOptions('quickCount',settings.type,settings.count);if(['caja','hueco'].includes(settings.measure))document.getElementById('quickMeasure').value=settings.measure}else setCountOptions('quickCount','madera',3)}catch(e){setCountOptions('quickCount','madera',3)}
+onQuickMeasureChange();onArmMeasureChange();onMetalTypeChange();onDepthChange();tick();setInterval(tick,30000);renderHistory();
 </script>
 </body>
 </html>
