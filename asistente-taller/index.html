@@ -226,6 +226,8 @@ function interiorMm(c){return c*10-39}
 function isTabulatedWoodWidth(c){return Number.isFinite(c)&&Math.abs(c/5-Math.round(c/5))<1e-9}
 function drawerBodyMm(c){return isTabulatedWoodWidth(c)?c*10-143:null}
 function specialDrawerTrabaMm(huecoMm){return Number((huecoMm-102).toFixed(6))}
+function specialDrawerBodyMm(huecoMm){return Number((specialDrawerTrabaMm(huecoMm)+38).toFixed(6))}
+function specialDrawerFrontMm(huecoMm){return Number((specialDrawerBodyMm(huecoMm)+26+38).toFixed(6))}
 function drawerTrabaMm(c){const b=drawerBodyMm(c);return b===null?specialDrawerTrabaMm(interiorMm(c)):b-38}
 function drawerFrontMm(c){const b=drawerBodyMm(c);return b===null?null:b+44}
 function widthGroup(c){if(c>=61&&c<=75)return'A2';if(c>=76&&c<=100)return'B2';if(c>=101&&c<=120)return'C2';return null}
@@ -267,10 +269,10 @@ function calcArmario(){const raw=val('armBox'),measure=document.getElementById('
 function drawerHtml(c,count=1,special=!isTabulatedWoodWidth(c)){
  if(!Number.isInteger(count)||count<1||count>6)return '<div class="notice">Elige entre 1 y 6 cajones de madera.</div>';
  if(special){
-  const h=interiorMm(c),tr=specialDrawerTrabaMm(h);
-  const metrics=metric('Cantidad',pluralCajon(count))+metric('Hueco exacto',mm(h),true)+metric('Traba por cajón',mm(tr),true)+metric('Frente por cajón','Por confirmar')+depthMetrics();
-  const note='Regla de taller confirmada por Iván para huecos especiales: traba = hueco − 102 mm. Descuento: 2 × 19 mm de costados de cajonera + 2 × 19 mm de costados de cajón + 2 × 13 mm de guías. Se conserva la medida exacta. Frente y profundidad de las piezas pendientes de confirmar. '+depthNote();
-  const sketch='<div class="sketch"><div class="drawerSketch"><div class="drawerFront">FRENTE · POR CONFIRMAR</div><div class="drawerBody"><span class="sideL"></span><span class="sideR"></span><div class="drawerBottom">HUECO · '+mm(h)+'</div></div><div class="dimension">↔ TRABA '+mm(tr)+' · '+pluralCajon(count)+'</div></div></div>';
+  const h=interiorMm(c),tr=specialDrawerTrabaMm(h),body=specialDrawerBodyMm(h),fr=specialDrawerFrontMm(h);
+  const metrics=metric('Cantidad',pluralCajon(count))+metric('Hueco exacto',mm(h),true)+metric('Caja cajón (ancho)',mm(body))+metric('Traba por cajón',mm(tr),true)+metric('Frente por cajón',mm(fr),true)+depthMetrics();
+  const note='Regla de taller confirmada por Iván para huecos especiales: traba = hueco − 102 mm. Descuento: 2 × 19 mm de costados de cajonera + 2 × 19 mm de costados de cajón + 2 × 13 mm de guías. Caja del cajón = traba + 38 mm. Frente = caja del cajón + 26 mm de guías + 38 mm de costados de cajonera; por tanto, frente = hueco. Medida según tu regla, sin holgura adicional. Se conserva la medida exacta. Profundidad de las piezas pendiente de confirmar. '+depthNote();
+  const sketch='<div class="sketch"><div class="drawerSketch"><div class="drawerFront">FRENTE · '+mm(fr)+'</div><div class="drawerBody"><span class="sideL"></span><span class="sideR"></span><div class="drawerBottom">HUECO · '+mm(h)+'</div></div><div class="dimension">↔ TRABA '+mm(tr)+' · '+pluralCajon(count)+'</div></div></div>';
   return resultWrap('Madera · '+pluralCajon(count)+' · medida especial',metrics,note,false)+sketch;
  }
  const h=interiorMm(c),body=drawerBodyMm(c),tr=drawerTrabaMm(c),fr=drawerFrontMm(c),reduced=reducedDepth();
@@ -287,7 +289,7 @@ function calcDrawer(){
  const c=val('drawerBox'),count=Number(document.getElementById('woodCount').value);
  if(!Number.isFinite(c)||c<38||c>120)return showResult('drawerResult','<div class="notice">Introduce una caja entre 38 y 120 cm.</div>');
  showResult('drawerResult',drawerHtml(c,count));
- addHistory('Cajones madera',c,isTabulatedWoodWidth(c)?'Traba '+mm(drawerTrabaMm(c))+' · frente '+mm(drawerFrontMm(c)):'Traba '+mm(drawerTrabaMm(c))+' · frente pendiente',count);
+ addHistory('Cajones madera',c,isTabulatedWoodWidth(c)?'Traba '+mm(drawerTrabaMm(c))+' · frente '+mm(drawerFrontMm(c)):'Traba '+mm(drawerTrabaMm(c))+' · frente '+mm(specialDrawerFrontMm(interiorMm(c))),count);
 }
 function metalHtml(c,type,count=1){
  if(!permittedCounts(type).includes(count))return '<div class="notice">Cantidad de cajones no disponible para este tipo.</div>';
@@ -341,7 +343,7 @@ function quickCalculate(){
   const ci=c,g=widthGroup(ci);
   const chest=g?chestHtml(ci,count):'';
   showResult(out,measureBanner(measure,raw,c)+drawerHtml(ci,count,measure==='hueco'||!isTabulatedWoodWidth(ci))+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
-  addHistory('Cajones madera',ci,measure==='hueco'||!isTabulatedWoodWidth(ci)?'Traba '+mm(specialDrawerTrabaMm(interiorMm(ci)))+' · frente pendiente':pluralCajon(count)+' · traba '+mm(drawerTrabaMm(ci))+' · frente '+mm(drawerFrontMm(ci)),count,measure);
+  addHistory('Cajones madera',ci,measure==='hueco'||!isTabulatedWoodWidth(ci)?'Traba '+mm(specialDrawerTrabaMm(interiorMm(ci)))+' · frente '+mm(specialDrawerFrontMm(interiorMm(ci))):pluralCajon(count)+' · traba '+mm(drawerTrabaMm(ci))+' · frente '+mm(drawerFrontMm(ci)),count,measure);
  }else if(type==='metalico'||type==='joyero'){
   if(c<=16.1)return showResult(out,'<div class="notice">Introduce una caja válida.</div>');
   showResult(out,measureBanner(measure,raw,c)+metalHtml(c,type,count));
