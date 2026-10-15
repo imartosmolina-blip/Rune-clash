@@ -283,7 +283,7 @@ function drawerTrabaMm(c){const b=drawerBodyMm(c);return b===null?null:b-38}
 function drawerFrontMm(c){const b=drawerBodyMm(c);return b===null?null:b+44}
 function isTariffNominalWidth(c){return Number.isFinite(c)&&Math.abs(c-Math.round(c))<1e-8}
 function validSpecialHueco(cmValue){return Number.isFinite(cmValue)&&cmValue>10.2}
-function widthGroup(c){if(c>=61&&c<=75)return'A2';if(c>=76&&c<=100)return'B2';if(c>=101&&c<=120)return'C2';return null}
+function widthGroup(c){if(c>=38&&c<=50)return'B1';if(c>=51&&c<=60)return'C1';if(c>=61&&c<=75)return'A2';if(c>=76&&c<=100)return'B2';if(c>=101&&c<=120)return'C2';return null}
 function metric(label,value,important=false){return '<div class="metric'+(important?' important':'')+'"><small>'+label+'</small><strong>'+value+'</strong></div>'}
 function resultWrap(title,metrics,note='',verified=true){return '<div class="resultHero"><div class="resultHead"><strong>'+title+'</strong><span class="verified">'+(verified?'✓ COTAS COMPROBADAS':'⚠ COTAS PENDIENTES')+'</span></div><div class="metrics">'+metrics+'</div>'+(note?'<div class="notice">'+note+'</div>':'')+'</div>'}
 function showResult(id,html){const el=document.getElementById(id);el.innerHTML=html;el.classList.add('show')}
@@ -414,7 +414,7 @@ function calcMetal(){
 }
 function chestHtml(c,count,withSketch=true){
  const g=widthGroup(c);
- if(!g||!isTariffNominalWidth(c))return '<div class="notice">La cajonera estándar requiere una caja de 61 a 120 cm en pasos de 1 cm, según la tarifa. Para una medida fuera de ese catálogo, selecciona «Cajonera especial».</div>';
+ if(!g||!isTariffNominalWidth(c))return '<div class="notice">La cajonera estándar requiere una caja de 38 a 120 cm en pasos de 1 cm, según la tarifa. Para una medida fuera de ese catálogo, selecciona «Cajonera especial».</div>';
  if(!Number.isInteger(count)||count<1||count>6)return '<div class="notice">Elige entre 1 y 6 cajones.</div>';
  const total=chestTotalCm(count),verified=total!==null,standard=!reducedDepth(),code=verified?'C'+count+'.'+g:null,inside=interiorMm(c)/10;
  let metrics=metric('Número de cajones',pluralCajon(count),true)+metric('Hueco interior (ancho)',cm(inside))+metric('Código tarifa',code||'Por confirmar');
@@ -436,7 +436,7 @@ function calcChest(){
    addHistory('Cajones madera',c,woodSummary(c,true),count,'hueco','special');
  }else{
    const g=widthGroup(c);
-   if(!g||!isTariffNominalWidth(c))return showResult('chestResult','<div class="notice">Cajonera estándar: caja de 61 a 120 cm en pasos de 1 cm. Para una medida no catalogada, selecciona «Cajonera especial».</div>');
+   if(!g||!isTariffNominalWidth(c))return showResult('chestResult','<div class="notice">Cajonera estándar: caja de 38 a 120 cm en pasos de 1 cm. Para una medida no catalogada, selecciona «Cajonera especial».</div>');
    showResult('chestResult',chestHtml(c,count));
    addHistory('Cajones madera',c,pluralCajon(count)+(chestTotalCm(count)!==null?' · código C'+count+'.'+g:' · alto por confirmar'),count);
  }
@@ -452,7 +452,7 @@ function makeSketch(){
    return;
  }
  const g=widthGroup(c);
- if(!g||!isTariffNominalWidth(c)){d.innerHTML='<span style="color:#ff9298;font-size:11px">Estándar: caja de 61 a 120 cm en pasos de 1 cm. Para otras medidas, elige especial.</span>';return}
+ if(!g||!isTariffNominalWidth(c)){d.innerHTML='<span style="color:#ff9298;font-size:11px">Estándar: caja de 38 a 120 cm en pasos de 1 cm. Para otras medidas, elige especial.</span>';return}
  const total=chestTotalCm(count),verified=total!==null,code=verified?'C'+count+'.'+g:'Por confirmar';
  d.innerHTML=woodAssemblySketch(c,count,false);
  const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Código',code)+metric('Costado (alto)',verified?cm(total-3):'Por confirmar')+metric('Alto total',verified?cm(total):'Por confirmar')+metric('Sobre (fondo)',verified&&!reducedDepth()?'50 cm':'Por confirmar')+depthMetrics();
