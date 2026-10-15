@@ -28,7 +28,7 @@ button,input,select,textarea{font:inherit} button{touch-action:manipulation}
 .herohead{position:relative;z-index:1;display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.kicker{color:#88c7ff;font-size:10px;letter-spacing:1.5px;font-weight:950}
 .hero h2{margin:5px 0 3px;font-size:clamp(25px,7vw,39px);letter-spacing:-1.1px}.hero p{margin:0;color:var(--muted);font-size:13px}
 .reference{color:#ffe39a;background:rgba(245,199,95,.09);border:1px solid rgba(245,199,95,.25);padding:8px 10px;border-radius:12px;font-size:10px;font-weight:950;white-space:nowrap}
-.depthFirst{position:relative;z-index:1;margin-top:17px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:10px;align-items:end}
+.depthFirst{position:relative;z-index:1;margin-top:17px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.12fr);gap:10px;align-items:end}
 .depthFirst .field select{border-color:#548bc1;background:#101e30}
 .depthInfo{min-height:50px;border:1px solid #36536d;border-radius:14px;background:#0f1d2a;padding:9px 13px;display:flex;flex-direction:column;justify-content:center;color:#dcecff;font-size:11px;line-height:1.35}
 .depthInfo b{color:#8fd2ff;font-size:13px}
@@ -87,6 +87,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
   <optgroup label="Batientes"><option value="bat61">Batiente · fondo 61 cm · caja 58 cm</option><option value="bat58">Batiente · fondo 58 cm · caja 55 cm</option></optgroup>
   <optgroup label="Vestidores"><option value="vest59">Vestidor · fondo 59 cm · caja 58 cm</option></optgroup>
   </select></div>
+  <div class="field"><label for="woodSideDepth">FONDO COSTADO DE CAJÓN (cm)</label><select id="woodSideDepth" onchange="onWoodSideDepthChange()"><option value="45">45 cm · habitual</option><option value="40">40 cm</option><option value="35">35 cm</option><option value="30">30 cm</option></select></div>
   <div class="depthInfo" id="depthInfo" aria-live="polite">Selecciona el fondo para adaptar los cálculos.</div>
 </div>
 <div class="quick">
@@ -163,6 +164,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 const historyKey='tallerV2_history';
 const depthKey='tallerV2_depth';
 const configurationKey='tallerV2_configuration';
+const woodSideDepthKey='tallerV3_woodSideDepth';
 function pluralCajon(n){return n===1?'1 cajón':n+' cajones'}
 function permittedCounts(type){return type==='madera'?[1,2,3,4,5,6]:type==='metalico'?[1,2]:[1]}
 function setCountOptions(selectId,type,preferred){
@@ -264,6 +266,8 @@ function val(id){return Number(String(document.getElementById(id).value).replace
 function mm(v){return Number(v.toFixed(6)).toLocaleString('es-ES',{maximumFractionDigits:6})+' mm'}
 function cm(v){return Number(v.toFixed(6)).toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:6})+' cm'}
 function interiorMm(c){return c*10-39}
+function woodSideDepthCm(){const value=Number(document.getElementById('woodSideDepth').value);return [45,40,35,30].includes(value)?value:45}
+function onWoodSideDepthChange(){try{localStorage.setItem(woodSideDepthKey,String(woodSideDepthCm()))}catch(e){}onDepthChange()}
 // Fuente: tabla física ARMARIOS CORREDEROS / BATIENTES, IMG_4417.jpeg.
  // Anchos 38–120 cm, pasos de 1 cm. El despiece sigue bloques de 5 cm.
  // Se mantiene completamente independiente del cálculo de cajonera especial.
@@ -383,7 +387,7 @@ function woodAssemblySketch(c,count,special=false){
  const pieceList=special?'':('<div class="metrics" style="margin-top:12px">'+
   metric('Frentes · 160 mm alto',count+' × '+label(front),true)+
   metric('Trabas · 90 mm alto',count*2+' × '+label(traba),true)+
-  metric('Costados · 120 mm alto',count*2+' uds. · largo pendiente')+
+  metric('Costados · 120 mm alto',count*2+' uds. · fondo '+cm(woodSideDepthCm()))+
   metric('Fondos · ancho',count+' × '+label(drawerBottomWidthMm(c)))+
   metric('Regletas laterales','2 × '+label(reg))+
   metric('DIF','26 mm')+'</div>');
@@ -408,7 +412,7 @@ function drawerHtml(c,count=1,special=false){
  else{metrics+=metric('Regleta izquierda','Por confirmar')+metric('Regleta derecha','Por confirmar');note+=(group?'La caja de '+cm(c)+' es ESTÁNDAR según la tarifa ESENZIA 4.0, grupo '+group+'. No cambies a «Cajonera especial». ':'')+'El despiece de fabricación para este ancho está pendiente de contrastar: caja del cajón, trabas, frente y regletas. No se extrapolan las cotas de caja 100 cm. ';}
  if(chestTotalCm(count)!==null)metrics+=metric('Alto total C'+count,cm(chestTotalCm(count)));
  else note+='La altura total de una cajonera de '+count+' cajones está por confirmar. ';
- metrics+=depthMetrics()+metric('Fondo cajón (prof.)','Por confirmar: depende del fondo del costado');
+ metrics+=depthMetrics()+metric('Costados (profundidad)',cm(woodSideDepthCm()))+metric('Fondo tablero (profundidad)','Por confirmar: no equivale al largo del costado');
  note+=depthNote();
  return resultWrap('Madera · '+pluralCajon(count)+' · caja '+cm(c),metrics,note,known&&!reduced)+woodAssemblySketch(c,count,false);
 }
@@ -502,7 +506,7 @@ function enforceTarifa(){const q=document.getElementById('query'),rule='Usa la t
 async function copyText(text){try{await navigator.clipboard.writeText(text)}catch(e){}}
 async function askChatGPT(){const q=document.getElementById('query'),text=q.value.trim();if(!text){toast('Escribe primero la consulta');q.focus();return}await copyText(text);toast('Abriendo ChatGPT…');window.open('https://chatgpt.com/?q='+encodeURIComponent(text),'_blank')}
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
-document.getElementById('quickBox').addEventListener('keydown',e=>{if(e.key==='Enter')quickCalculate()});document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter')calculate()});try{const stored=localStorage.getItem(depthKey);if(depthProfiles[stored])document.getElementById('armDepth').value=stored}catch(e){}
+document.getElementById('quickBox').addEventListener('keydown',e=>{if(e.key==='Enter')quickCalculate()});document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter')calculate()});try{const stored=localStorage.getItem(depthKey);if(depthProfiles[stored])document.getElementById('armDepth').value=stored;const ws=Number(localStorage.getItem(woodSideDepthKey));if([45,40,35,30].includes(ws))document.getElementById('woodSideDepth').value=String(ws)}catch(e){}
 try{const settings=JSON.parse(localStorage.getItem(configurationKey)||'{}');if(permittedCounts(settings.type).includes(settings.count)&&['madera','metalico','joyero'].includes(settings.type)){document.getElementById('quickType').value=settings.type;setCountOptions('quickCount',settings.type,settings.count);document.getElementById('quickWoodMode').value=settings.woodMode==='special'?'special':'standard';if(['caja','hueco'].includes(settings.measure))document.getElementById('quickMeasure').value=settings.measure;else if(settings.woodMode==='special'&&settings.type==='madera')document.getElementById('quickMeasure').value='hueco'}else setCountOptions('quickCount','madera',3)}catch(e){setCountOptions('quickCount','madera',3)}
 syncWoodModeVisibility();onQuickMeasureChange();onArmMeasureChange();onMetalTypeChange();onDepthChange();tick();setInterval(tick,30000);renderHistory();
 </script>
