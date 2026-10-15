@@ -75,7 +75,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 <body>
 <main class="app" id="home">
 <header class="topbar">
-<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v2.9</p></div></div>
+<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v3.0</p></div></div>
 <div class="statuspill"><span class="statusdot"></span><span class="clocklabel">ACTIVO</span><span id="clock">--:--</span></div>
 </header>
 
@@ -264,7 +264,7 @@ function val(id){return Number(String(document.getElementById(id).value).replace
 function mm(v){return Number(v.toFixed(6)).toLocaleString('es-ES',{maximumFractionDigits:6})+' mm'}
 function cm(v){return Number(v.toFixed(6)).toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:6})+' cm'}
 function interiorMm(c){return c*10-39}
-function isTabulatedWoodWidth(c){return Number.isFinite(c)&&Math.abs(c-100)<1e-8} // Único ancho con despiece de piezas contrastado
+function isTabulatedWoodWidth(c){return Number.isFinite(c)&&Math.abs(c-100)<1e-8} // Ejemplo con despiece de piezas contrastado; NO significa que otros anchos no sean estándar.
 function drawerBodyMm(c){return isTabulatedWoodWidth(c)?c*10-143:null}
 function specialDrawerTrabaMm(huecoMm){return Number((huecoMm-102).toFixed(6))}
 function specialDrawerBodyMm(huecoMm){return Number((specialDrawerTrabaMm(huecoMm)+38).toFixed(6))}
@@ -381,10 +381,11 @@ function drawerHtml(c,count=1,special=false){
  }
  if(!isTariffNominalWidth(c))return resultWrap('Madera · estándar',metric('Caja indicada',cm(c)), 'El catálogo utiliza anchos de caja en pasos de 1 cm. La medida indicada no es estándar: selecciona «Cajonera especial» e indica el hueco real, sin redondear.',false);
  const h=interiorMm(c),known=isTabulatedWoodWidth(c),reduced=reducedDepth(),body=known?drawerBodyMm(c):null,tr=known?drawerTrabaMm(c):null,fr=known?drawerFrontMm(c):null,reg=standardRegletaMm(c);
- let metrics=metric('Cantidad',pluralCajon(count),true)+metric('Hueco (ancho)',mm(h))+metric('Caja cajón (ancho)',known?mm(body):'Por confirmar')+metric('Traba por cajón',known?mm(tr):'Por confirmar',known)+metric('Frente por cajón',known?mm(fr):'Por confirmar',known);
+ const group=widthGroup(c),code=group&&count<=4?'C'+count+'.'+group:null;
+ let metrics=metric('Cantidad',pluralCajon(count),true)+metric('Hueco (ancho)',mm(h),true)+(group?metric('Ancho estándar','SÍ · GRUPO '+group,true):'')+(code?metric('Código tarifa',code,true):'')+metric('Caja cajón (ancho)',known?mm(body):'Por confirmar')+metric('Traba por cajón',known?mm(tr):'Por confirmar',known)+metric('Frente por cajón',known?mm(fr):'Por confirmar',known);
  let note='Cotas por cajón para las '+count+' unidades; el croquis muestra tantos frentes como cajones seleccionados. ';
  if(known){metrics+=metric('Regleta izquierda',mm(reg))+metric('Regleta derecha',mm(reg))+metric('Fondo cajón (ancho)','838 mm')+metric('DIF','26 mm');note+='Despiece de piezas confirmado para caja de 100 cm. ';}
- else{metrics+=metric('Regleta izquierda','Por confirmar')+metric('Regleta derecha','Por confirmar');note+='La tarifa identifica este ancho de caja pero no hemos contrastado todavía las cotas de despiece de cajón y regletas para fabricarlo. No se extrapolan las de caja 100 cm. ';}
+ else{metrics+=metric('Regleta izquierda','Por confirmar')+metric('Regleta derecha','Por confirmar');note+=(group?'La caja de '+cm(c)+' es ESTÁNDAR según la tarifa ESENZIA 4.0, grupo '+group+'. No cambies a «Cajonera especial». ':'')+'El despiece de fabricación para este ancho está pendiente de contrastar: caja del cajón, trabas, frente y regletas. No se extrapolan las cotas de caja 100 cm. ';}
  if(chestTotalCm(count)!==null)metrics+=metric('Alto total C'+count,cm(chestTotalCm(count)));
  else note+='La altura total de una cajonera de '+count+' cajones está por confirmar. ';
  metrics+=depthMetrics()+metric('Fondo cajón (prof.)','Por confirmar');
