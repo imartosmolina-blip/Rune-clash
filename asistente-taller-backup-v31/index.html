@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0d12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Taller Baixmoduls">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Taller Baixmoduls</title>
+<style>
+:root{--bg:#090c11;--panel:#111720;--panel2:#171f2a;--line:#273241;--text:#f6f8fb;--muted:#8f9cad;--blue:#5faeff;--green:#4adea7;--gold:#f5c75f;--shadow:0 18px 44px rgba(0,0,0,.34)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{margin:0;min-height:100dvh;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(circle at 80% -8%,rgba(52,129,218,.22),transparent 34%),radial-gradient(circle at -10% 28%,rgba(58,205,169,.08),transparent 30%),linear-gradient(180deg,#090c11,#0b1017 55%,#090c11)}
+button,input,select,textarea{font:inherit} button{touch-action:manipulation}
+.app{max-width:1120px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 14px calc(104px + env(safe-area-inset-bottom))}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 2px 14px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brandmark{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;flex:0 0 auto;background:linear-gradient(145deg,#1f8bf5,#245dba);box-shadow:0 10px 26px rgba(34,126,225,.28);border:1px solid rgba(255,255,255,.13);font-size:25px}
+.brand h1{font-size:22px;line-height:1.1;margin:0;letter-spacing:-.45px}.brand p{margin:4px 0 0;color:var(--muted);font-size:11px;font-weight:700}
+.statuspill{display:flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid var(--line);border-radius:999px;background:rgba(15,21,30,.85);font-size:11px;font-weight:900;color:#dbe6f2;white-space:nowrap}
+.statusdot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+.hero{position:relative;overflow:hidden;padding:20px;border-radius:25px;border:1px solid #2b3849;background:linear-gradient(145deg,rgba(24,34,47,.98),rgba(12,18,26,.98));box-shadow:var(--shadow)}
+.hero:after{content:"";position:absolute;right:-68px;top:-92px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(73,154,247,.24),transparent 66%);pointer-events:none}
+.herohead{position:relative;z-index:1;display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.kicker{color:#88c7ff;font-size:10px;letter-spacing:1.5px;font-weight:950}
+.hero h2{margin:5px 0 3px;font-size:clamp(25px,7vw,39px);letter-spacing:-1.1px}.hero p{margin:0;color:var(--muted);font-size:13px}
+.reference{color:#ffe39a;background:rgba(245,199,95,.09);border:1px solid rgba(245,199,95,.25);padding:8px 10px;border-radius:12px;font-size:10px;font-weight:950;white-space:nowrap}
+.depthFirst{position:relative;z-index:1;margin-top:17px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.12fr);gap:10px;align-items:end}
+.depthFirst .field select{border-color:#548bc1;background:#101e30}
+.depthInfo{min-height:50px;border:1px solid #36536d;border-radius:14px;background:#0f1d2a;padding:9px 13px;display:flex;flex-direction:column;justify-content:center;color:#dcecff;font-size:11px;line-height:1.35}
+.depthInfo b{color:#8fd2ff;font-size:13px}
+.quick{position:relative;z-index:1;margin-top:11px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.quick .quickWidth{grid-column:span 3}.quick .primary{grid-column:span 1}
+.field label,.toolpanel label{display:block;margin:0 0 6px;color:#a9b8c9;font-size:10px;font-weight:950;letter-spacing:.45px}
+input,select,textarea{width:100%;border:1px solid #344256;background:#0a111a;color:#fff;border-radius:14px;outline:none;transition:.15s ease}
+input,select{height:50px;padding:0 13px;font-size:16px;font-weight:800}textarea{min-height:120px;padding:13px;resize:vertical;line-height:1.4}
+input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3px rgba(94,170,255,.12)}
+.primary{border:0;border-radius:14px;padding:0 17px;height:50px;align-self:end;color:#fff;font-weight:950;background:linear-gradient(135deg,#58aaff,#1875df);box-shadow:0 9px 22px rgba(31,120,229,.28);cursor:pointer}
+.primary:active,.card:active,.secondary:active,.navbtn:active{transform:scale(.98)}
+.sectiontitle{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:20px 3px 10px}.sectiontitle h3{margin:0;font-size:15px}.sectiontitle span{font-size:10px;color:#77869a;font-weight:850}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.card{min-height:132px;padding:15px;border:1px solid #293647;border-radius:20px;text-align:left;color:#fff;background:linear-gradient(160deg,#18222f,#101720);box-shadow:0 10px 25px rgba(0,0,0,.22);cursor:pointer;transition:.12s ease;position:relative;overflow:hidden}
+.card:before{content:"";position:absolute;inset:auto -30px -50px auto;width:110px;height:110px;border-radius:50%;background:rgba(89,171,255,.08)}
+.card .ico{font-size:29px;display:block;margin-bottom:18px}.card strong{display:block;font-size:14px}.card small{display:block;margin-top:4px;color:#8fa0b2;font-size:10px;line-height:1.25;font-weight:700}
+.card.active{border-color:#5faeff;background:linear-gradient(160deg,#1a314b,#101a27);box-shadow:0 0 0 2px rgba(95,174,255,.10),0 10px 25px rgba(0,0,0,.25)}
+.toolpanel{display:none;margin-top:12px;border:1px solid #2a3849;border-radius:23px;padding:17px;background:linear-gradient(160deg,rgba(18,25,35,.98),rgba(12,18,26,.98));box-shadow:var(--shadow)}
+.toolpanel.show{display:block}.paneltop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.paneltitle{display:flex;align-items:center;gap:10px}.paneltitle .bigico{font-size:27px}.paneltitle h3{margin:0;font-size:18px}.paneltitle p{margin:3px 0 0;color:var(--muted);font-size:10px}
+.close{border:1px solid #344355;background:#111a25;color:#aebdcd;width:36px;height:36px;border-radius:12px;cursor:pointer;font-weight:900}
+.formrow{display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end}.secondary{height:50px;border:1px solid #344355;background:#15202d;color:#e8f2fb;border-radius:14px;padding:0 15px;font-weight:900;cursor:pointer}
+.result{display:none;margin-top:14px}.result.show{display:block}.resultHero{padding:15px;border-radius:18px;border:1px solid #314158;background:linear-gradient(145deg,#101d2b,#0d151f)}
+.resultHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.resultHead strong{font-size:13px}.verified{font-size:9px;color:#83e7bd;font-weight:950;letter-spacing:.7px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{padding:12px;border-radius:14px;background:#151f2b;border:1px solid #273648;min-width:0}
+.metric small{display:block;color:#8596aa;font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.4px}.metric strong{display:block;margin-top:5px;font-size:20px;line-height:1.05;overflow-wrap:anywhere}
+.metric.important{background:linear-gradient(145deg,#14324a,#112538);border-color:#35678f}.metric.important strong{color:#8ed0ff}
+.notice{margin-top:9px;padding:10px 12px;border-radius:13px;border:1px solid rgba(245,199,95,.20);background:rgba(245,199,95,.07);color:#f3d999;font-size:10px;line-height:1.45;font-weight:700}
+.sketch{margin-top:10px;min-height:205px;border:1px solid #2b3b4d;border-radius:17px;background:#0a1119;padding:17px;display:flex;align-items:center;justify-content:center}
+.drawerSketch{width:min(92%,470px)}.drawerBody{height:135px;border:2px solid #dbe8f5;border-top:0;position:relative;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01))}
+.drawerFront{height:39px;border:2px solid #dbe8f5;background:#1b2b3e;display:grid;place-items:center;font-size:10px;font-weight:900}.drawerBottom{position:absolute;left:12px;right:12px;bottom:12px;height:62px;border:1px solid #637b96;background:rgba(116,215,255,.06);display:grid;place-items:center;color:#91a9c1;font-size:10px}
+.sideL,.sideR{position:absolute;top:10px;bottom:9px;width:11px;background:#e7eef6}.sideL{left:8px}.sideR{right:8px}.dimension{margin-top:20px;text-align:center;color:#f5ca69;font-size:11px;font-weight:950}
+.chestSketch{width:min(84%,390px);border:3px solid #dde8f3;background:rgba(255,255,255,.02)}.chestTop{height:18px;border-bottom:2px solid #cbd8e5;background:rgba(95,174,255,.13);display:grid;place-items:center;font-size:9px;color:#a8d6ff}
+.chestDrawer{height:48px;border-bottom:2px solid #8299af;display:grid;place-items:center;font-size:10px;font-weight:850}
+.tarifagrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tarifaitem{padding:14px;border-radius:15px;border:1px solid #2a394b;background:#131c27}.tarifaitem small{display:block;color:#8595a8;font-size:9px;font-weight:900;text-transform:uppercase}.tarifaitem strong{display:block;margin-top:5px;font-size:17px}
+.calcwrap{display:grid;grid-template-columns:1fr auto;gap:8px}.calcanswer{margin-top:9px;padding:14px;border-radius:14px;background:#0c1722;border:1px solid #263647;font-size:18px;font-weight:950;color:#9fd6ff}
+.history{margin-top:12px;display:grid;gap:7px}.hist{display:flex;justify-content:space-between;gap:10px;text-align:left;border:1px solid #273648;background:#101821;color:#dce6ef;border-radius:13px;padding:10px 12px;font-size:11px;cursor:pointer}.hist span:last-child{color:#73bfff;font-weight:900}
+.aiBlock{margin-top:12px}.aiActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.hint{margin-top:11px;color:#6f8093;font-size:9px;text-align:center;line-height:1.5}
+.nav{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(calc(100% - 24px),700px);display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px;border:1px solid rgba(63,79,98,.9);border-radius:19px;background:rgba(13,18,25,.91);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 16px 35px rgba(0,0,0,.36);z-index:20}
+.navbtn{border:0;background:transparent;color:#8e9caf;border-radius:13px;padding:8px 5px;font-size:9px;font-weight:900;cursor:pointer}.navbtn b{display:block;font-size:20px;margin-bottom:3px}.navbtn.active{background:#192432;color:#fff}
+.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(12px);background:#152231;color:#eaf4ff;border:1px solid #34495e;border-radius:999px;padding:9px 13px;font-size:10px;font-weight:850;opacity:0;pointer-events:none;transition:.18s;z-index:30;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:760px){.depthFirst{grid-template-columns:1fr}.hero{padding:16px}.herohead{display:block}.reference{display:inline-block;margin-top:12px}.quick{grid-template-columns:1fr 1fr}.quick .field:first-child{grid-column:1/-1}.quick .quickWidth{grid-column:1/-1}.quick .primary{grid-column:1/-1}.cards{grid-template-columns:repeat(2,1fr)}.card{min-height:120px}.formrow{grid-template-columns:1fr 1fr}.formrow .primary,.formrow .secondary{grid-column:1/-1}.metrics,.tarifagrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:430px){.brandmark{width:43px;height:43px}.statuspill{padding:8px 9px}.statuspill .clocklabel{display:none}.hero h2{font-size:28px}.metrics{grid-template-columns:1fr 1fr}.metric strong{font-size:18px}}
+</style>
+</head>
+<body>
+<main class="app" id="home">
+<header class="topbar">
+<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v3.1</p></div></div>
+<div class="statuspill"><span class="statusdot"></span><span class="clocklabel">ACTIVO</span><span id="clock">--:--</span></div>
+</header>
+
+<section class="hero">
+<div class="herohead"><div><div class="kicker">CONSULTA RÁPIDA</div><h2>¿Qué estás fabricando?</h2><p>Primero selecciona el fondo. Después indica el trabajo y la medida de caja o hueco.</p></div><div class="reference">ESENZIA 4.0 · REFERENCIA</div></div>
+<div class="depthFirst">
+  <div class="field"><label for="armDepth">1 · FONDO DEL ARMARIO</label><select id="armDepth" onchange="onDepthChange()">
+  <optgroup label="Correderos"><option value="cor68">Corredero · fondo 68 cm · caja 58 cm</option><option value="cor65">Corredero · fondo 65 cm · caja 55 cm</option></optgroup>
+  <optgroup label="Batientes"><option value="bat61">Batiente · fondo 61 cm · caja 58 cm</option><option value="bat58">Batiente · fondo 58 cm · caja 55 cm</option></optgroup>
+  <optgroup label="Vestidores"><option value="vest59">Vestidor · fondo 59 cm · caja 58 cm</option></optgroup>
+  </select></div>
+  <div class="field"><label for="woodSideDepth">FONDO COSTADO DE CAJÓN (cm)</label><select id="woodSideDepth" onchange="onWoodSideDepthChange()"><option value="45">45 cm · habitual</option><option value="40">40 cm</option><option value="35">35 cm</option><option value="30">30 cm</option></select></div>
+  <div class="depthInfo" id="depthInfo" aria-live="polite">Selecciona el fondo para adaptar los cálculos.</div>
+</div>
+<div class="quick">
+<div class="field"><label for="quickType">2 · TIPO DE TRABAJO</label><select id="quickType" onchange="onQuickTypeChange()"><option value="madera">Cajones de madera</option><option value="metalico">Cajones metálicos</option><option value="joyero">Joyero</option></select></div>
+<div class="field" id="quickWoodModeField"><label for="quickWoodMode">CONFIGURACIÓN DE MADERA</label><select id="quickWoodMode" onchange="onQuickWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div>
+<div class="field"><label for="quickCount">3 · CANTIDAD DE CAJONES</label><select id="quickCount" onchange="onQuickCountChange()"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div>
+<div class="field"><label for="quickMeasure">4 · MEDIDA DE PARTIDA</label><select id="quickMeasure" onchange="onQuickMeasureChange()"><option value="caja">Caja del armario</option><option value="hueco">Hueco interior</option></select></div>
+<div class="field quickWidth"><label for="quickBox" id="quickBoxLabel">5 · ANCHO CAJA (cm)</label><input id="quickBox" inputmode="decimal" placeholder="100"></div>
+<button class="primary" onclick="quickCalculate()">CALCULAR</button>
+</div>
+<div id="quickResult" class="result"></div>
+</section>
+
+<div class="sectiontitle"><h3>Herramientas del taller</h3><span>TOCA UNA OPCIÓN</span></div>
+<section class="cards">
+<button class="card" data-tool="madera" onclick="openTool('madera',this)"><span class="ico">🪵</span><strong>Cajones madera</strong><small>De 1 a 6 cajones, según configuración.</small></button>
+<button class="card" data-tool="metal" onclick="openTool('metal',this)"><span class="ico">🧰</span><strong>Metálica / Joyero</strong><small>Metálicos: 1 o 2 · joyero: 1.</small></button>
+<button class="card" data-tool="cajonera" onclick="openTool('cajonera',this)"><span class="ico">🗃️</span><strong>Cajoneras</strong><small>De 1 a 6 · cotas según tarifa.</small></button>
+<button class="card" data-tool="armario" onclick="openTool('armario',this)"><span class="ico">🚪</span><strong>Armarios</strong><small>Hueco interior desde la caja nominal.</small></button>
+<button class="card" data-tool="croquis" onclick="openTool('croquis',this)"><span class="ico">📐</span><strong>Croquis</strong><small>Esquema visual con cotas principales.</small></button>
+<button class="card" data-tool="tarifa" onclick="openTool('tarifa',this)"><span class="ico">📖</span><strong>Tarifa técnica</strong><small>Datos ESENZIA que ya están verificados.</small></button>
+<button class="card" data-tool="calc" onclick="openTool('calc',this)"><span class="ico">🧮</span><strong>Calculadora</strong><small>Operaciones rápidas en mm o cm.</small></button>
+<button class="card" data-tool="ia" onclick="openTool('ia',this)"><span class="ico">✨</span><strong>Consulta especial</strong><small>Solo para casos que no resuelve la herramienta.</small></button>
+</section>
+
+<section id="tool-madera" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">🪵</span><div><h3>Cajón de madera</h3><p>Medidas de fabricación verificadas</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="field" style="margin-bottom:10px"><label for="woodMode">CONFIGURACIÓN DE MADERA</label><select id="woodMode" onchange="onWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="formrow"><div><label id="drawerBoxLabel">CAJA DEL ARMARIO (cm)</label><input id="drawerBox" inputmode="decimal" placeholder="100"></div><div><label>CANTIDAD DE CAJONES</label><select id="woodCount"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="calcDrawer()">SACAR MEDIDAS</button></div><div id="drawerResult" class="result"></div>
+</section>
+
+<section id="tool-metal" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">🧰</span><div><h3>Cajón metálico / Joyero</h3><p>Reglas específicas de este sistema</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="formrow"><div><label>CAJA (cm)</label><input id="metalBox" inputmode="decimal" placeholder="100"></div><div><label>TIPO</label><select id="metalType" onchange="onMetalTypeChange()"><option value="metalico">Cajón metálico</option><option value="joyero">Joyero</option></select></div><button class="primary" onclick="calcMetal()">CALCULAR</button></div><div class="field" style="margin-top:10px"><label for="metalCount">CANTIDAD DE CAJONES</label><select id="metalCount" onchange="onMetalCountChange()"><option value="1">1 cajón</option><option value="2">2 cajones</option></select></div><div id="metalResult" class="result"></div>
+</section>
+
+<section id="tool-cajonera" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">🗃️</span><div><h3>Cajonera interior</h3><p>Distribución y medidas principales</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="field" style="margin-bottom:10px"><label for="chestMode">CONFIGURACIÓN DE MADERA</label><select id="chestMode" onchange="onChestModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="formrow"><div><label id="chestBoxLabel">CAJA (cm)</label><input id="chestBox" inputmode="decimal" placeholder="100"></div><div><label>NÚMERO DE CAJONES</label><select id="drawerCount"><option value="1">1 cajón · C1</option><option value="2">2 cajones · C2</option><option value="3" selected>3 cajones · C3</option><option value="4">4 cajones · C4</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="calcChest()">CALCULAR</button></div><div id="chestResult" class="result"></div>
+</section>
+
+<section id="tool-armario" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">🚪</span><div><h3>Armario</h3><p>Hueco interior desde la caja nominal</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="formrow"><div><label>MEDIDA DE PARTIDA</label><select id="armMeasure" onchange="onArmMeasureChange()"><option value="caja">Caja del armario</option><option value="hueco">Hueco interior</option></select></div><div><label id="armBoxLabel">ANCHO CAJA (cm)</label><input id="armBox" inputmode="decimal" placeholder="100"></div><button class="primary" onclick="calcArmario()">CALCULAR</button></div><div id="armResult" class="result"></div>
+</section>
+
+<section id="tool-croquis" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">📐</span><div><h3>Croquis rápido</h3><p>Cajonera interior estilo técnico</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="field" style="margin-bottom:10px"><label for="sketchMode">CONFIGURACIÓN DE MADERA</label><select id="sketchMode" onchange="onSketchModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="formrow"><div><label id="sketchBoxLabel">CAJA (cm)</label><input id="sketchBox" inputmode="decimal" placeholder="100"></div><div><label>CAJONES</label><select id="sketchCount"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="makeSketch()">DIBUJAR</button></div><div id="sketchMeta" class="result"></div><div class="sketch" id="diagram"><span style="color:#718296;font-size:11px">Introduce una caja y pulsa Dibujar.</span></div>
+</section>
+
+<section id="tool-tarifa" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">📖</span><div><h3>Tarifa técnica</h3><p>Solo datos ya comprobados</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="tarifagrid"><div class="tarifaitem"><small>C1 · alto total</small><strong>21,5 cm</strong></div><div class="tarifaitem"><small>C4 · alto total</small><strong>77 cm</strong></div><div class="tarifaitem"><small>C3 · alto total</small><strong>58,5 cm</strong></div><div class="tarifaitem"><small>Sobre</small><strong>3 cm</strong></div><div class="tarifaitem"><small>Fondo sobre cajonera</small><strong id="tarifaFondo">50 cm (caja 58)</strong></div><div class="tarifaitem"><small>C2 · alto total</small><strong>40 cm</strong></div><div class="tarifaitem"><small>Frente cajón</small><strong>16 cm</strong></div><div class="tarifaitem"><small>Grupo B2</small><strong>76–100 cm</strong></div></div>
+<div class="notice">Alturas de cajoneras de madera C1–C4 verificadas en tarifa, pág. 236. C5 y C6 no se extrapolan. Ejemplo verificado: caja 100 → interior 96,1 cm → grupo B2 → cajonera C3.B2. La profundidad de los interiores se verifica según el fondo elegido; los interiores afectados por reducción requieren adaptación.</div>
+</section>
+
+<section id="tool-calc" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">🧮</span><div><h3>Calculadora</h3><p>Operaciones rápidas</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="calcwrap"><input id="expr" inputmode="decimal" placeholder="Ej.: 1000 - 39"><button class="primary" onclick="calculate()">CALCULAR</button></div><div id="calcAnswer" class="calcanswer">Resultado</div>
+</section>
+
+<section id="tool-ia" class="toolpanel">
+<div class="paneltop"><div class="paneltitle"><span class="bigico">✨</span><div><h3>Consulta especial</h3><p>Para dudas que no estén automatizadas</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="aiBlock"><label>CONSULTA</label><textarea id="query" placeholder="Ejemplo: Tengo una caja de 100 cm y necesito una solución que no aparece en las herramientas."></textarea><div class="aiActions"><button class="secondary" onclick="enforceTarifa()">📖 Añadir regla de tarifa</button><button class="primary" onclick="askChatGPT()">ABRIR EN CHATGPT</button></div><div class="hint">Aquí sí se abre ChatGPT. Los cálculos normales se hacen directamente dentro del Taller.</div></div>
+</section>
+
+<div class="sectiontitle"><h3>Últimos cálculos</h3><span>ACCESO RÁPIDO</span></div><div class="history" id="historyList"></div>
+</main>
+
+<nav class="nav"><button class="navbtn active" onclick="goHome(this)"><b>⌂</b>Inicio</button><button class="navbtn" onclick="navTool('tarifa',this)"><b>📖</b>Tarifa</button><button class="navbtn" onclick="navTool('calc',this)"><b>🧮</b>Calcular</button><button class="navbtn" onclick="navTool('ia',this)"><b>✨</b>Consulta</button></nav>
+<div class="toast" id="toast"></div>
+
+<script>
+const historyKey='tallerV2_history';
+const depthKey='tallerV2_depth';
+const configurationKey='tallerV2_configuration';
+const woodSideDepthKey='tallerV3_woodSideDepth';
+function pluralCajon(n){return n===1?'1 cajón':n+' cajones'}
+function permittedCounts(type){return type==='madera'?[1,2,3,4,5,6]:type==='metalico'?[1,2]:[1]}
+function setCountOptions(selectId,type,preferred){
+ const node=document.getElementById(selectId);
+ const counts=permittedCounts(type);
+ const old=Number(preferred??node.value);
+ const count=counts.includes(old)?old:(type==='madera'?3:1);
+ node.innerHTML=counts.map(n=>'<option value="'+n+'">'+pluralCajon(n)+'</option>').join('');
+ node.value=String(count);
+ node.disabled=type==='joyero';
+ return count;
+}
+function saveQuickConfiguration(){try{localStorage.setItem(configurationKey,JSON.stringify({type:document.getElementById('quickType').value,count:Number(document.getElementById('quickCount').value),measure:document.getElementById('quickMeasure').value,woodMode:document.getElementById('quickWoodMode').value}))}catch(e){}}
+function boxFromMeasure(value,measure){return measure==='hueco'?Number((value+3.9).toFixed(8)):value}
+function onQuickMeasureChange(){
+ const type=document.getElementById('quickType').value,mode=document.getElementById('quickWoodMode').value;
+ const special=type==='madera'&&mode==='special',sel=document.getElementById('quickMeasure');
+ if(special)sel.value='hueco';
+ sel.disabled=special;
+ const m=sel.value,input=document.getElementById('quickBox');
+ document.getElementById('quickBoxLabel').textContent=m==='hueco'?'5 · ANCHO HUECO (cm)':'5 · ANCHO CAJA (cm)';
+ input.placeholder=m==='hueco'?'96,1':'100';
+ saveQuickConfiguration();
+ if(document.getElementById('quickResult').classList.contains('show')&&input.value.trim())quickCalculate();
+}
+function onArmMeasureChange(){const m=document.getElementById('armMeasure').value;const input=document.getElementById('armBox');document.getElementById('armBoxLabel').textContent=m==='hueco'?'ANCHO HUECO (cm)':'ANCHO CAJA (cm)';input.placeholder=m==='hueco'?'96,1':'100';if(document.getElementById('armResult').classList.contains('show')&&input.value.trim())calcArmario()}
+function measureBanner(measure,value,box){return measure==='hueco'?'<div class="notice">Partiendo de hueco: <b>'+cm(value)+'</b> → caja calculada <b>'+cm(box)+'</b> (hueco + 39 mm).</div>':''}
+function syncWoodModeVisibility(){document.getElementById('quickWoodModeField').style.display=document.getElementById('quickType').value==='madera'?'':'none'}
+function onWoodModeChange(){const special=document.getElementById('woodMode').value==='special';document.getElementById('drawerBoxLabel').textContent=special?'HUECO INTERIOR (cm)':'CAJA DEL ARMARIO (cm)';document.getElementById('drawerBox').value='';document.getElementById('drawerBox').placeholder=special?'93,7':'100';document.getElementById('drawerResult').classList.remove('show')}
+function onQuickTypeChange(){
+ syncWoodModeVisibility();
+ const type=document.getElementById('quickType').value;
+ setCountOptions('quickCount',type,undefined);
+ if(type==='madera'&&document.getElementById('quickWoodMode').value==='special')document.getElementById('quickMeasure').value='hueco';
+ onQuickMeasureChange();
+ saveQuickConfiguration();
+ if(document.getElementById('quickResult').classList.contains('show')&&document.getElementById('quickBox').value.trim())quickCalculate();
+}
+function onQuickCountChange(){
+ saveQuickConfiguration();
+ if(document.getElementById('quickResult').classList.contains('show')&&document.getElementById('quickBox').value.trim())quickCalculate();
+}
+function onQuickWoodModeChange(){
+ const special=document.getElementById('quickWoodMode').value==='special';
+ document.getElementById('quickMeasure').value=special?'hueco':'caja';
+ const input=document.getElementById('quickBox');input.value='';
+ syncWoodModeVisibility();
+ document.getElementById('quickResult').classList.remove('show');
+ onQuickMeasureChange();
+ toast(special?'Especial: introduce el hueco real':'Estándar: introduce la caja');
+}
+function onChestModeChange(){
+ const special=document.getElementById('chestMode').value==='special';
+ 
+ document.getElementById('chestBoxLabel').textContent=special?'ANCHO DEL HUECO INTERIOR (cm)':'CAJA (cm)';
+ const input=document.getElementById('chestBox');input.value='';input.placeholder=special?'93,7':'100';
+ document.getElementById('chestResult').classList.remove('show');
+}
+function onSketchModeChange(){
+ const special=document.getElementById('sketchMode').value==='special';
+ 
+ document.getElementById('sketchBoxLabel').textContent=special?'ANCHO DEL HUECO INTERIOR (cm)':'CAJA (cm)';
+ const input=document.getElementById('sketchBox');input.value='';input.placeholder=special?'93,7':'100';
+ document.getElementById('sketchMeta').classList.remove('show');
+ document.getElementById('diagram').innerHTML='<span style="color:#718296;font-size:11px">Introduce una medida y pulsa Dibujar.</span>';
+}
+
+function onMetalTypeChange(){
+ setCountOptions('metalCount',document.getElementById('metalType').value,1);
+ if(document.getElementById('metalResult').classList.contains('show')&&document.getElementById('metalBox').value.trim())calcMetal();
+}
+function onMetalCountChange(){
+ if(document.getElementById('metalResult').classList.contains('show')&&document.getElementById('metalBox').value.trim())calcMetal();
+}
+const depthProfiles={
+ cor68:{key:'cor68',kind:'Corredero',total:68,body:58},
+ cor65:{key:'cor65',kind:'Corredero',total:65,body:55},
+ bat61:{key:'bat61',kind:'Batiente',total:61,body:58},
+ bat58:{key:'bat58',kind:'Batiente',total:58,body:55},
+ vest59:{key:'vest59',kind:'Vestidor',total:59,body:58}
+};
+function getDepth(){return depthProfiles[document.getElementById('armDepth').value]||depthProfiles.cor68}
+function reducedDepth(){return getDepth().body!==58}
+function depthMetrics(){const p=getDepth();return metric('Fondo armario',cm(p.total))+metric('Fondo caja',cm(p.body),true)}
+function depthNote(){const p=getDepth();return p.body===58?'Caja de 58 cm: datos de fondo estándar de la tarifa. Las anchuras y alturas se calculan por separado.':'Caja reducida a 55 cm: la profundidad de cada interior afectado debe adaptarse. Se conservan las cotas verificadas de anchura y altura, pero las profundidades de fabricación no documentadas aparecen como pendientes. La tarifa aplica +20 % a los interiores afectados.'}
+function onDepthChange(){
+ const p=getDepth();
+ try{localStorage.setItem(depthKey,p.key)}catch(e){}
+ document.getElementById('depthInfo').innerHTML='<b>'+escapeHtml(p.kind)+' · fondo total '+cm(p.total)+'</b><span>Caja de '+cm(p.body)+(reducedDepth()?' · interior a adaptar':' · interior estándar')+'</span>';
+ document.getElementById('tarifaFondo').textContent=reducedDepth()?'Por confirmar (caja 55)':'50 cm (caja 58)';
+ if(document.getElementById('quickResult').classList.contains('show') && document.getElementById('quickBox').value.trim())quickCalculate();
+ if(document.getElementById('drawerResult').classList.contains('show') && document.getElementById('drawerBox').value.trim())calcDrawer();
+ if(document.getElementById('metalResult').classList.contains('show') && document.getElementById('metalBox').value.trim())calcMetal();
+ if(document.getElementById('chestResult').classList.contains('show') && document.getElementById('chestBox').value.trim())calcChest();
+ if(document.getElementById('armResult').classList.contains('show') && document.getElementById('armBox').value.trim())calcArmario();
+ if(document.getElementById('sketchMeta').classList.contains('show') && document.getElementById('sketchBox').value.trim())makeSketch();
+}
+function val(id){return Number(String(document.getElementById(id).value).replace(',','.'))}
+function mm(v){return Number(v.toFixed(6)).toLocaleString('es-ES',{maximumFractionDigits:6})+' mm'}
+function cm(v){return Number(v.toFixed(6)).toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:6})+' cm'}
+function interiorMm(c){return c*10-39}
+function woodSideDepthCm(){const value=Number(document.getElementById('woodSideDepth').value);return [45,40,35,30].includes(value)?value:45}
+function onWoodSideDepthChange(){try{localStorage.setItem(woodSideDepthKey,String(woodSideDepthCm()))}catch(e){}onDepthChange()}
+// Fuente: tabla física ARMARIOS CORREDEROS / BATIENTES, IMG_4417.jpeg.
+ // Anchos 38–120 cm, pasos de 1 cm. El despiece sigue bloques de 5 cm.
+ // Se mantiene completamente independiente del cálculo de cajonera especial.
+function isTabulatedWoodWidth(c){return Number.isFinite(c)&&c>=38&&c<=120&&Math.abs(c-Math.round(c))<1e-7}
+function standardWoodRow(c){
+ if(!isTabulatedWoodWidth(c))return null;
+ const nominal=Math.round(c);
+ const box=207+50*(Math.floor(nominal/5)-7);
+ const regleta=20+5*(nominal%5);
+ const hueco=nominal*10-39;
+ return {hueco,box,regleta,traba:box-38,frente:box+44,fondo:box-19,dif:26};
+}
+function drawerBodyMm(c){const row=standardWoodRow(c);return row?row.box:null}
+function drawerBottomWidthMm(c){const row=standardWoodRow(c);return row?row.fondo:null}
+function specialDrawerTrabaMm(huecoMm){return Number((huecoMm-102).toFixed(6))}
+function specialDrawerBodyMm(huecoMm){return Number((specialDrawerTrabaMm(huecoMm)+38).toFixed(6))}
+const SPECIAL_FRONT_OVERLAP_PER_SIDE_MM=10;
+function specialDrawerFrontMm(huecoMm){
+ // Regla del taller para cajonera ESPECIAL de madera:
+ // Hueco = caja cajón montada + 26 mm guías + 38 mm costados de cajonera.
+ // El frente tapa 10 mm de cada costado, contados DESDE el borde interior,
+ // sin volver a sumar los 38 mm completos de los costados.
+ if(!Number.isFinite(huecoMm)||huecoMm<=102)return null;
+ const box=specialDrawerBodyMm(huecoMm);
+ const front=Number((box+26+2*SPECIAL_FRONT_OVERLAP_PER_SIDE_MM).toFixed(6));
+ return front>0&&front<huecoMm?front:null;
+}
+function drawerTrabaMm(c){const b=drawerBodyMm(c);return b===null?null:b-38}
+function drawerFrontMm(c){const b=drawerBodyMm(c);return b===null?null:b+44}
+function isTariffNominalWidth(c){return Number.isFinite(c)&&Math.abs(c-Math.round(c))<1e-8}
+function validSpecialHueco(cmValue){return Number.isFinite(cmValue)&&cmValue>10.2}
+function widthGroup(c){if(c>=38&&c<=50)return'B1';if(c>=51&&c<=60)return'C1';if(c>=61&&c<=75)return'A2';if(c>=76&&c<=100)return'B2';if(c>=101&&c<=120)return'C2';return null}
+function metric(label,value,important=false){return '<div class="metric'+(important?' important':'')+'"><small>'+label+'</small><strong>'+value+'</strong></div>'}
+function resultWrap(title,metrics,note='',verified=true){return '<div class="resultHero"><div class="resultHead"><strong>'+title+'</strong><span class="verified">'+(verified?'✓ COTAS COMPROBADAS':'⚠ COTAS PENDIENTES')+'</span></div><div class="metrics">'+metrics+'</div>'+(note?'<div class="notice">'+note+'</div>':'')+'</div>'}
+function showResult(id,html){const el=document.getElementById(id);el.innerHTML=html;el.classList.add('show')}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),1900)}
+function addHistory(type,box,summary,count,measure='caja',woodMode='standard'){
+ let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){}
+ const p=getDepth();
+ const q=Number.isInteger(count)?count:null;
+ items=items.filter(x=>!(x.type===type&&x.box===box&&x.depth===p.key&&(x.count??null)===q&&(x.woodMode||'standard')===woodMode));
+ items.unshift({type,box,summary,depth:p.key,count:q,measure,woodMode});
+ items=items.slice(0,5);try{localStorage.setItem(historyKey,JSON.stringify(items))}catch(e){}renderHistory();
+}
+function renderHistory(){
+ const el=document.getElementById('historyList');
+ let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){}
+ if(!items.length){el.innerHTML='<div style="color:#718195;font-size:10px;padding:3px">Todavía no hay cálculos guardados.</div>';return}
+ el.innerHTML=items.map((x,i)=>'<button class="hist" onclick="repeatHistory('+i+')"><span><b>'+escapeHtml(x.type)+(x.woodMode==='special'?' · especial':'')+'</b> · '+(x.woodMode==='special'?'hueco ':'caja ')+cm(x.woodMode==='special'?Number((x.box-3.9).toFixed(8)):x.box)+(x.count?' · '+pluralCajon(x.count):'')+(depthProfiles[x.depth]?' · fondo '+cm(depthProfiles[x.depth].total):'')+'<br><small style="color:#7f90a4">'+escapeHtml(x.woodMode==='special'?woodSummary(x.box,true):x.summary)+'</small></span><span>ABRIR ›</span></button>').join('');
+}
+function repeatHistory(i){
+ let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){}
+ const x=items[i];if(!x)return;
+ if(depthProfiles[x.depth]){document.getElementById('armDepth').value=x.depth;onDepthChange()}
+ const type={'Cajón madera':'madera','Cajones madera':'madera','Cajón metálico':'metalico','Joyero':'joyero','Cajonera 3':'madera','Cajonera 2':'madera','Armario':'madera'}[x.type]||'madera';
+ document.getElementById('quickType').value=type;
+ document.getElementById('quickWoodMode').value=x.woodMode==='special'?'special':'standard';
+
+ syncWoodModeVisibility();
+ document.getElementById('quickMeasure').value=x.measure==='hueco'?'hueco':'caja';
+ onQuickMeasureChange();
+ document.getElementById('quickBox').value=x.measure==='hueco'?Number((x.box-3.9).toFixed(8)):x.box;
+ let count=x.count||(x.type==='Cajonera 2'?2:x.type==='Cajonera 3'?3:1);
+ setCountOptions('quickCount',type,count);
+ saveQuickConfiguration();quickCalculate();window.scrollTo({top:0,behavior:'smooth'});
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function openTool(name,btn){document.querySelectorAll('.toolpanel').forEach(x=>x.classList.remove('show'));document.querySelectorAll('.card').forEach(x=>x.classList.remove('active'));const p=document.getElementById('tool-'+name);if(!p)return;p.classList.add('show');const b=btn||document.querySelector('[data-tool="'+name+'"]');if(b)b.classList.add('active');setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'start'}),40)}
+function closeTools(){document.querySelectorAll('.toolpanel').forEach(x=>x.classList.remove('show'));document.querySelectorAll('.card').forEach(x=>x.classList.remove('active'))}
+function goHome(btn){closeTools();document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function navTool(name,btn){document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');openTool(name)}
+function calcArmario(){const raw=val('armBox'),measure=document.getElementById('armMeasure').value,c=boxFromMeasure(raw,measure);if(!Number.isFinite(raw)||!Number.isFinite(c)||c<38||c>120)return showResult('armResult','<div class="notice">Introduce una medida válida. La caja resultante debe estar entre 38 y 120 cm.</div>');const h=interiorMm(c);const title=measure==='hueco'?'Armario · hueco '+cm(raw):'Armario · caja '+cm(c);const metrics=metric('Caja armario',cm(c),measure==='hueco')+metric('Hueco interior',mm(h),measure==='caja')+depthMetrics();const note=(measure==='hueco'?'Caja = hueco + 39 mm. ':'Hueco = ancho de caja − 39 mm. ')+depthNote();showResult('armResult',resultWrap(title,metrics,note,!reducedDepth()));addHistory('Armario',c,'Hueco '+mm(h))}
+function standardRegletaMm(c){const row=standardWoodRow(c);return row?row.regleta:null}
+function chestTotalCm(count){return ({1:21.5,2:40,3:58.5,4:77})[count]??null}
+function woodPiecesSketch(c){
+ // Despiece conceptual basado en las fotos de piezas reales del taller.
+ // Nunca se dibuja mecanizado en el frente. Los costados muestran la canal inferior,
+ // y las dos trabas llevan tubillones representados esquemáticamente.
+ const row=standardWoodRow(c);if(!row)return '';
+ const side=woodSideDepthCm();
+ let svg='<svg viewBox="0 0 520 412" role="img" aria-label="Despiece de las seis piezas principales del cajón de madera" style="display:block;width:100%;max-width:620px;margin:10px auto;font-family:Arial,sans-serif">';
+ svg+='<text x="260" y="24" fill="#e9f3fc" font-size="17" font-weight="bold" text-anchor="middle">DESPIECE DE UN CAJÓN</text>';
+ svg+='<text x="260" y="42" fill="#93aabd" font-size="11" text-anchor="middle">Repetir este conjunto por cada cajón seleccionado</text>';
+ svg+='<rect x="85" y="53" width="350" height="48" rx="2" fill="#eef4fa" stroke="#9ab1c6" stroke-width="2"/>';
+ svg+='<text x="260" y="73" fill="#152332" font-weight="bold" font-size="13" text-anchor="middle">1 FRENTE LISO</text>';
+ svg+='<text x="260" y="91" fill="#152332" font-size="12" text-anchor="middle">'+mm(row.frente)+' ancho × 160 mm alto</text>';
+ for(const x of [56,284]){
+   svg+='<text x="'+(x+90)+'" y="132" fill="#9ed2ff" font-size="12" font-weight="bold" text-anchor="middle">COSTADO</text>';
+   svg+='<rect x="'+x+'" y="140" width="180" height="58" fill="#eef4fa" stroke="#bacbd9" stroke-width="2"/>';
+   svg+='<line x1="'+(x+5)+'" y1="187" x2="'+(x+175)+'" y2="187" stroke="#4c90b3" stroke-width="3"/>';
+   for(const ox of [13,25,155,167])svg+='<circle cx="'+(x+ox)+'" cy="155" r="3.7" fill="#748da1"/>';
+   svg+='<text x="'+(x+90)+'" y="177" fill="#26384a" font-size="12" text-anchor="middle">120 mm × '+cm(side)+'</text>';
+ }
+ svg+='<text x="260" y="213" fill="#7fbad9" font-size="10" text-anchor="middle">Canales inferiores en azul · mecanizados hacia dentro</text>';
+ for(const x of [56,284]){
+   svg+='<rect x="'+x+'" y="243" width="180" height="47" fill="#f1f5f8" stroke="#b9cad8" stroke-width="2"/>';
+   for(const dx of [-8,185])for(const dy of [253,279])svg+='<rect x="'+(x+dx)+'" y="'+dy+'" width="8" height="6" rx="2" fill="#ca9d5c"/>';
+   svg+='<text x="'+(x+90)+'" y="263" fill="#26384a" font-size="12" text-anchor="middle">TRABA</text>';
+   svg+='<text x="'+(x+90)+'" y="280" fill="#26384a" font-size="11" text-anchor="middle">'+mm(row.traba)+' × 90 mm</text>';
+ }
+ svg+='<text x="260" y="307" fill="#eac886" font-size="10" text-anchor="middle">Dos tubillones en cada extremo de cada traba</text>';
+ svg+='<rect x="84" y="324" width="352" height="52" fill="#e3f1f6" stroke="#90b8c7" stroke-width="2"/>';
+ svg+='<text x="260" y="347" font-size="13" font-weight="bold" fill="#18334b" text-anchor="middle">1 FONDO DE CAJÓN</text>';
+ svg+='<text x="260" y="363" font-size="11" fill="#18334b" text-anchor="middle">'+mm(row.fondo)+' ancho · profundidad por confirmar</text>';
+ svg+='<text x="260" y="400" font-size="11" fill="#8ea3b7" text-anchor="middle">Piezas representadas sin escala · cotas en mm</text>';
+ return '<div class="sketch" style="display:block;padding:10px;margin-top:12px">'+svg+'</svg></div>';
+}
+
+function woodAssemblySketch(c,count,special=false){
+ const h=interiorMm(c);
+ const front=special?specialDrawerFrontMm(h):isTabulatedWoodWidth(c)?drawerFrontMm(c):null;
+ const body=special?specialDrawerBodyMm(h):isTabulatedWoodWidth(c)?drawerBodyMm(c):null;
+ const traba=special?specialDrawerTrabaMm(h):isTabulatedWoodWidth(c)?drawerTrabaMm(c):null;
+ const reg=special?null:standardRegletaMm(c),tall=chestTotalCm(count);
+ const row=65,top=102,height=top+row*count+148;
+ const label=v=>v===null?'POR CONFIRMAR':mm(v);
+ let svg='<svg viewBox="0 0 540 '+height+'" role="img" aria-label="Croquis frontal, '+count+' cajones de madera, '+(special?'especial':'estándar')+'" style="width:100%;max-width:600px;display:block;margin:auto;font-family:Arial,sans-serif">';
+ svg+='<text x="270" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#f3f7ff">CAJONERA DE '+count+' '+(count===1?'CAJÓN':'CAJONES')+'</text>';
+ svg+='<text x="270" y="44" text-anchor="middle" font-size="12" fill="#8bc6ff">'+(special?'ESPECIAL · MEDIDA REAL DEL HUECO':'ESTÁNDAR · CAJA '+cm(c))+'</text>';
+ svg+='<path d="M70 64 V77 M470 64 V77 M70 70 H470" stroke="#91c5ef" stroke-width="1.5" fill="none"/>';
+ svg+='<rect x="218" y="60" width="104" height="21" rx="4" fill="#101c28"/><text x="270" y="75" fill="#9acfff" font-size="12" font-weight="bold" text-anchor="middle">HUECO '+mm(h)+'</text>';
+ svg+='<rect x="59" y="'+(top-3)+'" width="422" height="'+(count*row+8)+'" rx="2" fill="none" stroke="#6d829a" stroke-width="2"/>';
+ if(!special){
+   for(const x of [65,459])svg+='<rect x="'+x+'" y="'+top+'" width="16" height="'+(count*row)+'" fill="#74613e" stroke="#f5cb6e" stroke-width="1.6" '+(reg===null?'stroke-dasharray="5 3"':'')+'/>';
+   svg+='<path d="M73 '+(top-4)+' L73 89 L150 89 M467 '+(top-4)+' L467 89 L390 89" fill="none" stroke="#f5cb6e" stroke-width="1.5"/>';
+   svg+='<text x="148" y="85" text-anchor="end" font-size="11" font-weight="bold" fill="#f5cb6e">IZQ. '+label(reg)+'</text>';
+   svg+='<text x="392" y="85" text-anchor="start" font-size="11" font-weight="bold" fill="#f5cb6e">DER. '+label(reg)+'</text>';
+ }
+ if(special){
+   // Dos costados de la cajonera por detrás de los frentes, para dibujar el solape real.
+   svg+='<rect x="78" y="'+top+'" width="26" height="'+(count*row)+'" fill="#547087" stroke="#b4c6d7" stroke-width="1.5"/>';
+   svg+='<rect x="436" y="'+top+'" width="26" height="'+(count*row)+'" fill="#547087" stroke="#b4c6d7" stroke-width="1.5"/>';
+   svg+='<text x="113" y="91" fill="#f5cb6e" font-size="12" text-anchor="middle" font-weight="bold">SOLAPE IZQ. 10 mm</text>';
+   svg+='<text x="427" y="91" fill="#f5cb6e" font-size="12" text-anchor="middle" font-weight="bold">SOLAPE DER. 10 mm</text>';
+ }
+ for(let i=0;i<count;i++){
+   const y=top+row*i+4;
+   svg+='<rect x="'+(special?91:86)+'" y="'+y+'" width="'+(special?358:368)+'" height="56" rx="2" fill="#193049" stroke="#e1ecf7" stroke-width="2"/>';
+   if(special){svg+='<rect x="91" y="'+(y+3)+'" width="13" height="50" fill="#f5cb6e" fill-opacity="0.55"/>';svg+='<rect x="436" y="'+(y+3)+'" width="13" height="50" fill="#f5cb6e" fill-opacity="0.55"/>';}
+   svg+='<rect x="'+(special?96:91)+'" y="'+(y+5)+'" width="'+(special?348:358)+'" height="46" fill="none" stroke="#8196ab" stroke-width="1"/>';
+   svg+='<text x="270" y="'+(y+19)+'" text-anchor="middle" font-size="10" fill="#adc2d9">FRENTE · CAJÓN '+(i+1)+'</text>';
+   svg+='<text x="270" y="'+(y+39)+'" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">'+label(front)+'</text>';
+ }
+ const y=top+row*count+24;
+ svg+='<text x="270" y="'+y+'" text-anchor="middle" fill="#f6cf77" font-size="12" font-weight="bold">TRABA POR CAJÓN: '+label(traba)+'</text>';
+ svg+='<text x="270" y="'+(y+22)+'" text-anchor="middle" fill="#c7d7e5" font-size="12">CAJA CAJÓN: '+label(body)+'</text>';
+ svg+='<text x="270" y="'+(y+44)+'" text-anchor="middle" fill="#a6b7c9" font-size="11">'+(special?'Alto del frente especial: por confirmar':tall!==null?'ALTO TOTAL C'+count+': '+cm(tall)+' · SOBRE 3 cm':'Alto total: pendiente de verificar')+'</text>';
+ svg+=(special?'':'<text x="270" y="'+(y+66)+'" text-anchor="middle" fill="#c7d7e5" font-size="12">FONDO CAJÓN (ANCHO): '+label(drawerBottomWidthMm(c))+'</text>');
+ svg+='<text x="270" y="'+(y+89)+'" text-anchor="middle" fill="#7f93a8" font-size="10">Vista esquemática sin escala · cotas de ancho en mm</text></svg>';
+ const note=special?'Frente = caja montada ('+label(body)+') + 26 mm guías + 20 mm de solape (10 mm sobre cada costado) = '+label(front)+'. El hueco exterior mide '+mm(h)+' y el frente queda '+mm(h-front)+' MÁS ESTRECHO: 9 mm sin cubrir a cada lado. El frente NO sobresale del hueco. Zonas solapadas sobre los costados en amarillo.':'Regleta izquierda y derecha dibujadas en amarillo según la lista de taller. '+(reg===null?'La anchura de ambas está pendiente de comprobar para esta caja.':'Cada regleta lateral: '+label(reg)+'.')+' El dibujo muestra las '+count+' unidades realmente seleccionadas.';
+ const pieceList=special?'':('<div class="metrics" style="margin-top:12px">'+
+  metric('Frentes · 160 mm alto',count+' × '+label(front),true)+
+  metric('Trabas · 90 mm alto',count*2+' × '+label(traba),true)+
+  metric('Costados · 120 mm alto',count*2+' uds. · fondo '+cm(woodSideDepthCm()))+
+  metric('Fondos · ancho',count+' × '+label(drawerBottomWidthMm(c)))+
+  metric('Regletas laterales','2 × '+label(reg))+
+  metric('DIF','26 mm')+'</div>');
+ return '<div class="sketch" style="display:block;padding:12px">'+svg+pieceList+'<div class="notice">'+note+'</div></div>'+(special?'':woodPiecesSketch(c));
+}
+
+function drawerHtml(c,count=1,special=false){
+ if(!Number.isInteger(count)||count<1||count>6)return '<div class="notice">Elige entre 1 y 6 cajones de madera.</div>';
+ if(special){
+  const h=interiorMm(c),tr=specialDrawerTrabaMm(h),body=specialDrawerBodyMm(h),fr=specialDrawerFrontMm(h);
+  if(!validSpecialHueco(h/10)||fr===null)return '<div class="notice">Comprueba la medida del hueco y la viabilidad de esta cajonera especial.</div>';
+  const metrics=metric('Cantidad',pluralCajon(count))+metric('Hueco interior',mm(h),true)+metric('Traba por cajón',mm(tr),true)+metric('Caja cajón montada',mm(body),true)+metric('Frente por cajón',mm(fr),true)+metric('Solape sobre costado izq.','10 mm')+metric('Solape sobre costado der.','10 mm')+metric('Margen exterior izquierdo','9 mm')+metric('Margen exterior derecho','9 mm')+depthMetrics();
+  const note='Regla del taller para CAJONERA ESPECIAL DE MADERA: traba = hueco − 102 mm (2 × 19 mm de costados de cajonera + 2 × 19 mm de costados de cajón + 2 × 13 mm de guías). Caja del cajón montada = traba + 38 mm. FRENTE = caja montada + 26 mm de guías + 20 mm de solape (10 mm de solape sobre cada costado de cajonera). NO se suman otra vez los 38 mm de los costados. Por tanto, frente = hueco − 18 mm: el frente es 9 mm más estrecho por cada extremo exterior. Según regla del taller; verificar otras cotas y holguras antes de fabricación. '+depthNote();
+  return resultWrap('Madera especial · '+pluralCajon(count),metrics,note,false)+woodAssemblySketch(c,count,true);
+ }
+ if(!isTariffNominalWidth(c))return resultWrap('Madera · estándar',metric('Caja indicada',cm(c)), 'El catálogo utiliza anchos de caja en pasos de 1 cm. La medida indicada no es estándar: selecciona «Cajonera especial» e indica el hueco real, sin redondear.',false);
+ const h=interiorMm(c),known=isTabulatedWoodWidth(c),reduced=reducedDepth(),body=known?drawerBodyMm(c):null,tr=known?drawerTrabaMm(c):null,fr=known?drawerFrontMm(c):null,reg=standardRegletaMm(c);
+ const group=widthGroup(c),code=group&&count<=4?'C'+count+'.'+group:null;
+ let metrics=metric('Cantidad',pluralCajon(count),true)+metric('Hueco (ancho)',mm(h),true)+(group?metric('Ancho estándar','SÍ · GRUPO '+group,true):'')+(code?metric('Código tarifa',code,true):'')+metric('Caja cajón (ancho)',known?mm(body):'Por confirmar')+metric('Traba por cajón',known?mm(tr):'Por confirmar',known)+metric('Frente por cajón',known?mm(fr):'Por confirmar',known);
+ let note='Cotas por cajón para las '+count+' unidades; el croquis muestra tantos frentes como cajones seleccionados. ';
+ if(known){metrics+=metric('Regleta izquierda',mm(reg))+metric('Regleta derecha',mm(reg))+metric('Fondo cajón (ancho)',mm(drawerBottomWidthMm(c)))+metric('DIF','26 mm')+metric('Frente (alto)','160 mm')+metric('Traba (alto)','90 mm')+metric('Costado (alto)','120 mm');note+='Medidas obtenidas de la lista de taller IMG_4417.jpeg, para la caja indicada. ';}
+ else{metrics+=metric('Regleta izquierda','Por confirmar')+metric('Regleta derecha','Por confirmar');note+=(group?'La caja de '+cm(c)+' es ESTÁNDAR según la tarifa ESENZIA 4.0, grupo '+group+'. No cambies a «Cajonera especial». ':'')+'El despiece de fabricación para este ancho está pendiente de contrastar: caja del cajón, trabas, frente y regletas. No se extrapolan las cotas de caja 100 cm. ';}
+ if(chestTotalCm(count)!==null)metrics+=metric('Alto total C'+count,cm(chestTotalCm(count)));
+ else note+='La altura total de una cajonera de '+count+' cajones está por confirmar. ';
+ metrics+=depthMetrics()+metric('Costados (profundidad)',cm(woodSideDepthCm()))+metric('Fondo tablero (profundidad)','Por confirmar: no equivale al largo del costado');
+ note+=depthNote();
+ return resultWrap('Madera · '+pluralCajon(count)+' · caja '+cm(c),metrics,note,known&&!reduced)+woodAssemblySketch(c,count,false);
+}
+function woodSummary(c,special){if(special){const h=interiorMm(c),fr=specialDrawerFrontMm(h);return 'Traba '+mm(specialDrawerTrabaMm(h))+' · frente '+(fr===null?'por confirmar':mm(fr))+' (+10 mm por lado)';}return isTabulatedWoodWidth(c)?'Traba '+mm(drawerTrabaMm(c))+' · frente '+mm(drawerFrontMm(c)):'Despiece estándar no confirmado'}
+function calcDrawer(){
+ const special=document.getElementById('woodMode').value==='special',raw=val('drawerBox'),c=boxFromMeasure(raw,special?'hueco':'caja'),count=Number(document.getElementById('woodCount').value);
+ if(!document.getElementById('drawerBox').value.trim()||(!special&&(!Number.isFinite(c)||c<38||c>120))||(special&&!validSpecialHueco(raw)))return showResult('drawerResult','<div class="notice">Introduce una medida válida: para especial, hueco mayor de 10,2 cm; para estándar, caja entre 38 y 120 cm.</div>');
+ showResult('drawerResult',drawerHtml(c,count,special));
+ addHistory('Cajones madera',c,woodSummary(c,special),count,special?'hueco':'caja',special?'special':'standard');
+}
+function metalHtml(c,type,count=1){
+ if(!permittedCounts(type).includes(count))return '<div class="notice">Cantidad de cajones no disponible para este tipo.</div>';
+ const p=getDepth(),trabaAncho=c-16.1,fondoAncho=c-14,trabaAlto=type==='joyero'?5.8:9,tipo=type==='joyero'?'Joyero':'Cajón metálico',standard=p.body===58;
+ const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Traba por cajón',cm(trabaAncho)+' × '+cm(trabaAlto),true)+metric('Fondo por cajón (ancho)',cm(fondoAncho),true)+metric('Fondo (profundidad)',standard?'43,8 cm':'Por confirmar')+depthMetrics();
+ const note='Las medidas de traba y fondo corresponden a cada cajón de este conjunto. '+(standard?'Profundidad del fondo estándar: 43,8 cm. ':'La profundidad de 43,8 cm no se extrapola a la caja reducida. ')+'La altura total del conjunto y sus costados quedan pendientes de cotejar con la tarifa. '+depthNote();
+ return resultWrap(tipo+' · '+pluralCajon(count)+' · caja '+cm(c),metrics,note,standard);
+}
+function calcMetal(){
+ const c=val('metalBox'),type=document.getElementById('metalType').value,count=Number(document.getElementById('metalCount').value);
+ if(!Number.isFinite(c)||c<=16.1)return showResult('metalResult','<div class="notice">Introduce una caja válida.</div>');
+ showResult('metalResult',metalHtml(c,type,count));
+ addHistory(type==='joyero'?'Joyero':'Cajón metálico',c,'Traba por cajón '+cm(c-16.1)+' · fondo ancho '+cm(c-14),count);
+}
+function chestHtml(c,count,withSketch=true){
+ const g=widthGroup(c);
+ if(!g||!isTariffNominalWidth(c))return '<div class="notice">La cajonera estándar requiere una caja de 38 a 120 cm en pasos de 1 cm, según la tarifa. Para una medida fuera de ese catálogo, selecciona «Cajonera especial».</div>';
+ if(!Number.isInteger(count)||count<1||count>6)return '<div class="notice">Elige entre 1 y 6 cajones.</div>';
+ const total=chestTotalCm(count),verified=total!==null,standard=!reducedDepth(),code=verified?'C'+count+'.'+g:null,inside=interiorMm(c)/10;
+ let metrics=metric('Número de cajones',pluralCajon(count),true)+metric('Hueco interior (ancho)',cm(inside))+metric('Código tarifa',code||'Por confirmar');
+ if(verified){
+   metrics+=metric('Costado (alto)',cm(total-3),true)+metric('Sobre (ancho)',cm(inside))+metric('Sobre (fondo)',standard?'50 cm':'Por confirmar')+metric('Sobre (grueso)','3 cm')+metric('Alto total',cm(total))+metric('Frentes',count+' × 16 cm');
+ }else{
+   metrics+=metric('Costado (alto)','Por confirmar')+metric('Sobre (fondo)','Por confirmar')+metric('Alto total','Por confirmar');
+ }
+ metrics+=depthMetrics();
+ const note=verified?'Cajonera C'+count+' documentada en ESENZIA 4.0, página 236. '+depthNote():'Configuración de '+count+' cajones representada, pero sin asignarle un alto ni un código no comprobados en la tarifa. '+depthNote();
+ return resultWrap('Cajonera madera · '+pluralCajon(count),metrics,note,verified&&standard)+(withSketch?woodAssemblySketch(c,count,false):'');
+}
+
+function calcChest(){
+ const raw=val('chestBox'),special=document.getElementById('chestMode').value==='special',c=boxFromMeasure(raw,special?'hueco':'caja'),count=Number(document.getElementById('drawerCount').value);
+ if(!document.getElementById('chestBox').value.trim()||(!special&&(!Number.isFinite(c)||c<38||c>120))||(special&&!validSpecialHueco(raw)))return showResult('chestResult','<div class="notice">Introduce una medida válida: para especial, hueco mayor de 10,2 cm; para estándar, caja entre 38 y 120 cm.</div>');
+ if(special){
+   showResult('chestResult',drawerHtml(c,count,true));
+   addHistory('Cajones madera',c,woodSummary(c,true),count,'hueco','special');
+ }else{
+   const g=widthGroup(c);
+   if(!g||!isTariffNominalWidth(c))return showResult('chestResult','<div class="notice">Cajonera estándar: caja de 38 a 120 cm en pasos de 1 cm. Para una medida no catalogada, selecciona «Cajonera especial».</div>');
+   showResult('chestResult',chestHtml(c,count));
+   addHistory('Cajones madera',c,pluralCajon(count)+(chestTotalCm(count)!==null?' · código C'+count+'.'+g:' · alto por confirmar'),count);
+ }
+}
+function makeSketch(){
+ const raw=val('sketchBox'),special=document.getElementById('sketchMode').value==='special',c=boxFromMeasure(raw,special?'hueco':'caja'),count=Number(document.getElementById('sketchCount').value),d=document.getElementById('diagram');
+ if(!document.getElementById('sketchBox').value.trim()||(!special&&(!Number.isFinite(c)||c<38||c>120))||(special&&!validSpecialHueco(raw))){d.innerHTML='<span style="color:#ff9298;font-size:11px">Medida no válida: para especial, hueco mayor de 10,2 cm; para estándar, caja entre 38 y 120 cm.</span>';return}
+ if(special){
+   const h=interiorMm(c),front=specialDrawerFrontMm(h);
+   d.innerHTML=woodAssemblySketch(c,count,true);
+   const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Hueco real',mm(h))+metric('Frente por cajón',front===null?'POR CONFIRMAR':mm(front),front!==null)+metric('Traba por cajón',mm(specialDrawerTrabaMm(h)))+metric('Solape por lado','10 mm')+depthMetrics();
+   showResult('sketchMeta',resultWrap('Croquis especial · '+pluralCajon(count),metrics,'Cotas según las reglas específicas de taller. No aplicar cotas de cajonera estándar.',false));
+   return;
+ }
+ const g=widthGroup(c);
+ if(!g||!isTariffNominalWidth(c)){d.innerHTML='<span style="color:#ff9298;font-size:11px">Estándar: caja de 38 a 120 cm en pasos de 1 cm. Para otras medidas, elige especial.</span>';return}
+ const total=chestTotalCm(count),verified=total!==null,code=verified?'C'+count+'.'+g:'Por confirmar';
+ d.innerHTML=woodAssemblySketch(c,count,false);
+ const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Código',code)+metric('Costado (alto)',verified?cm(total-3):'Por confirmar')+metric('Alto total',verified?cm(total):'Por confirmar')+metric('Sobre (fondo)',verified&&!reducedDepth()?'50 cm':'Por confirmar')+depthMetrics();
+ showResult('sketchMeta',resultWrap('Croquis cajonera · '+pluralCajon(count),metrics,(verified?'Configuración documentada en tarifa. ':'Croquis orientativo, sin cotas de altura verificadas. ')+depthNote(),verified&&!reducedDepth()));
+}
+
+function quickCalculate(){
+ const type=document.getElementById('quickType').value,raw=val('quickBox'),measure=document.getElementById('quickMeasure').value,c=boxFromMeasure(raw,measure),count=Number(document.getElementById('quickCount').value),out='quickResult';
+ if(!permittedCounts(type).includes(count))return showResult(out,'<div class="notice">Esta cantidad no está disponible para el tipo de cajón seleccionado.</div>');
+ if(!document.getElementById('quickBox').value.trim()||!Number.isFinite(raw)||!Number.isFinite(c))return showResult(out,'<div class="notice">Introduce una medida válida.</div>');
+ if(type==='madera'){
+  const special=document.getElementById('quickWoodMode').value==='special';
+  if((special&&!validSpecialHueco(raw))||(!special&&(c<38||c>120)))return showResult(out,'<div class="notice">Introduce una medida válida: hueco especial mayor de 10,2 cm o caja estándar entre 38 y 120 cm.</div>');
+  const ci=c,g=widthGroup(ci);
+  const chest=!special&&g&&isTariffNominalWidth(ci)?chestHtml(ci,count,false):'';
+  showResult(out,(special?'<div class="notice">Medida especial: frente = hueco − 18 mm. Solapa 10 mm sobre cada costado de 19 mm; deja 9 mm libres hacia el exterior por lado. Sin redondeos.</div>':measureBanner(measure,raw,c))+drawerHtml(ci,count,special)+(chest?'<div style="margin-top:12px">'+chest+'</div>':''));
+  addHistory('Cajones madera',ci,woodSummary(ci,special),count,measure,special?'special':'standard');
+ }else if(type==='metalico'||type==='joyero'){
+  if(c<=16.1)return showResult(out,'<div class="notice">Introduce una caja válida.</div>');
+  showResult(out,measureBanner(measure,raw,c)+metalHtml(c,type,count));
+  addHistory(type==='joyero'?'Joyero':'Cajón metálico',c,'Traba por cajón '+cm(c-16.1)+' · fondo ancho '+cm(c-14),count);
+ }else return showResult(out,'<div class="notice">Tipo de trabajo no disponible.</div>');
+ saveQuickConfiguration();toast('Cálculo listo');
+}
+function calculate(){const raw=document.getElementById('expr').value.trim().replace(/,/g,'.'),out=document.getElementById('calcAnswer');if(!raw)return out.textContent='Escribe una operación';if(!/^[0-9+\-*/().\s]+$/.test(raw))return out.textContent='Operación no válida';try{const value=Function('"use strict";return ('+raw+')')();if(!Number.isFinite(value))throw new Error();out.textContent='Resultado: '+Number(value.toFixed(4))}catch(e){out.textContent='No se pudo calcular'}}
+function enforceTarifa(){const q=document.getElementById('query'),rule='Usa la tarifa técnica ESENZIA 4.0 de Baixmoduls como fuente principal. No inventes ninguna medida y comprueba dos veces los datos técnicos antes de responder. ';if(!q.value.startsWith(rule))q.value=rule+q.value.trim();toast('Regla técnica añadida')}
+async function copyText(text){try{await navigator.clipboard.writeText(text)}catch(e){}}
+async function askChatGPT(){const q=document.getElementById('query'),text=q.value.trim();if(!text){toast('Escribe primero la consulta');q.focus();return}await copyText(text);toast('Abriendo ChatGPT…');window.open('https://chatgpt.com/?q='+encodeURIComponent(text),'_blank')}
+function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
+document.getElementById('quickBox').addEventListener('keydown',e=>{if(e.key==='Enter')quickCalculate()});document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter')calculate()});try{const stored=localStorage.getItem(depthKey);if(depthProfiles[stored])document.getElementById('armDepth').value=stored;const ws=Number(localStorage.getItem(woodSideDepthKey));if([45,40,35,30].includes(ws))document.getElementById('woodSideDepth').value=String(ws)}catch(e){}
+try{const settings=JSON.parse(localStorage.getItem(configurationKey)||'{}');if(permittedCounts(settings.type).includes(settings.count)&&['madera','metalico','joyero'].includes(settings.type)){document.getElementById('quickType').value=settings.type;setCountOptions('quickCount',settings.type,settings.count);document.getElementById('quickWoodMode').value=settings.woodMode==='special'?'special':'standard';if(['caja','hueco'].includes(settings.measure))document.getElementById('quickMeasure').value=settings.measure;else if(settings.woodMode==='special'&&settings.type==='madera')document.getElementById('quickMeasure').value='hueco'}else setCountOptions('quickCount','madera',3)}catch(e){setCountOptions('quickCount','madera',3)}
+syncWoodModeVisibility();onQuickMeasureChange();onArmMeasureChange();onMetalTypeChange();onDepthChange();tick();setInterval(tick,30000);renderHistory();
+</script>
+</body>
+</html>
