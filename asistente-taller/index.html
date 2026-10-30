@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Taller Baixmoduls">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>Taller IA · v4.1 · Croquis 3D de madera</title>
+<title>Taller IA · v4.2 · Visor 3D táctil</title>
 <style>
 :root{--bg:#090c11;--panel:#111720;--panel2:#171f2a;--line:#273241;--text:#f6f8fb;--muted:#8f9cad;--blue:#5faeff;--green:#4adea7;--gold:#f5c75f;--shadow:0 18px 44px rgba(0,0,0,.34)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -64,6 +64,22 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 .metric.important{background:linear-gradient(145deg,#14324a,#112538);border-color:#35678f}.metric.important strong{color:#8ed0ff}
 .notice{margin-top:9px;padding:10px 12px;border-radius:13px;border:1px solid rgba(245,199,95,.20);background:rgba(245,199,95,.07);color:#f3d999;font-size:10px;line-height:1.45;font-weight:700}
 .sketch{margin-top:10px;min-height:205px;border:1px solid #2b3b4d;border-radius:17px;background:#0a1119;padding:17px;display:flex;align-items:center;justify-content:center}
+.wood3d-intro{margin-top:15px;border:1px solid #345675;border-radius:22px;padding:16px;background:linear-gradient(145deg,#132332,#0a121b)}
+.wood3d-intro-head{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.wood3d-intro h3{font-size:20px;margin:5px 0;color:#eef8ff}
+.wood3d-intro p{font-size:11px;line-height:1.45;margin:0 0 12px;color:#a6b8c9}
+.wood3d-intro-label{background:#21405a;padding:7px 10px;border-radius:10px;font-size:10px;font-weight:900;color:#b6e5ff}
+.wood3d-example-buttons{display:flex;gap:9px;margin-bottom:12px}
+.wood3d-example-buttons button{flex:1;min-height:44px;border-radius:12px;border:1px solid #34516b;background:#0d1b2a;color:#b9d2e5;font-weight:850;font-size:12px}
+.wood3d-example-buttons button.active{background:#1b4e76;color:#fff;border-color:#55a9f5}
+.wood3d-viewer{width:100%;min-width:0;max-width:100%;border:1px solid #38506b;border-radius:16px;background:#0b1620;overflow:hidden;padding:8px 8px 12px}
+.wood3d-canvas-wrap{position:relative;width:100%}
+.wood3d-canvas{width:100%;height:auto;display:block;touch-action:none;cursor:grab;background:#0a1420;border-radius:12px;aspect-ratio:8/5}
+.wood3d-canvas:active{cursor:grabbing}
+.wood3d-hint{display:block;position:absolute;left:12px;bottom:12px;background:#07111dcc;color:#c4e8f5;font-size:11px;font-weight:800;border-radius:9px;padding:7px 9px;pointer-events:none}
+.wood3d-slider-label{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#d4e7f1;font-size:12px;font-weight:900;padding:12px 10px 2px}
+.wood3d-explode{width:55%;height:30px;padding:0;margin:0;accent-color:#73bdff;box-shadow:none}
+.wood3d-result{margin:12px 0;min-width:0;width:100%}
 .cadShowcase{margin-top:14px;border:1px solid #3a4c5b;border-radius:20px;padding:14px;background:linear-gradient(150deg,#16222d,#0a131b)}
 .cadHeading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:0 0 12px}
 .cadHeading strong{font-size:14px;letter-spacing:.15px;color:#f4f8ff}
@@ -147,6 +163,14 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 <div id="quickResult" class="result"></div>
 </section>
 
+<section class="wood3d-intro" aria-label="Vista 3D de demostración">
+<div class="wood3d-intro-head"><div><span class="kicker">VISOR 3D TÁCTIL</span><h3>Gira el cajón con el dedo</h3><p>Ejemplo visual · no usar estas proporciones como cotas de fabricación.</p></div><div class="wood3d-intro-label">MADERA</div></div>
+<div class="wood3d-example-buttons"><button type="button" class="active" onclick="change3DExample('drawer',this)">🪵 Cajón</button><button type="button" onclick="change3DExample('chest',this)">🗃️ Cajonera 3 cajones</button></div>
+<div class="wood3d-viewer" id="wood3dPreview">
+<div class="wood3d-canvas-wrap"><canvas class="wood3d-canvas" data-kind="drawer" data-count="1" data-special="false" width="960" height="600" aria-label="Modelo 3D interactivo: arrastra con el dedo para girar el cajón de madera"></canvas><span class="wood3d-hint">↻ Desliza sobre el dibujo para girarlo</span></div>
+<label class="wood3d-slider-label">Separar piezas <input class="wood3d-explode" type="range" min="0" max="100" value="0" aria-label="Separar piezas del modelo 3D"></label>
+</div>
+</section>
 <div class="sectiontitle"><h3>Herramientas del taller</h3><span>TOCA UNA OPCIÓN</span></div>
 <section class="cards">
 <button class="card" data-tool="madera" onclick="openTool('madera',this)"><span class="ico">🪵</span><strong>Cajones madera</strong><small>Despiece, medidas y croquis isométrico.</small></button>
@@ -387,7 +411,7 @@ function widthGroup(c){if(c>=38&&c<=50)return'B1';if(c>=51&&c<=60)return'C1';if(
 function metric(label,value,important=false){return '<div class="metric'+(important?' important':'')+'"><small>'+label+'</small><strong>'+value+'</strong></div>'}
 function resultWrap(title,metrics,note='',verified=true){return '<div class="resultHero"><div class="resultHead"><strong>'+title+'</strong><span class="verified">'+(verified?'✓ COTAS COMPROBADAS':'⚠ COTAS PENDIENTES')+'</span></div><div class="metrics">'+metrics+'</div>'+(note?'<div class="notice">'+note+'</div>':'')+'</div>'}
 function showResult(id,html){
- const el=document.getElementById(id);el.innerHTML=html;el.classList.add('show');
+ const el=document.getElementById(id);el.innerHTML=html;el.classList.add('show');initWorkshop3D(el);
  if(el.querySelector('.resultHero')){
   const actions=document.createElement('div');actions.className='resultActions';
   const copy=document.createElement('button');copy.type='button';copy.textContent='📋 Copiar ficha';copy.addEventListener('click',()=>copyMeasurements(id));
@@ -528,6 +552,139 @@ function woodPiecesSketch(c){
 }
 
 
+
+/* Native HTML canvas 3D viewer: no CDN, WebGL or other runtime dependency.
+   Model proportions are illustrative, never used to calculate fabrication cuts. */
+function wood3DViewerMarkup(kind,count,special){
+ return '<div class="wood3d-viewer wood3d-result"><div class="wood3d-canvas-wrap"><canvas class="wood3d-canvas" width="960" height="600" data-kind="'+kind+'" data-count="'+count+'" data-special="'+special+'" aria-label="Visor interactivo 3D de madera. Desliza para girar."></canvas><span class="wood3d-hint">↻ Gira con el dedo</span></div><label class="wood3d-slider-label">Separar piezas <input class="wood3d-explode" type="range" min="0" max="100" value="0" aria-label="Separar piezas del croquis 3D"></label></div>';
+}
+function wood3DModels(kind,count,explode){
+ const parts=[];
+ function add(name,x,y,z,w,h,d,material,offset=[0,0,0]){
+  parts.push({name,x:x+offset[0]*explode,y:y+offset[1]*explode,z:z+offset[2]*explode,w,h,d,material});
+ }
+ if(kind==='drawer'){
+  add('Frente liso',0,.52,1.01,2.22,.85,.12,'front',[0,.05,1.35]);
+  add('Costado izquierdo',-.91,.49,0,.12,.66,1.9,'side',[-.70,0,0]);
+  add('Costado derecho',.91,.49,0,.12,.66,1.9,'side',[.70,0,0]);
+  add('Traba delantera',0,.42,.79,1.7,.47,.12,'wood',[0,.1,.38]);
+  add('Traba trasera',0,.42,-.79,1.7,.47,.12,'wood',[0,.1,-.65]);
+  add('Fondo',0,.19,0,1.80,.07,1.81,'bottom',[0,-.58,0]);
+ }else{
+  const n=Math.max(1,Math.min(6,count||3));
+  const h=.31+n*.48;
+  add('Costado izquierdo',-1.03,h/2,0,.12,h,1.75,'side',[-.65,0,0]);
+  add('Costado derecho',1.03,h/2,0,.12,h,1.75,'side',[.65,0,0]);
+  add('Sobre',0,h+.065,0,2.24,.13,1.92,'wood',[0,.7,0]);
+  for(let i=0;i<n;i++){
+   const y=.28+.48*i;
+   add('Frente cajón '+(i+1),0,y,.89,1.92,.41,.12,'front',[0,(i-(n-1)/2)*.18,1.05+i*.08]);
+  }
+ }
+ return parts;
+}
+function drawWorkshop3D(canvas,state){
+ const ctx=canvas.getContext('2d');
+ if(!ctx)return;
+ const W=canvas.width,H=canvas.height;
+ ctx.clearRect(0,0,W,H);
+ const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#182c3d');bg.addColorStop(1,'#07121e');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ const kind=canvas.dataset.kind==='chest'?'chest':'drawer',count=Number(canvas.dataset.count)||1;
+ const yaw=state.yaw,pitch=state.pitch;
+ const sy=Math.sin(yaw),cy=Math.cos(yaw),sp=Math.sin(pitch),cp=Math.cos(pitch);
+ function turn(p){
+  const x=p[0]*cy-p[2]*sy,z=p[0]*sy+p[2]*cy;
+  return {x,y:p[1]*cp-z*sp,z:p[1]*sp+z*cp};
+ }
+ const defs=[
+  {i:[4,5,6,7],face:0},
+  {i:[1,0,3,2],face:1},
+  {i:[0,4,7,3],face:2},
+  {i:[5,1,2,6],face:3},
+  {i:[3,7,6,2],face:4},
+  {i:[0,1,5,4],face:5}
+ ];
+ const palette={
+  front:['#dfb981','#80613d','#ccab7b','#b28a58','#f1d4a1','#866743'],
+  side:['#c4a479','#785b3c','#af8a5c','#9a784e','#e2bf8f','#87694b'],
+  wood:['#d9b88c','#7d6045','#c9a579','#ac855c','#f1d7a8','#866a4d'],
+  bottom:['#92b8bc','#688b91','#729da5','#779ba0','#b3d4d1','#69848c']
+ };
+ const faces=[],points=[];
+ for(const part of wood3DModels(kind,count,state.explode)){
+  const xs=[-part.w/2,part.w/2],ys=[-part.h/2,part.h/2],zs=[-part.d/2,part.d/2];
+  const local=[
+   [xs[0],ys[0],zs[0]],[xs[1],ys[0],zs[0]],[xs[1],ys[1],zs[0]],[xs[0],ys[1],zs[0]],
+   [xs[0],ys[0],zs[1]],[xs[1],ys[0],zs[1]],[xs[1],ys[1],zs[1]],[xs[0],ys[1],zs[1]]
+  ];
+  const rotated=local.map(([x,y,z])=>turn([x+part.x,y+part.y,z+part.z]));
+  points.push(...rotated);
+  const shades=palette[part.material]||palette.wood;
+  for(const face of defs){
+   const verts=face.i.map(i=>rotated[i]);
+   const avg=verts.reduce((a,v)=>a+v.z,0)/4;
+   faces.push({verts,z:avg,color:shades[face.face],label:part.name});
+  }
+ }
+ const minX=Math.min(...points.map(v=>v.x)),maxX=Math.max(...points.map(v=>v.x));
+ const minY=Math.min(...points.map(v=>v.y)),maxY=Math.max(...points.map(v=>v.y));
+ const scale=Math.min(780/Math.max(.1,maxX-minX),420/Math.max(.1,maxY-minY),200);
+ const centerX=(minX+maxX)/2,centerY=(minY+maxY)/2;
+ function proj(p){return {x:W/2+(p.x-centerX)*scale,y:H/2+24-(p.y-centerY)*scale};}
+ faces.sort((a,b)=>a.z-b.z);
+ ctx.lineJoin='round';
+ for(const face of faces){
+  ctx.beginPath();
+  face.verts.forEach((v,i)=>{const p=proj(v);if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y)});
+  ctx.closePath();ctx.fillStyle=face.color;ctx.fill();ctx.strokeStyle='#fff2d333';ctx.lineWidth=2.2;ctx.stroke();
+ }
+ ctx.textAlign='left';
+ ctx.fillStyle='#b6d8f0';ctx.font='bold 27px Arial,sans-serif';
+ ctx.fillText(kind==='chest'?'CAJONERA DE MADERA':'CAJÓN DE MADERA',35,48);
+ ctx.font='bold 20px Arial,sans-serif';ctx.fillStyle='#8ce6d0';
+ ctx.fillText(state.explode>0.12?'VISTA EXPLOSIONADA':'VISTA MONTADA',35,77);
+ ctx.fillStyle='#bfd0e2';ctx.font='19px Arial,sans-serif';
+ ctx.fillText(kind==='chest'?'Ejemplo de '+count+' cajones · no está a escala':'Frente · 2 costados · 2 trabas · fondo',35,H-34);
+}
+function initWorkshop3D(root){
+ if(!root)return;
+ root.querySelectorAll('canvas.wood3d-canvas:not([data-ready])').forEach(canvas=>{
+  canvas.dataset.ready='1';
+  const parent=canvas.closest('.wood3d-viewer');
+  const slider=parent?.querySelector('.wood3d-explode');
+  const state={yaw:-.65,pitch:.42,explode:0};
+  const redraw=()=>drawWorkshop3D(canvas,state);
+  let dragging=false,lastX=0,lastY=0;
+  canvas.addEventListener('pointerdown',event=>{
+   dragging=true;lastX=event.clientX;lastY=event.clientY;
+   if(canvas.setPointerCapture)canvas.setPointerCapture(event.pointerId);
+  });
+  canvas.addEventListener('pointermove',event=>{
+   if(!dragging)return;
+   state.yaw+=(event.clientX-lastX)*.009;
+   state.pitch=Math.max(-1.05,Math.min(1.05,state.pitch+(event.clientY-lastY)*.007));
+   lastX=event.clientX;lastY=event.clientY;redraw();
+  });
+  const stop=()=>{dragging=false};
+  canvas.addEventListener('pointerup',stop);
+  canvas.addEventListener('pointercancel',stop);
+  canvas.addEventListener('lostpointercapture',stop);
+  if(slider)slider.addEventListener('input',()=>{state.explode=Number(slider.value)/100;redraw()});
+  canvas.redrawWood3D=redraw;
+  redraw();
+ });
+}
+function change3DExample(kind,button){
+ const canvas=document.querySelector('#wood3dPreview canvas.wood3d-canvas');
+ if(!canvas)return;
+ canvas.dataset.kind=kind==='chest'?'chest':'drawer';
+ canvas.dataset.count=kind==='chest'?'3':'1';
+ const slider=document.querySelector('#wood3dPreview .wood3d-explode');
+ if(slider){slider.value='0';slider.dispatchEvent(new Event('input',{bubbles:true}))}
+ if(canvas.redrawWood3D)canvas.redrawWood3D();
+ document.querySelectorAll('.wood3d-example-buttons button').forEach(b=>b.classList.toggle('active',b===button));
+}
+
 /* Croquis isométricos de las piezas de madera. Representación ilustrativa:
    las cotas numéricas provienen de los cálculos ya existentes; NO se extrapolan
    alturas, mecanizados ni fondos especiales que la tarifa no haya confirmado. */
@@ -653,7 +810,7 @@ function professionalWoodDiagrams(c,count,special){
  const drawerTwo='<div class="cadView">'+cadDrawerExploded(c,special)+'<div class="cadViewFooter"><b>Despiece de un cajón.</b> Piezas separadas; se repite por cada cajón de la cajonera.</div></div>';
  const chest='<div class="cadView">'+cadChestMounted(c,count,special)+'<div class="cadViewFooter"><b>Cajonera montada.</b> Se muestran exactamente '+count+' frentes.</div></div>';
  const chestExploded='<div class="cadView">'+cadChestExploded(c,count,special)+'<div class="cadViewFooter"><b>Despiece de cajonera.</b> Sobre, laterales y frentes. No representa herrajes o regletas exactos.</div></div>';
- return '<section class="cadShowcase" aria-label="Croquis 3D de madera"><div class="cadHeading"><strong>📐 '+part+' · VISTAS 3D</strong><span>'+state+'</span></div>'+
+ return '<section class="cadShowcase" aria-label="Croquis 3D de madera"><div class="cadHeading"><strong>📐 '+part+' · VISTAS 3D</strong><span>'+state+'</span></div>'+wood3DViewerMarkup(isChest?'chest':'drawer',count,special)+
   (isChest?'<div class="cadGrid">'+chest+chestExploded+'</div><div class="cadBlueprintTitle">CAJÓN INTERIOR · MONTADO Y DESPIEZADO</div>':'')+
   '<div class="cadGrid">'+frontOne+drawerTwo+'</div><div class="cadFootnote">'+note+'</div></section>';
 }
@@ -788,7 +945,7 @@ function makeSketch(){
  if(!document.getElementById('sketchBox').value.trim()||(!special&&(!Number.isFinite(c)||c<38||c>120))||(special&&!validSpecialHueco(raw))){d.innerHTML='<span style="color:#ff9298;font-size:11px">Medida no válida: para especial, hueco mayor de 10,2 cm; para estándar, caja entre 38 y 120 cm.</span>';return}
  if(special){
    const h=interiorMm(c),front=specialDrawerFrontMm(h);
-   d.innerHTML=woodAssemblySketch(c,count,true);
+   d.innerHTML=woodAssemblySketch(c,count,true);initWorkshop3D(d);
    const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Hueco real',mm(h))+metric('Frente por cajón',front===null?'POR CONFIRMAR':mm(front),front!==null)+metric('Traba por cajón',mm(specialDrawerTrabaMm(h)))+metric('Solape por lado','10 mm')+depthMetrics();
    showResult('sketchMeta',resultWrap('Croquis especial · '+pluralCajon(count),metrics,'Cotas según las reglas específicas de taller. No aplicar cotas de cajonera estándar.',false));
    return;
@@ -796,7 +953,7 @@ function makeSketch(){
  const g=widthGroup(c);
  if(!g||!isTariffNominalWidth(c)){d.innerHTML='<span style="color:#ff9298;font-size:11px">Estándar: caja de 38 a 120 cm en pasos de 1 cm. Para otras medidas, elige especial.</span>';return}
  const total=chestTotalCm(count),verified=total!==null,code=verified?'C'+count+'.'+g:'Por confirmar';
- d.innerHTML=woodAssemblySketch(c,count,false);
+ d.innerHTML=woodAssemblySketch(c,count,false);initWorkshop3D(d);
  const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Código',code)+metric('Costado (alto)',verified?cm(total-3):'Por confirmar')+metric('Alto total',verified?cm(total):'Por confirmar')+metric('Sobre (fondo)',verified&&!reducedDepth()?'50 cm':'Por confirmar')+depthMetrics();
  showResult('sketchMeta',resultWrap('Croquis cajonera · '+pluralCajon(count),metrics,(verified?'Configuración documentada en tarifa. ':'Croquis orientativo, sin cotas de altura verificadas. ')+depthNote(),verified&&!reducedDepth()));
 }
@@ -835,7 +992,7 @@ try{
  // Nunca recuperar una selección antigua: el usuario elige el tipo de trabajo en cada entrada.
  document.getElementById('quickType').value='';
  setCountOptions('quickCount','madera',3);
-document.getElementById('quickUnit').dataset.previous=document.getElementById('quickUnit').value;syncWoodModeVisibility();onQuickMeasureChange();onArmMeasureChange();onMetalTypeChange();onWoodSideDepthChange();tick();setInterval(tick,30000);renderHistory();
+document.getElementById('quickUnit').dataset.previous=document.getElementById('quickUnit').value;syncWoodModeVisibility();onQuickMeasureChange();onArmMeasureChange();onMetalTypeChange();onWoodSideDepthChange();tick();setInterval(tick,30000);renderHistory();initWorkshop3D(document);
 </script>
 </body>
 </html>
