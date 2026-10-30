@@ -1,0 +1,17 @@
+{
+  "name": "Taller IA Baixmoduls · Definitivo",
+  "short_name": "Taller IA",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090c11",
+  "theme_color": "#0a0d12",
+  "icons": [
+    {
+      "src": "../asistente-taller/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
