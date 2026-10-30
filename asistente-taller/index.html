@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Taller Baixmoduls">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>Taller Baixmoduls · v3.3</title>
+<title>Taller IA · v4.0 definitiva</title>
 <style>
 :root{--bg:#090c11;--panel:#111720;--panel2:#171f2a;--line:#273241;--text:#f6f8fb;--muted:#8f9cad;--blue:#5faeff;--green:#4adea7;--gold:#f5c75f;--shadow:0 18px 44px rgba(0,0,0,.34)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -37,7 +37,7 @@ button,input,select,textarea{font:inherit} button{touch-action:manipulation}
 .quick:not(.is-wood) .quickTypeField{grid-column:span 2}
 .quick:not(.is-wood) .quickWidth{grid-column:span 3}
 .quickWoodDepthField select{border-color:#548bc1;background:#101e30}
-#quickWoodDepthField,#quickWoodModeField{display:none}
+#quickWoodDepthField[hidden],#quickWoodModeField[hidden]{display:none!important}
 .quick:not(.is-selected) > :not(.quickTypeField){display:none!important}
 .quick:not(.is-selected) .quickTypeField{grid-column:1/-1}
 .measureInputRow{display:grid;grid-template-columns:minmax(0,1fr) 78px;gap:7px}.measureInputRow select{padding:0 9px;text-align:center;background:#14293c;border-color:#4e7aa6}
@@ -106,12 +106,12 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 <body>
 <main class="app" id="home">
 <header class="topbar">
-<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v3.3 (propuesta)</p></div></div>
+<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v4.0 (propuesta)</p></div></div>
 <div class="statuspill"><span class="statusdot"></span><span class="clocklabel">ACTIVO</span><span id="clock">--:--</span></div>
 </header>
 
 <section class="hero">
-<div class="herohead"><div><div class="kicker">CONSULTA RÁPIDA</div><h2>¿Qué estás fabricando?</h2><p>Selecciona qué vas a fabricar. Después elige las medidas de caja o hueco; la profundidad del cajón de madera aparecerá solo al elegirlo.</p></div><div class="reference">ESENZIA 4.0 · REFERENCIA</div></div>
+<div class="herohead"><div><div class="kicker">TALLER IA · V4.0 · INTERFAZ CORREGIDA</div><h2>¿Qué estás fabricando?</h2><p>Selecciona el trabajo. Las opciones de profundidad y tipo de cajón de madera aparecen exclusivamente al elegir «Cajones de madera».</p></div><div class="reference">ESENZIA 4.0 · REFERENCIA</div></div>
 <div class="depthFirst">
   <div class="field"><label for="armDepth">1 · FONDO DEL ARMARIO</label><select id="armDepth" onchange="onDepthChange()">
   <optgroup label="Correderos"><option value="cor68">Corredero · fondo 68 cm · caja 58 cm</option><option value="cor65">Corredero · fondo 65 cm · caja 55 cm</option></optgroup>
@@ -120,13 +120,13 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
   </select></div>
   <div class="depthInfo" id="depthInfo" aria-live="polite">Selecciona el fondo para adaptar los cálculos.</div>
 </div>
-<div class="quick">
+<div class="quick" id="quickForm">
 <div class="field quickTypeField"><label for="quickType">2 · TIPO DE TRABAJO</label><select id="quickType" onchange="onQuickTypeChange()"><option value="" selected disabled>Elige qué vas a fabricar…</option><option value="madera">Cajones de madera</option><option value="metalico">Cajones metálicos</option><option value="joyero">Joyero</option></select></div>
-<div class="field quickWoodDepthField" id="quickWoodDepthField">
-<label for="woodSideDepth">PROFUNDIDAD CAJÓN MADERA · COSTADO Y FONDO</label>
+<div class="field quickWoodDepthField" id="quickWoodDepthField" hidden aria-hidden="true">
+<label for="woodSideDepth">PROFUNDIDAD DEL CAJÓN DE MADERA (COSTADO Y FONDO)</label>
 <select id="woodSideDepth" onchange="onWoodSideDepthChange()"><option value="45">45 cm · habitual</option><option value="40">40 cm</option><option value="35">35 cm</option><option value="30">30 cm</option></select>
 </div>
-<div class="field quickWoodModeField" id="quickWoodModeField"><label for="quickWoodMode">TIPO DE CAJÓN</label><select id="quickWoodMode" onchange="onQuickWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div>
+<div class="field quickWoodModeField" id="quickWoodModeField" hidden aria-hidden="true"><label for="quickWoodMode">TIPO DE CAJÓN</label><select id="quickWoodMode" onchange="onQuickWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div>
 <div class="field quickCountField"><label for="quickCount">3 · CANTIDAD DE CAJONES</label><select id="quickCount" onchange="onQuickCountChange()"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div>
 <div class="field quickMeasureField"><label for="quickMeasure">4 · MEDIDA DE PARTIDA</label><select id="quickMeasure" onchange="onQuickMeasureChange()"><option value="caja">Caja del armario</option><option value="hueco">Hueco interior</option></select></div>
 <div class="field quickWidth"><label for="quickBox" id="quickBoxLabel">5 · ANCHO CAJA (cm)</label><div class="measureInputRow"><input id="quickBox" inputmode="decimal" placeholder="100"><select id="quickUnit" aria-label="Unidad de medida" onchange="onQuickUnitChange()"><option value="cm">cm</option><option value="mm">mm</option></select></div></div>
@@ -247,8 +247,12 @@ function onArmMeasureChange(){const m=document.getElementById('armMeasure').valu
 function measureBanner(measure,value,box){return measure==='hueco'?'<div class="notice">Partiendo de hueco: <b>'+cm(value)+'</b> → caja calculada <b>'+cm(box)+'</b> (hueco + 39 mm).</div>':''}
 function syncWoodModeVisibility(){
  const wooden=document.getElementById('quickType').value==='madera';
- document.getElementById('quickWoodModeField').style.display=wooden?'block':'none';
- document.getElementById('quickWoodDepthField').style.display=wooden?'block':'none';
+ // Estado del formulario: no mostrar nunca opciones de madera en metalicos/joyeros.
+ for(const id of ['quickWoodModeField','quickWoodDepthField']){
+  const item=document.getElementById(id);
+  item.hidden=!wooden;
+  item.setAttribute('aria-hidden',String(!wooden));
+ }
  document.querySelector('.quick').classList.toggle('is-wood',wooden);
  document.querySelector('.quick').classList.toggle('is-selected',['madera','metalico','joyero'].includes(document.getElementById('quickType').value));
 }
