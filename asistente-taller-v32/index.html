@@ -37,6 +37,9 @@ button,input,select,textarea{font:inherit} button{touch-action:manipulation}
 .quick:not(.is-wood) .quickTypeField{grid-column:span 2}
 .quick:not(.is-wood) .quickWidth{grid-column:span 3}
 .quickWoodDepthField select{border-color:#548bc1;background:#101e30}
+#quickWoodDepthField,#quickWoodModeField{display:none}
+.quick:not(.is-selected) > :not(.quickTypeField){display:none!important}
+.quick:not(.is-selected) .quickTypeField{grid-column:1/-1}
 .measureInputRow{display:grid;grid-template-columns:minmax(0,1fr) 78px;gap:7px}.measureInputRow select{padding:0 9px;text-align:center;background:#14293c;border-color:#4e7aa6}
 .field label,.toolpanel label{display:block;margin:0 0 6px;color:#a9b8c9;font-size:10px;font-weight:950;letter-spacing:.45px}
 input,select,textarea{width:100%;border:1px solid #344256;background:#0a111a;color:#fff;border-radius:14px;outline:none;transition:.15s ease}
@@ -109,7 +112,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 
 <div role="status" style="margin:0 0 12px;padding:12px 15px;border:1px solid #5e83a6;border-radius:14px;background:#16283b;color:#d9efff;font-size:13px;font-weight:800">🧪 VERSIÓN 3.2 DE PRUEBA · Tu taller habitual permanece sin cambios.</div>
 <section class="hero">
-<div class="herohead"><div><div class="kicker">CONSULTA RÁPIDA</div><h2>¿Qué estás fabricando?</h2><p>Primero selecciona el fondo. Después indica el trabajo y la medida de caja o hueco.</p></div><div class="reference">ESENZIA 4.0 · REFERENCIA</div></div>
+<div class="herohead"><div><div class="kicker">CONSULTA RÁPIDA</div><h2>¿Qué estás fabricando?</h2><p>Selecciona qué vas a fabricar. Después elige las medidas de caja o hueco; la profundidad del cajón de madera aparecerá solo al elegirlo.</p></div><div class="reference">ESENZIA 4.0 · REFERENCIA</div></div>
 <div class="depthFirst">
   <div class="field"><label for="armDepth">1 · FONDO DEL ARMARIO</label><select id="armDepth" onchange="onDepthChange()">
   <optgroup label="Correderos"><option value="cor68">Corredero · fondo 68 cm · caja 58 cm</option><option value="cor65">Corredero · fondo 65 cm · caja 55 cm</option></optgroup>
@@ -119,7 +122,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
   <div class="depthInfo" id="depthInfo" aria-live="polite">Selecciona el fondo para adaptar los cálculos.</div>
 </div>
 <div class="quick">
-<div class="field quickTypeField"><label for="quickType">2 · TIPO DE TRABAJO</label><select id="quickType" onchange="onQuickTypeChange()"><option value="madera">Cajones de madera</option><option value="metalico">Cajones metálicos</option><option value="joyero">Joyero</option></select></div>
+<div class="field quickTypeField"><label for="quickType">2 · TIPO DE TRABAJO</label><select id="quickType" onchange="onQuickTypeChange()"><option value="" selected disabled>Elige qué vas a fabricar…</option><option value="madera">Cajones de madera</option><option value="metalico">Cajones metálicos</option><option value="joyero">Joyero</option></select></div>
 <div class="field quickWoodDepthField" id="quickWoodDepthField">
 <label for="woodSideDepth">PROFUNDIDAD CAJÓN MADERA · COSTADO Y FONDO</label>
 <select id="woodSideDepth" onchange="onWoodSideDepthChange()"><option value="45">45 cm · habitual</option><option value="40">40 cm</option><option value="35">35 cm</option><option value="30">30 cm</option></select>
@@ -245,9 +248,10 @@ function onArmMeasureChange(){const m=document.getElementById('armMeasure').valu
 function measureBanner(measure,value,box){return measure==='hueco'?'<div class="notice">Partiendo de hueco: <b>'+cm(value)+'</b> → caja calculada <b>'+cm(box)+'</b> (hueco + 39 mm).</div>':''}
 function syncWoodModeVisibility(){
  const wooden=document.getElementById('quickType').value==='madera';
- document.getElementById('quickWoodModeField').style.display=wooden?'':'none';
- document.getElementById('quickWoodDepthField').style.display=wooden?'':'none';
+ document.getElementById('quickWoodModeField').style.display=wooden?'block':'none';
+ document.getElementById('quickWoodDepthField').style.display=wooden?'block':'none';
  document.querySelector('.quick').classList.toggle('is-wood',wooden);
+ document.querySelector('.quick').classList.toggle('is-selected',['madera','metalico','joyero'].includes(document.getElementById('quickType').value));
 }
 function onWoodModeChange(){const special=document.getElementById('woodMode').value==='special';document.getElementById('drawerBoxLabel').textContent=special?'HUECO INTERIOR (cm)':'CAJA DEL ARMARIO (cm)';document.getElementById('drawerBox').value='';document.getElementById('drawerBox').placeholder=special?'93,7':'100';document.getElementById('drawerResult').classList.remove('show')}
 function onQuickTypeChange(){
@@ -653,6 +657,7 @@ function makeSketch(){
 
 function quickCalculate(){
  const type=document.getElementById('quickType').value,raw=quickMeasurementCm(),measure=document.getElementById('quickMeasure').value,c=boxFromMeasure(raw,measure),count=Number(document.getElementById('quickCount').value),out='quickResult';
+ if(!['madera','metalico','joyero'].includes(type))return showResult(out,'<div class="notice">Primero elige qué tipo de cajón vas a fabricar.</div>');
  if(!permittedCounts(type).includes(count))return showResult(out,'<div class="notice">Esta cantidad no está disponible para el tipo de cajón seleccionado.</div>');
  if(!document.getElementById('quickBox').value.trim()||!Number.isFinite(raw)||!Number.isFinite(c))return showResult(out,'<div class="notice">Introduce una medida válida.</div>');
  if(type==='madera'){
@@ -675,7 +680,15 @@ async function copyText(text){try{await navigator.clipboard.writeText(text)}catc
 async function askChatGPT(){const q=document.getElementById('query'),text=q.value.trim();if(!text){toast('Escribe primero la consulta');q.focus();return}await copyText(text);toast('Abriendo ChatGPT…');window.open('https://chatgpt.com/?q='+encodeURIComponent(text),'_blank')}
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
 document.getElementById('quickBox').addEventListener('keydown',e=>{if(e.key==='Enter')quickCalculate()});document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter')calculate()});try{const stored=localStorage.getItem(depthKey);if(depthProfiles[stored])document.getElementById('armDepth').value=stored;const ws=Number(localStorage.getItem(woodSideDepthKey));if([45,40,35,30].includes(ws))document.getElementById('woodSideDepth').value=String(ws)}catch(e){}
-try{const settings=JSON.parse(localStorage.getItem(configurationKey)||'{}');if(permittedCounts(settings.type).includes(settings.count)&&['madera','metalico','joyero'].includes(settings.type)){document.getElementById('quickType').value=settings.type;setCountOptions('quickCount',settings.type,settings.count);document.getElementById('quickWoodMode').value=settings.woodMode==='special'?'special':'standard';document.getElementById('quickUnit').value=settings.unit==='mm'?'mm':'cm';if(['caja','hueco'].includes(settings.measure))document.getElementById('quickMeasure').value=settings.measure;else if(settings.woodMode==='special'&&settings.type==='madera')document.getElementById('quickMeasure').value='hueco'}else setCountOptions('quickCount','madera',3)}catch(e){setCountOptions('quickCount','madera',3)}
+try{
+ const settings=JSON.parse(localStorage.getItem(configurationKey)||'{}');
+ document.getElementById('quickWoodMode').value=settings.woodMode==='special'?'special':'standard';
+ document.getElementById('quickUnit').value=settings.unit==='mm'?'mm':'cm';
+ if(['caja','hueco'].includes(settings.measure))document.getElementById('quickMeasure').value=settings.measure;
+}catch(e){}
+ // Nunca recuperar una selección antigua: el usuario elige el tipo de trabajo en cada entrada.
+ document.getElementById('quickType').value='';
+ setCountOptions('quickCount','madera',3);
 document.getElementById('quickUnit').dataset.previous=document.getElementById('quickUnit').value;syncWoodModeVisibility();onQuickMeasureChange();onArmMeasureChange();onMetalTypeChange();onWoodSideDepthChange();tick();setInterval(tick,30000);renderHistory();
 </script>
 </body>
