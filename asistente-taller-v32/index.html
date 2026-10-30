@@ -568,18 +568,19 @@ function calcDrawer(){
  showResult('drawerResult',drawerHtml(c,count,special));
  addHistory('Cajones madera',c,woodSummary(c,special),count,special?'hueco':'caja',special?'special':'standard');
 }
+const METAL_JOYERO_FONDO_PROFUNDIDAD_CM=43.8;
 function metalHtml(c,type,count=1){
  if(!permittedCounts(type).includes(count))return '<div class="notice">Cantidad de cajones no disponible para este tipo.</div>';
  const p=getDepth(),trabaAncho=c-16.1,fondoAncho=c-14,trabaAlto=type==='joyero'?5.8:9,tipo=type==='joyero'?'Joyero':'Cajón metálico',standard=p.body===58;
- const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Traba por cajón',cm(trabaAncho)+' × '+cm(trabaAlto),true)+metric('Fondo por cajón (ancho)',cm(fondoAncho),true)+metric('Fondo (profundidad)',standard?'43,8 cm':'Por confirmar')+depthMetrics();
- const note='Las medidas de traba y fondo corresponden a cada cajón de este conjunto. '+(standard?'Profundidad del fondo estándar: 43,8 cm. ':'La profundidad de 43,8 cm no se extrapola a la caja reducida. ')+'La altura total del conjunto y sus costados quedan pendientes de cotejar con la tarifa. '+depthNote();
+ const metrics=metric('Cantidad',pluralCajon(count),true)+metric('Traba por cajón',cm(trabaAncho)+' × '+cm(trabaAlto),true)+metric('Fondo por cajón (ancho)',cm(fondoAncho),true)+metric('Fondo por cajón (profundidad)',cm(METAL_JOYERO_FONDO_PROFUNDIDAD_CM),true)+metric('Fondo por cajón (corte)',cm(fondoAncho)+' × '+cm(METAL_JOYERO_FONDO_PROFUNDIDAD_CM),true)+depthMetrics();
+ const note='Cada cajón '+(type==='joyero'?'joyero':'metálico')+' lleva un fondo de '+cm(METAL_JOYERO_FONDO_PROFUNDIDAD_CM)+' de profundidad fija, independiente de los costados de cajón de madera. '+(standard?'':'Con el armario de fondo reducido, comprobar que el cajón y las guías caben físicamente antes de fabricar. ')+'La altura total del conjunto y sus costados quedan pendientes de cotejar con la tarifa.';
  return resultWrap(tipo+' · '+pluralCajon(count)+' · caja '+cm(c),metrics,note,standard);
 }
 function calcMetal(){
  const c=val('metalBox'),type=document.getElementById('metalType').value,count=Number(document.getElementById('metalCount').value);
  if(!Number.isFinite(c)||c<=16.1)return showResult('metalResult','<div class="notice">Introduce una caja válida.</div>');
  showResult('metalResult',metalHtml(c,type,count));
- addHistory(type==='joyero'?'Joyero':'Cajón metálico',c,'Traba por cajón '+cm(c-16.1)+' · fondo ancho '+cm(c-14),count);
+ addHistory(type==='joyero'?'Joyero':'Cajón metálico',c,'Traba por cajón '+cm(c-16.1)+' · fondo '+cm(c-14)+' × '+cm(METAL_JOYERO_FONDO_PROFUNDIDAD_CM),count);
 }
 function chestHtml(c,count,withSketch=true){
  const g=widthGroup(c);
@@ -642,7 +643,7 @@ function quickCalculate(){
  }else if(type==='metalico'||type==='joyero'){
   if(c<=16.1)return showResult(out,'<div class="notice">Introduce una caja válida.</div>');
   showResult(out,measureBanner(measure,raw,c)+metalHtml(c,type,count));
-  addHistory(type==='joyero'?'Joyero':'Cajón metálico',c,'Traba por cajón '+cm(c-16.1)+' · fondo ancho '+cm(c-14),count);
+  addHistory(type==='joyero'?'Joyero':'Cajón metálico',c,'Traba por cajón '+cm(c-16.1)+' · fondo '+cm(c-14)+' × '+cm(METAL_JOYERO_FONDO_PROFUNDIDAD_CM),count);
  }else return showResult(out,'<div class="notice">Tipo de trabajo no disponible.</div>');
  saveQuickConfiguration();toast('Cálculo listo');
 }
