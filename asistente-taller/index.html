@@ -68,6 +68,11 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 .nav{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(calc(100% - 24px),700px);display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px;border:1px solid rgba(63,79,98,.9);border-radius:19px;background:rgba(13,18,25,.91);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 16px 35px rgba(0,0,0,.36);z-index:20}
 .navbtn{border:0;background:transparent;color:#8e9caf;border-radius:13px;padding:8px 5px;font-size:9px;font-weight:900;cursor:pointer}.navbtn b{display:block;font-size:20px;margin-bottom:3px}.navbtn.active{background:#192432;color:#fff}
 .toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(12px);background:#152231;color:#eaf4ff;border:1px solid #34495e;border-radius:999px;padding:9px 13px;font-size:10px;font-weight:850;opacity:0;pointer-events:none;transition:.18s;z-index:30;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.resultActions{display:flex;gap:8px;margin:10px 0 0}
+.resultActions button{flex:1;min-width:0;min-height:46px;border-radius:13px;border:1px solid #3b638a;background:#14283b;color:#dcedff;font-size:13px;font-weight:900;cursor:pointer}
+.resultActions button:last-child{border-color:#386858;background:#153027;color:#a8f2d2}
+.resultActions button:active{transform:scale(.98)}
+@media(max-width:430px){.resultActions{flex-direction:column}}
 @media(max-width:760px){.depthFirst{grid-template-columns:1fr}.hero{padding:16px}.herohead{display:block}.reference{display:inline-block;margin-top:12px}.quick{grid-template-columns:1fr 1fr}.quick .field:first-child{grid-column:1/-1}.quick .quickWidth{grid-column:1/-1}.quick .primary{grid-column:1/-1}.cards{grid-template-columns:repeat(2,1fr)}.card{min-height:120px}.formrow{grid-template-columns:1fr 1fr}.formrow .primary,.formrow .secondary{grid-column:1/-1}.metrics,.tarifagrid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:430px){.brandmark{width:43px;height:43px}.statuspill{padding:8px 9px}.statuspill .clocklabel{display:none}.hero h2{font-size:28px}.metrics{grid-template-columns:1fr 1fr}.metric strong{font-size:18px}}
 </style>
@@ -75,7 +80,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 <body>
 <main class="app" id="home">
 <header class="topbar">
-<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v3.1</p></div></div>
+<div class="brand"><div class="brandmark">🛠️</div><div><h1>Taller Baixmoduls</h1><p>Herramientas rápidas de fabricación · v3.2 (propuesta)</p></div></div>
 <div class="statuspill"><span class="statusdot"></span><span class="clocklabel">ACTIVO</span><span id="clock">--:--</span></div>
 </header>
 
@@ -302,7 +307,57 @@ function validSpecialHueco(cmValue){return Number.isFinite(cmValue)&&cmValue>10.
 function widthGroup(c){if(c>=38&&c<=50)return'B1';if(c>=51&&c<=60)return'C1';if(c>=61&&c<=75)return'A2';if(c>=76&&c<=100)return'B2';if(c>=101&&c<=120)return'C2';return null}
 function metric(label,value,important=false){return '<div class="metric'+(important?' important':'')+'"><small>'+label+'</small><strong>'+value+'</strong></div>'}
 function resultWrap(title,metrics,note='',verified=true){return '<div class="resultHero"><div class="resultHead"><strong>'+title+'</strong><span class="verified">'+(verified?'✓ COTAS COMPROBADAS':'⚠ COTAS PENDIENTES')+'</span></div><div class="metrics">'+metrics+'</div>'+(note?'<div class="notice">'+note+'</div>':'')+'</div>'}
-function showResult(id,html){const el=document.getElementById(id);el.innerHTML=html;el.classList.add('show')}
+function showResult(id,html){
+ const el=document.getElementById(id);el.innerHTML=html;el.classList.add('show');
+ if(el.querySelector('.resultHero')){
+  const actions=document.createElement('div');actions.className='resultActions';
+  const copy=document.createElement('button');copy.type='button';copy.textContent='📋 Copiar ficha';copy.addEventListener('click',()=>copyMeasurements(id));
+  const share=document.createElement('button');share.type='button';share.textContent='↗ Compartir ficha';share.addEventListener('click',()=>shareMeasurements(id));
+  actions.append(copy,share);el.appendChild(actions);
+ }
+}
+function measurementSheetText(id){
+ const root=document.getElementById(id);
+ if(!root)return '';
+ const cards=[...root.querySelectorAll('.resultHero')];
+ if(!cards.length)return '';
+ const lines=['TALLER BAIXMODULS · FICHA DE MEDIDAS',''];
+ for(const card of cards){
+  lines.push(card.querySelector('.resultHead strong')?.textContent?.trim()||'Resultado');
+  const status=card.querySelector('.verified')?.textContent?.trim();
+  if(status)lines.push(status);
+  for(const box of card.querySelectorAll('.metric')){
+   const label=box.querySelector('small')?.textContent?.trim();
+   const value=box.querySelector('strong')?.textContent?.trim();
+   if(label&&value)lines.push(label+': '+value);
+  }
+  for(const note of card.querySelectorAll('.notice')){
+   const text=note.textContent.trim();
+   if(text)lines.push('NOTA: '+text);
+  }
+  lines.push('');
+ }
+ lines.push('Revisar las cotas pendientes antes de fabricar. Referencia: ESENZIA 4.0.');
+ return lines.join('\n');
+}
+async function copyMeasurements(id){
+ const content=measurementSheetText(id);
+ if(!content)return toast('No hay medidas que copiar');
+ try{
+  if(!navigator.clipboard?.writeText)throw new Error('Sin portapapeles');
+  await navigator.clipboard.writeText(content);
+  toast('Ficha copiada');
+ }catch(e){window.prompt('Copia la ficha de medidas:',content)}
+}
+async function shareMeasurements(id){
+ const content=measurementSheetText(id);
+ if(!content)return toast('No hay medidas que compartir');
+ if(navigator.share){
+  try{await navigator.share({title:'Ficha de medidas · Taller Baixmoduls',text:content});return}
+  catch(e){if(e?.name==='AbortError')return}
+ }
+ await copyMeasurements(id);
+}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),1900)}
 function addHistory(type,box,summary,count,measure='caja',woodMode='standard'){
  let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){}
@@ -316,7 +371,7 @@ function renderHistory(){
  const el=document.getElementById('historyList');
  let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){}
  if(!items.length){el.innerHTML='<div style="color:#718195;font-size:10px;padding:3px">Todavía no hay cálculos guardados.</div>';return}
- el.innerHTML=items.map((x,i)=>'<button class="hist" onclick="repeatHistory('+i+')"><span><b>'+escapeHtml(x.type)+(x.woodMode==='special'?' · especial':'')+'</b> · '+(x.woodMode==='special'?'hueco ':'caja ')+cm(x.woodMode==='special'?Number((x.box-3.9).toFixed(8)):x.box)+(x.count?' · '+pluralCajon(x.count):'')+(depthProfiles[x.depth]?' · fondo '+cm(depthProfiles[x.depth].total):'')+'<br><small style="color:#7f90a4">'+escapeHtml(x.woodMode==='special'?woodSummary(x.box,true):x.summary)+'</small></span><span>ABRIR ›</span></button>').join('');
+ el.innerHTML=items.map((x,i)=>'<button class="hist" onclick="repeatHistory('+i+')"><span><b>'+escapeHtml(x.type)+(x.woodMode==='special'?' · especial':'')+'</b> · '+(x.woodMode==='special'||x.measure==='hueco'?'hueco ':'caja ')+cm(x.woodMode==='special'||x.measure==='hueco'?Number((x.box-3.9).toFixed(8)):x.box)+(x.count?' · '+pluralCajon(x.count):'')+(depthProfiles[x.depth]?' · fondo '+cm(depthProfiles[x.depth].total):'')+'<br><small style="color:#7f90a4">'+escapeHtml(x.woodMode==='special'?woodSummary(x.box,true):x.summary)+'</small></span><span>ABRIR ›</span></button>').join('');
 }
 function repeatHistory(i){
  let items=[];try{items=JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){}
