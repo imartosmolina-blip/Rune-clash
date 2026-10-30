@@ -28,11 +28,15 @@ button,input,select,textarea{font:inherit} button{touch-action:manipulation}
 .herohead{position:relative;z-index:1;display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.kicker{color:#88c7ff;font-size:10px;letter-spacing:1.5px;font-weight:950}
 .hero h2{margin:5px 0 3px;font-size:clamp(25px,7vw,39px);letter-spacing:-1.1px}.hero p{margin:0;color:var(--muted);font-size:13px}
 .reference{color:#ffe39a;background:rgba(245,199,95,.09);border:1px solid rgba(245,199,95,.25);padding:8px 10px;border-radius:12px;font-size:10px;font-weight:950;white-space:nowrap}
-.depthFirst{position:relative;z-index:1;margin-top:17px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.12fr);gap:10px;align-items:end}
+.depthFirst{position:relative;z-index:1;margin-top:17px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:end}
 .depthFirst .field select{border-color:#548bc1;background:#101e30}
 .depthInfo{min-height:50px;border:1px solid #36536d;border-radius:14px;background:#0f1d2a;padding:9px 13px;display:flex;flex-direction:column;justify-content:center;color:#dcecff;font-size:11px;line-height:1.35}
 .depthInfo b{color:#8fd2ff;font-size:13px}
-.quick{position:relative;z-index:1;margin-top:11px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.quick .quickWidth{grid-column:span 3}.quick .primary{grid-column:span 1}
+.quick{position:relative;z-index:1;margin-top:11px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.quick .quickWidth{grid-column:span 2}.quick .primary{grid-column:span 1}
+.quick:not(.is-wood) .quickTypeField{grid-column:span 2}
+.quick:not(.is-wood) .quickWidth{grid-column:span 3}
+.quickWoodDepthField select{border-color:#548bc1;background:#101e30}
 .measureInputRow{display:grid;grid-template-columns:minmax(0,1fr) 78px;gap:7px}.measureInputRow select{padding:0 9px;text-align:center;background:#14293c;border-color:#4e7aa6}
 .field label,.toolpanel label{display:block;margin:0 0 6px;color:#a9b8c9;font-size:10px;font-weight:950;letter-spacing:.45px}
 input,select,textarea{width:100%;border:1px solid #344256;background:#0a111a;color:#fff;border-radius:14px;outline:none;transition:.15s ease}
@@ -92,7 +96,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 }
 .resultActions button:active{transform:scale(.98)}
 @media(max-width:430px){.resultActions{flex-direction:column}}
-@media(max-width:760px){.depthFirst{grid-template-columns:1fr}.hero{padding:16px}.herohead{display:block}.reference{display:inline-block;margin-top:12px}.quick{grid-template-columns:1fr 1fr}.quick .field:first-child{grid-column:1/-1}.quick .quickWidth{grid-column:1/-1}.quick .primary{grid-column:1/-1}.cards{grid-template-columns:repeat(2,1fr)}.card{min-height:120px}.formrow{grid-template-columns:1fr 1fr}.formrow .primary,.formrow .secondary{grid-column:1/-1}.metrics,.tarifagrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.depthFirst{grid-template-columns:1fr}.hero{padding:16px}.herohead{display:block}.reference{display:inline-block;margin-top:12px}.quick{grid-template-columns:1fr 1fr}.quick .quickTypeField,.quick .quickWoodDepthField,.quick .quickMeasureField,.quick .quickWidth,.quick .primary{grid-column:1/-1}.quick:not(.is-wood) .quickCountField{grid-column:1/-1}.cards{grid-template-columns:repeat(2,1fr)}.card{min-height:120px}.formrow{grid-template-columns:1fr 1fr}.formrow .primary,.formrow .secondary{grid-column:1/-1}.metrics,.tarifagrid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:430px){.brandmark{width:43px;height:43px}.statuspill{padding:8px 9px}.statuspill .clocklabel{display:none}.hero h2{font-size:28px}.metrics{grid-template-columns:1fr 1fr}.metric strong{font-size:18px}}
 </style>
 </head>
@@ -112,14 +116,17 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
   <optgroup label="Batientes"><option value="bat61">Batiente · fondo 61 cm · caja 58 cm</option><option value="bat58">Batiente · fondo 58 cm · caja 55 cm</option></optgroup>
   <optgroup label="Vestidores"><option value="vest59">Vestidor · fondo 59 cm · caja 58 cm</option></optgroup>
   </select></div>
-  <div class="field"><label for="woodSideDepth">FONDO COSTADO DE CAJÓN (cm)</label><select id="woodSideDepth" onchange="onWoodSideDepthChange()"><option value="45">45 cm · habitual</option><option value="40">40 cm</option><option value="35">35 cm</option><option value="30">30 cm</option></select></div>
   <div class="depthInfo" id="depthInfo" aria-live="polite">Selecciona el fondo para adaptar los cálculos.</div>
 </div>
 <div class="quick">
-<div class="field"><label for="quickType">2 · TIPO DE TRABAJO</label><select id="quickType" onchange="onQuickTypeChange()"><option value="madera">Cajones de madera</option><option value="metalico">Cajones metálicos</option><option value="joyero">Joyero</option></select></div>
-<div class="field" id="quickWoodModeField"><label for="quickWoodMode">CONFIGURACIÓN DE MADERA</label><select id="quickWoodMode" onchange="onQuickWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div>
-<div class="field"><label for="quickCount">3 · CANTIDAD DE CAJONES</label><select id="quickCount" onchange="onQuickCountChange()"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div>
-<div class="field"><label for="quickMeasure">4 · MEDIDA DE PARTIDA</label><select id="quickMeasure" onchange="onQuickMeasureChange()"><option value="caja">Caja del armario</option><option value="hueco">Hueco interior</option></select></div>
+<div class="field quickTypeField"><label for="quickType">2 · TIPO DE TRABAJO</label><select id="quickType" onchange="onQuickTypeChange()"><option value="madera">Cajones de madera</option><option value="metalico">Cajones metálicos</option><option value="joyero">Joyero</option></select></div>
+<div class="field quickWoodDepthField" id="quickWoodDepthField">
+<label for="woodSideDepth">PROFUNDIDAD CAJÓN MADERA · COSTADO Y FONDO</label>
+<select id="woodSideDepth" onchange="onWoodSideDepthChange()"><option value="45">45 cm · habitual</option><option value="40">40 cm</option><option value="35">35 cm</option><option value="30">30 cm</option></select>
+</div>
+<div class="field quickWoodModeField" id="quickWoodModeField"><label for="quickWoodMode">CONFIGURACIÓN DE MADERA</label><select id="quickWoodMode" onchange="onQuickWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div>
+<div class="field quickCountField"><label for="quickCount">3 · CANTIDAD DE CAJONES</label><select id="quickCount" onchange="onQuickCountChange()"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div>
+<div class="field quickMeasureField"><label for="quickMeasure">4 · MEDIDA DE PARTIDA</label><select id="quickMeasure" onchange="onQuickMeasureChange()"><option value="caja">Caja del armario</option><option value="hueco">Hueco interior</option></select></div>
 <div class="field quickWidth"><label for="quickBox" id="quickBoxLabel">5 · ANCHO CAJA (cm)</label><div class="measureInputRow"><input id="quickBox" inputmode="decimal" placeholder="100"><select id="quickUnit" aria-label="Unidad de medida" onchange="onQuickUnitChange()"><option value="cm">cm</option><option value="mm">mm</option></select></div></div>
 <button class="primary" onclick="quickCalculate()">CALCULAR</button>
 </div>
@@ -140,6 +147,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 
 <section id="tool-madera" class="toolpanel">
 <div class="paneltop"><div class="paneltitle"><span class="bigico">🪵</span><div><h3>Cajón de madera</h3><p>Medidas de fabricación verificadas</p></div></div><button class="close" onclick="closeTools()">✕</button></div>
+<div class="field" style="margin-bottom:10px"><label for="woodSideDepthTool">PROFUNDIDAD CAJÓN DE MADERA · COSTADO Y FONDO</label><select id="woodSideDepthTool" onchange="onWoodSideDepthToolChange()"><option value="45">45 cm · habitual</option><option value="40">40 cm</option><option value="35">35 cm</option><option value="30">30 cm</option></select></div>
 <div class="field" style="margin-bottom:10px"><label for="woodMode">CONFIGURACIÓN DE MADERA</label><select id="woodMode" onchange="onWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div><div class="formrow"><div><label id="drawerBoxLabel">CAJA DEL ARMARIO (cm)</label><input id="drawerBox" inputmode="decimal" placeholder="100"></div><div><label>CANTIDAD DE CAJONES</label><select id="woodCount"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div><button class="primary" onclick="calcDrawer()">SACAR MEDIDAS</button></div><div id="drawerResult" class="result"></div>
 </section>
 
@@ -235,7 +243,12 @@ function onQuickMeasureChange(){
 }
 function onArmMeasureChange(){const m=document.getElementById('armMeasure').value;const input=document.getElementById('armBox');document.getElementById('armBoxLabel').textContent=m==='hueco'?'ANCHO HUECO (cm)':'ANCHO CAJA (cm)';input.placeholder=m==='hueco'?'96,1':'100';if(document.getElementById('armResult').classList.contains('show')&&input.value.trim())calcArmario()}
 function measureBanner(measure,value,box){return measure==='hueco'?'<div class="notice">Partiendo de hueco: <b>'+cm(value)+'</b> → caja calculada <b>'+cm(box)+'</b> (hueco + 39 mm).</div>':''}
-function syncWoodModeVisibility(){document.getElementById('quickWoodModeField').style.display=document.getElementById('quickType').value==='madera'?'':'none'}
+function syncWoodModeVisibility(){
+ const wooden=document.getElementById('quickType').value==='madera';
+ document.getElementById('quickWoodModeField').style.display=wooden?'':'none';
+ document.getElementById('quickWoodDepthField').style.display=wooden?'':'none';
+ document.querySelector('.quick').classList.toggle('is-wood',wooden);
+}
 function onWoodModeChange(){const special=document.getElementById('woodMode').value==='special';document.getElementById('drawerBoxLabel').textContent=special?'HUECO INTERIOR (cm)':'CAJA DEL ARMARIO (cm)';document.getElementById('drawerBox').value='';document.getElementById('drawerBox').placeholder=special?'93,7':'100';document.getElementById('drawerResult').classList.remove('show')}
 function onQuickTypeChange(){
  syncWoodModeVisibility();
@@ -310,7 +323,16 @@ function mm(v){return Number(v.toFixed(6)).toLocaleString('es-ES',{maximumFracti
 function cm(v){return Number(v.toFixed(6)).toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:6})+' cm'}
 function interiorMm(c){return c*10-39}
 function woodSideDepthCm(){const value=Number(document.getElementById('woodSideDepth').value);return [45,40,35,30].includes(value)?value:45}
-function onWoodSideDepthChange(){try{localStorage.setItem(woodSideDepthKey,String(woodSideDepthCm()))}catch(e){}onDepthChange()}
+function onWoodSideDepthChange(){
+ const value=String(woodSideDepthCm());
+ document.getElementById('woodSideDepthTool').value=value;
+ try{localStorage.setItem(woodSideDepthKey,value)}catch(e){}
+ onDepthChange();
+}
+function onWoodSideDepthToolChange(){
+ document.getElementById('woodSideDepth').value=document.getElementById('woodSideDepthTool').value;
+ onWoodSideDepthChange();
+}
 // Fuente: tabla física ARMARIOS CORREDEROS / BATIENTES, IMG_4417.jpeg.
  // Anchos 38–120 cm, pasos de 1 cm. El despiece sigue bloques de 5 cm.
  // Se mantiene completamente independiente del cálculo de cajonera especial.
@@ -654,7 +676,7 @@ async function askChatGPT(){const q=document.getElementById('query'),text=q.valu
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
 document.getElementById('quickBox').addEventListener('keydown',e=>{if(e.key==='Enter')quickCalculate()});document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter')calculate()});try{const stored=localStorage.getItem(depthKey);if(depthProfiles[stored])document.getElementById('armDepth').value=stored;const ws=Number(localStorage.getItem(woodSideDepthKey));if([45,40,35,30].includes(ws))document.getElementById('woodSideDepth').value=String(ws)}catch(e){}
 try{const settings=JSON.parse(localStorage.getItem(configurationKey)||'{}');if(permittedCounts(settings.type).includes(settings.count)&&['madera','metalico','joyero'].includes(settings.type)){document.getElementById('quickType').value=settings.type;setCountOptions('quickCount',settings.type,settings.count);document.getElementById('quickWoodMode').value=settings.woodMode==='special'?'special':'standard';document.getElementById('quickUnit').value=settings.unit==='mm'?'mm':'cm';if(['caja','hueco'].includes(settings.measure))document.getElementById('quickMeasure').value=settings.measure;else if(settings.woodMode==='special'&&settings.type==='madera')document.getElementById('quickMeasure').value='hueco'}else setCountOptions('quickCount','madera',3)}catch(e){setCountOptions('quickCount','madera',3)}
-document.getElementById('quickUnit').dataset.previous=document.getElementById('quickUnit').value;syncWoodModeVisibility();onQuickMeasureChange();onArmMeasureChange();onMetalTypeChange();onDepthChange();tick();setInterval(tick,30000);renderHistory();
+document.getElementById('quickUnit').dataset.previous=document.getElementById('quickUnit').value;syncWoodModeVisibility();onQuickMeasureChange();onArmMeasureChange();onMetalTypeChange();onWoodSideDepthChange();tick();setInterval(tick,30000);renderHistory();
 </script>
 </body>
 </html>
