@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Taller Baixmoduls">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>Taller IA · v4.0 definitiva</title>
+<title>Taller IA · v4.1 · Croquis 3D de madera</title>
 <style>
 :root{--bg:#090c11;--panel:#111720;--panel2:#171f2a;--line:#273241;--text:#f6f8fb;--muted:#8f9cad;--blue:#5faeff;--green:#4adea7;--gold:#f5c75f;--shadow:0 18px 44px rgba(0,0,0,.34)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -64,6 +64,18 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 .metric.important{background:linear-gradient(145deg,#14324a,#112538);border-color:#35678f}.metric.important strong{color:#8ed0ff}
 .notice{margin-top:9px;padding:10px 12px;border-radius:13px;border:1px solid rgba(245,199,95,.20);background:rgba(245,199,95,.07);color:#f3d999;font-size:10px;line-height:1.45;font-weight:700}
 .sketch{margin-top:10px;min-height:205px;border:1px solid #2b3b4d;border-radius:17px;background:#0a1119;padding:17px;display:flex;align-items:center;justify-content:center}
+.cadShowcase{margin-top:14px;border:1px solid #3a4c5b;border-radius:20px;padding:14px;background:linear-gradient(150deg,#16222d,#0a131b)}
+.cadHeading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.cadHeading strong{font-size:14px;letter-spacing:.15px;color:#f4f8ff}
+.cadHeading span{font-size:10px;letter-spacing:.3px;font-weight:900;color:#9bddfb;background:#132d3d;padding:7px 10px;border:1px solid #31536c;border-radius:999px}
+.cadGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cadView{min-width:0;overflow:hidden;border:1px solid #30465b;border-radius:15px;background:#0e1923;padding:8px}
+.cadView svg{display:block;width:100%;height:auto;max-width:100%;background:radial-gradient(circle at 52% 43%,#1d3240 0%,#101c29 67%,#0c1620 100%);border-radius:9px}
+.cadViewFooter{color:#a9b9c8;font-size:11px;padding:8px 4px 3px;line-height:1.45;min-height:50px}
+.cadViewFooter b{color:#e7f4ff}
+.cadFootnote{padding:11px 12px;border-left:3px solid #f5c75f;border-radius:8px;margin-top:10px;background:#1b2430;color:#d4dfe8;font-size:11px;line-height:1.45}
+.cadBlueprintTitle{font-size:11px;letter-spacing:.8px;color:#b0d9f7;font-weight:950;margin:16px 3px 3px}
+@media(max-width:670px){.cadGrid{grid-template-columns:1fr}.cadShowcase{padding:10px}.cadViewFooter{min-height:0}}
 .drawerSketch{width:min(92%,470px)}.drawerBody{height:135px;border:2px solid #dbe8f5;border-top:0;position:relative;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01))}
 .drawerFront{height:39px;border:2px solid #dbe8f5;background:#1b2b3e;display:grid;place-items:center;font-size:10px;font-weight:900}.drawerBottom{position:absolute;left:12px;right:12px;bottom:12px;height:62px;border:1px solid #637b96;background:rgba(116,215,255,.06);display:grid;place-items:center;color:#91a9c1;font-size:10px}
 .sideL,.sideR{position:absolute;top:10px;bottom:9px;width:11px;background:#e7eef6}.sideL{left:8px}.sideR{right:8px}.dimension{margin-top:20px;text-align:center;color:#f5ca69;font-size:11px;font-weight:950}
@@ -137,11 +149,11 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 
 <div class="sectiontitle"><h3>Herramientas del taller</h3><span>TOCA UNA OPCIÓN</span></div>
 <section class="cards">
-<button class="card" data-tool="madera" onclick="openTool('madera',this)"><span class="ico">🪵</span><strong>Cajones madera</strong><small>De 1 a 6 cajones, según configuración.</small></button>
+<button class="card" data-tool="madera" onclick="openTool('madera',this)"><span class="ico">🪵</span><strong>Cajones madera</strong><small>Despiece, medidas y croquis isométrico.</small></button>
 <button class="card" data-tool="metal" onclick="openTool('metal',this)"><span class="ico">🧰</span><strong>Metálica / Joyero</strong><small>Metálicos: 1 o 2 · joyero: 1.</small></button>
-<button class="card" data-tool="cajonera" onclick="openTool('cajonera',this)"><span class="ico">🗃️</span><strong>Cajoneras</strong><small>De 1 a 6 · cotas según tarifa.</small></button>
+<button class="card" data-tool="cajonera" onclick="openTool('cajonera',this)"><span class="ico">🗃️</span><strong>Cajoneras</strong><small>Vista montada, explosionada y cotas.</small></button>
 <button class="card" data-tool="armario" onclick="openTool('armario',this)"><span class="ico">🚪</span><strong>Armarios</strong><small>Hueco interior desde la caja nominal.</small></button>
-<button class="card" data-tool="croquis" onclick="openTool('croquis',this)"><span class="ico">📐</span><strong>Croquis</strong><small>Esquema visual con cotas principales.</small></button>
+<button class="card" data-tool="croquis" onclick="openTool('croquis',this)"><span class="ico">📐</span><strong>Croquis</strong><small>3D técnico para madera y cajoneras.</small></button>
 <button class="card" data-tool="tarifa" onclick="openTool('tarifa',this)"><span class="ico">📖</span><strong>Tarifa técnica</strong><small>Datos ESENZIA que ya están verificados.</small></button>
 <button class="card" data-tool="calc" onclick="openTool('calc',this)"><span class="ico">🧮</span><strong>Calculadora</strong><small>Operaciones rápidas en mm o cm.</small></button>
 <button class="card" data-tool="ia" onclick="openTool('ia',this)"><span class="ico">✨</span><strong>Consulta especial</strong><small>Solo para casos que no resuelve la herramienta.</small></button>
@@ -515,6 +527,137 @@ function woodPiecesSketch(c){
  return '<div class="sketch" style="display:block;padding:10px;margin-top:12px">'+svg+'</svg></div>';
 }
 
+
+/* Croquis isométricos de las piezas de madera. Representación ilustrativa:
+   las cotas numéricas provienen de los cálculos ya existentes; NO se extrapolan
+   alturas, mecanizados ni fondos especiales que la tarifa no haya confirmado. */
+function cadPolygon(points,fill,stroke='#9db3c6',width=1.5){
+ return '<polygon points="'+points+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+width+'" stroke-linejoin="round"/>';
+}
+function cadText(x,y,value,size=13,color='#e8f2fd',anchor='middle',weight=700){
+ return '<text x="'+x+'" y="'+y+'" font-size="'+size+'" fill="'+color+'" text-anchor="'+anchor+'" font-weight="'+weight+'">'+escapeHtml(value)+'</text>';
+}
+function cadLine(x1,y1,x2,y2,color='#7eabc7',dash=''){
+ return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+color+'" stroke-width="1.5" '+(dash?'stroke-dasharray="'+dash+'"':'')+'/>';
+}
+function cadSvg(aria,body,h=330){
+ return '<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+escapeHtml(aria)+'" viewBox="0 0 520 '+h+'" style="font-family:Arial,Helvetica,sans-serif">'+body+'</svg>';
+}
+function cadDrawerMounted(c,special){
+ const h=interiorMm(c),row=special?null:standardWoodRow(c);
+ const f=special?specialDrawerFrontMm(h):row?row.frente:null;
+ const tr=special?specialDrawerTrabaMm(h):row?row.traba:null;
+ const fw=row?mm(row.fondo):'ancho pendiente';
+ let v='<ellipse cx="296" cy="224" rx="200" ry="28" fill="#020810" opacity=".45"/>';
+ v+=cadText(260,28,'01 · CAJÓN MONTADO',17);
+ v+=cadPolygon('206,91 465,91 465,116 206,116','#a8c3ce','#d8ebf2');
+ v+=cadPolygon('141,181 381,181 453,122 213,122','#92bac0','#d8eaf1');
+ v+=cadPolygon('125,154 202,91 202,151 125,212','#c6aa80','#f3d7a1');
+ v+=cadPolygon('390,154 467,91 467,151 390,212','#9a805c','#f1d49e');
+ v+=cadLine(131,187,193,135,'#4f839b');
+ v+=cadLine(397,188,457,137,'#4f839b');
+ v+=cadPolygon('117,150 394,150 394,212 117,212','#e8cfaa','#fff1d3',2);
+ v+=cadPolygon('394,150 401,145 401,207 394,212','#97764e','#c29f75');
+ v+=cadLine(123,165,387,165,'#d2b58c');
+ v+=cadText(332,79,'TRABA '+(tr===null?'PENDIENTE':mm(tr)),12,'#f8da9b');
+ v+=cadLine(139,237,393,237);
+ v+=cadLine(139,228,139,245);v+=cadLine(393,228,393,245);
+ v+=cadText(266,259,'FRENTE '+(f===null?'PENDIENTE':mm(f)),15,'#f8dfac');
+ v+=cadText(266,280,'ALTO '+(special?'POR CONFIRMAR':'160 mm'),12,'#b9c9d8');
+ v+=cadText(266,306,'FONDO '+fw+' · PROF. '+mm(woodSideDepthCm()*10),11,'#8fddda');
+ return cadSvg('Vista isométrica de un cajón de madera montado',v,323);
+}
+function cadDrawerExploded(c,special){
+ const h=interiorMm(c),row=special?null:standardWoodRow(c);
+ const front=special?specialDrawerFrontMm(h):row?row.frente:null;
+ const tr=special?specialDrawerTrabaMm(h):row?row.traba:null;
+ const fondo=row?mm(row.fondo):'ancho pendiente';
+ const sideDepth=mm(woodSideDepthCm()*10);
+ let v=cadText(260,27,'02 · DESPIECE EXPLOSIONADO',17);
+ v+=cadText(260,48,'1 FRENTE · 2 COSTADOS · 2 TRABAS · 1 FONDO',11,'#9cb3c8');
+ v+=cadPolygon('63,116 118,72 118,159 63,202','#d5b990','#ffe2b4');
+ v+=cadLine(67,184,114,148,'#4382a4');
+ v+=cadPolygon('409,116 464,72 464,159 409,202','#a78a63','#f1d4a7');
+ v+=cadLine(414,184,460,148,'#4382a4');
+ v+=cadPolygon('168,81 369,81 369,103 168,103','#ead8b8','#fff0cf');
+ v+=cadPolygon('169,153 349,153 379,125 200,125','#99c6c6','#d6f0ed');
+ v+=cadPolygon('168,193 369,193 369,211 168,211','#e8d3ac','#fff0ce');
+ v+=cadPolygon('128,247 389,247 389,291 128,291','#f0d5a9','#fff0c9',2);
+ v+=cadLine(130,249,385,249,'#fff6dd');
+ v+=cadLine(118,299,401,299,'#739dbc');
+ v+=cadText(259,317,'FRENTE '+(front===null?'PENDIENTE':mm(front)),13,'#ffe3ac');
+ v+=cadText(260,120,'FONDO · '+fondo,12,'#d5f4ee');
+ v+=cadText(260,175,'2 TRABAS · '+(tr===null?'PENDIENTE':mm(tr))+' × 90 mm',12,'#ffdcaa');
+ v+=cadText(94,218,special?'ALTO ?':'120 mm',12,'#b0d3ec');
+ v+=cadText(436,218,sideDepth,12,'#b0d3ec');
+ v+=cadText(261,234,special?'Alto del frente: pendiente':'Alto del frente: 160 mm',11,'#aabed1');
+ return cadSvg('Despiece isométrico de frente, dos costados con canales, dos trabas y fondo de cajón de madera',v,331);
+}
+function cadChestMounted(c,count,special){
+ const height=45+count*28,y=80,backX=62,backY=-39;
+ const h=interiorMm(c),row=special?null:standardWoodRow(c);
+ const front=special?specialDrawerFrontMm(h):row?row.frente:null;
+ const tall=special?null:chestTotalCm(count);
+ const total=tall===null?'ALTO TOTAL PENDIENTE':'ALTO TOTAL '+mm(tall*10);
+ const topDepth=special||reducedDepth()?'PENDIENTE':'500 mm';
+ let v='<ellipse cx="275" cy="'+(y+height+28)+'" rx="205" ry="24" fill="#020810" opacity=".45"/>';
+ v+=cadText(260,28,'01 · CAJONERA MONTADA',17);
+ v+=cadPolygon('107,'+y+' 382,'+y+' 444,'+(y+backY)+' 169,'+(y+backY),'#edcf9d','#fff1c8',2);
+ v+=cadPolygon('382,'+(y+8)+' 444,'+(y+backY+8)+' 444,'+(y+height+backY)+' 382,'+(y+height),'#846e52','#dec49a');
+ v+='<rect x="107" y="'+(y+7)+'" width="275" height="'+(height-7)+'" fill="#b39774" stroke="#ecd2aa" stroke-width="2"/>';
+ for(let i=0;i<count;i++){
+  const fy=y+21+i*28;
+  v+='<rect x="120" y="'+fy+'" width="247" height="24" rx="2" fill="'+(i%2?'#e1bf8e':'#ebcca0')+'" stroke="#fae9ca" stroke-width="1.4"/>';
+  v+=cadLine(127,fy+5,360,fy+5,'#cba575');
+  v+=cadText(245,fy+17,'CAJÓN '+(i+1),11,'#4b3926');
+ }
+ v+=cadText(257,y+height+37,'HUECO '+mm(h),14,'#a7dbff');
+ v+=cadText(257,y+height+58,total,12,'#f8d79f');
+ v+=cadText(257,y+height+77,'SOBRE · PROF. '+topDepth,12,'#9fd0bd');
+ return cadSvg('Cajonera de madera montada, '+count+' cajones, esquema isométrico',v,Math.max(325,y+height+92));
+}
+function cadChestExploded(c,count,special){
+ const h=interiorMm(c),row=special?null:standardWoodRow(c);
+ const f=special?specialDrawerFrontMm(h):row?row.frente:null;
+ const tall=special?null:chestTotalCm(count);
+ const side=tall===null?'ALTO POR CONFIRMAR':mm((tall-3)*10);
+ const frontLabel=f===null?'ANCHO POR CONFIRMAR':mm(f);
+ const topDepth=special||reducedDepth()?'PROF. PENDIENTE':'PROF. 500 mm';
+ let v=cadText(260,27,'02 · CAJONERA EXPLOSIONADA',17);
+ v+=cadText(260,48,'SOBRE · 2 COSTADOS · '+count+' FRENTES',12,'#9cb4c6');
+ v+=cadPolygon('158,86 370,86 422,60 209,60','#e6ca9a','#fff0cf',2);
+ v+=cadPolygon('158,86 370,86 370,100 158,100','#b6986c','#efd3a6');
+ v+=cadText(260,117,'SOBRE · 30 mm · '+topDepth,11,'#f5d49c');
+ v+=cadPolygon('53,150 85,129 85,283 53,304','#bc9d73','#f1d3a6',2);
+ v+=cadPolygon('438,150 470,129 470,283 438,304','#a18661','#f1d3a6',2);
+ v+=cadText(78,325,'2 COSTADOS',12,'#c8e2f0');
+ v+=cadText(444,325,side,12,'#f7cf98');
+ v+='<rect x="150" y="126" width="230" height="'+(count*27+10)+'" rx="3" fill="none" stroke="#547188" stroke-width="1.5" stroke-dasharray="5 5"/>';
+ for(let i=0;i<count;i++){
+  const yy=132+i*27;
+  v+=cadPolygon('170,'+yy+' 374,'+yy+' 374,'+(yy+22)+' 170,'+(yy+22),'#e9cb9f','#fff1d1');
+  v+=cadLine(176,yy+5,366,yy+5,'#c9a77e');
+  v+=cadText(272,yy+16,'FRENTE '+(i+1),11,'#4b3928');
+ }
+ v+=cadText(270,315,'FRENTE '+frontLabel,12,'#ffe3ac');
+ v+=cadText(270,336,'ALTO '+(special?'PENDIENTE':'160 mm'),12,'#a8cee7');
+ return cadSvg('Despiece conceptual de cajonera de madera con sobre, costados y frentes',v,350);
+}
+function professionalWoodDiagrams(c,count,special){
+ const isChest=count>1;
+ const part= isChest?'CAJONERA · '+count+' CAJONES':'CAJÓN DE MADERA';
+ const pending=special||reducedDepth()||(!special&&!standardWoodRow(c))||count>4;
+ const state=pending?'CON COTAS POR CONFIRMAR':'COTAS DE DESPIECE';
+ const note='Vistas isométricas esquemáticas, sin escala. Se representa un cajón completo y su despiece; en la cajonera se representan las '+count+' posiciones de frente. '+(special?'Especial: el frente y la traba siguen las reglas del taller; altos, fondo ancho y resto de mecanizados requieren verificación.':'Madera estándar: anchos de pieza según la tabla del taller; consultar el croquis frontal y el despiece técnico inferior.')+(reducedDepth()?' Fondo de armario reducido: verificar la adaptación de profundidad de los interiores.':'');
+ const frontOne='<div class="cadView">'+cadDrawerMounted(c,special)+'<div class="cadViewFooter"><b>Montaje de un cajón.</b> Frente liso, costados con canal inferior, trabas y fondo.</div></div>';
+ const drawerTwo='<div class="cadView">'+cadDrawerExploded(c,special)+'<div class="cadViewFooter"><b>Despiece de un cajón.</b> Piezas separadas; se repite por cada cajón de la cajonera.</div></div>';
+ const chest='<div class="cadView">'+cadChestMounted(c,count,special)+'<div class="cadViewFooter"><b>Cajonera montada.</b> Se muestran exactamente '+count+' frentes.</div></div>';
+ const chestExploded='<div class="cadView">'+cadChestExploded(c,count,special)+'<div class="cadViewFooter"><b>Despiece de cajonera.</b> Sobre, laterales y frentes. No representa herrajes o regletas exactos.</div></div>';
+ return '<section class="cadShowcase" aria-label="Croquis 3D de madera"><div class="cadHeading"><strong>📐 '+part+' · VISTAS 3D</strong><span>'+state+'</span></div>'+
+  (isChest?'<div class="cadGrid">'+chest+chestExploded+'</div><div class="cadBlueprintTitle">CAJÓN INTERIOR · MONTADO Y DESPIEZADO</div>':'')+
+  '<div class="cadGrid">'+frontOne+drawerTwo+'</div><div class="cadFootnote">'+note+'</div></section>';
+}
+
 function woodAssemblySketch(c,count,special=false){
  const h=interiorMm(c);
  const front=special?specialDrawerFrontMm(h):isTabulatedWoodWidth(c)?drawerFrontMm(c):null;
@@ -565,7 +708,7 @@ function woodAssemblySketch(c,count,special=false){
   metric('Fondos · ancho × profundidad',count+' × '+label(drawerBottomWidthMm(c))+' × '+mm(woodSideDepthCm()*10))+
   metric('Regletas laterales','2 × '+label(reg))+
   metric('DIF','26 mm')+'</div>');
- return '<div class="sketch" style="display:block;padding:12px">'+svg+pieceList+'<div class="notice">'+note+'</div></div>'+(special?'':woodPiecesSketch(c));
+ return professionalWoodDiagrams(c,count,special)+'<div class="cadBlueprintTitle">VISTA FRONTAL TÉCNICA · REGLETAS Y COTAS</div><div class="sketch" style="display:block;padding:12px">'+svg+pieceList+'<div class="notice">'+note+'</div></div>'+(special?'':woodPiecesSketch(c));
 }
 
 function drawerHtml(c,count=1,special=false){
