@@ -33,6 +33,7 @@ button,input,select,textarea{font:inherit} button{touch-action:manipulation}
 .depthInfo{min-height:50px;border:1px solid #36536d;border-radius:14px;background:#0f1d2a;padding:9px 13px;display:flex;flex-direction:column;justify-content:center;color:#dcecff;font-size:11px;line-height:1.35}
 .depthInfo b{color:#8fd2ff;font-size:13px}
 .quick{position:relative;z-index:1;margin-top:11px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.quick .quickWidth{grid-column:span 3}.quick .primary{grid-column:span 1}
+.measureInputRow{display:grid;grid-template-columns:minmax(0,1fr) 78px;gap:7px}.measureInputRow select{padding:0 9px;text-align:center;background:#14293c;border-color:#4e7aa6}
 .field label,.toolpanel label{display:block;margin:0 0 6px;color:#a9b8c9;font-size:10px;font-weight:950;letter-spacing:.45px}
 input,select,textarea{width:100%;border:1px solid #344256;background:#0a111a;color:#fff;border-radius:14px;outline:none;transition:.15s ease}
 input,select{height:50px;padding:0 13px;font-size:16px;font-weight:800}textarea{min-height:120px;padding:13px;resize:vertical;line-height:1.4}
@@ -70,7 +71,25 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 .toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(12px);background:#152231;color:#eaf4ff;border:1px solid #34495e;border-radius:999px;padding:9px 13px;font-size:10px;font-weight:850;opacity:0;pointer-events:none;transition:.18s;z-index:30;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .resultActions{display:flex;gap:8px;margin:10px 0 0}
 .resultActions button{flex:1;min-width:0;min-height:46px;border-radius:13px;border:1px solid #3b638a;background:#14283b;color:#dcedff;font-size:13px;font-weight:900;cursor:pointer}
-.resultActions button:last-child{border-color:#386858;background:#153027;color:#a8f2d2}
+.resultActions button:nth-child(2){border-color:#386858;background:#153027;color:#a8f2d2}
+#printSheet{display:none}
+@media print{
+ @page{size:A4;margin:13mm}
+ html,body{background:#fff!important;color:#111!important}
+ body>*:not(#printSheet){display:none!important}
+ #printSheet{display:block!important;font-family:Arial,sans-serif;color:#111!important}
+ #printSheet h1{font-size:18pt;margin:0 0 8mm}
+ #printSheet .resultHero{color:#111!important;background:#fff!important;border:1px solid #666!important;box-shadow:none!important;margin-bottom:6mm;break-inside:avoid}
+ #printSheet .resultHead strong{font-size:12pt;color:#111!important}
+ #printSheet .verified{color:#111!important}
+ #printSheet .metrics{display:grid!important;grid-template-columns:repeat(3,1fr)}
+ #printSheet .metric,#printSheet .notice{color:#111!important;background:#fff!important;border:1px solid #bbb!important}
+ #printSheet .metric small,#printSheet .metric strong{color:#111!important}
+ #printSheet svg{max-height:220mm;width:100%;break-inside:avoid}
+ #printSheet svg text{fill:#111!important}
+ #printSheet svg path,#printSheet svg line,#printSheet svg rect{stroke:#555!important}
+ #printSheet .printFoot{font-size:9pt;margin-top:7mm;border-top:1px solid #aaa;padding-top:3mm}
+}
 .resultActions button:active{transform:scale(.98)}
 @media(max-width:430px){.resultActions{flex-direction:column}}
 @media(max-width:760px){.depthFirst{grid-template-columns:1fr}.hero{padding:16px}.herohead{display:block}.reference{display:inline-block;margin-top:12px}.quick{grid-template-columns:1fr 1fr}.quick .field:first-child{grid-column:1/-1}.quick .quickWidth{grid-column:1/-1}.quick .primary{grid-column:1/-1}.cards{grid-template-columns:repeat(2,1fr)}.card{min-height:120px}.formrow{grid-template-columns:1fr 1fr}.formrow .primary,.formrow .secondary{grid-column:1/-1}.metrics,.tarifagrid{grid-template-columns:repeat(2,1fr)}}
@@ -100,7 +119,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 <div class="field" id="quickWoodModeField"><label for="quickWoodMode">CONFIGURACIÓN DE MADERA</label><select id="quickWoodMode" onchange="onQuickWoodModeChange()"><option value="standard">Estándar</option><option value="special">Cajonera especial</option></select></div>
 <div class="field"><label for="quickCount">3 · CANTIDAD DE CAJONES</label><select id="quickCount" onchange="onQuickCountChange()"><option value="1">1 cajón</option><option value="2">2 cajones</option><option value="3" selected>3 cajones</option><option value="4">4 cajones</option><option value="5">5 cajones</option><option value="6">6 cajones</option></select></div>
 <div class="field"><label for="quickMeasure">4 · MEDIDA DE PARTIDA</label><select id="quickMeasure" onchange="onQuickMeasureChange()"><option value="caja">Caja del armario</option><option value="hueco">Hueco interior</option></select></div>
-<div class="field quickWidth"><label for="quickBox" id="quickBoxLabel">5 · ANCHO CAJA (cm)</label><input id="quickBox" inputmode="decimal" placeholder="100"></div>
+<div class="field quickWidth"><label for="quickBox" id="quickBoxLabel">5 · ANCHO CAJA (cm)</label><div class="measureInputRow"><input id="quickBox" inputmode="decimal" placeholder="100"><select id="quickUnit" aria-label="Unidad de medida" onchange="onQuickUnitChange()"><option value="cm">cm</option><option value="mm">mm</option></select></div></div>
 <button class="primary" onclick="quickCalculate()">CALCULAR</button>
 </div>
 <div id="quickResult" class="result"></div>
@@ -164,6 +183,7 @@ input:focus,select:focus,textarea:focus{border-color:#5eaaff;box-shadow:0 0 0 3p
 
 <nav class="nav"><button class="navbtn active" onclick="goHome(this)"><b>⌂</b>Inicio</button><button class="navbtn" onclick="navTool('tarifa',this)"><b>📖</b>Tarifa</button><button class="navbtn" onclick="navTool('calc',this)"><b>🧮</b>Calcular</button><button class="navbtn" onclick="navTool('ia',this)"><b>✨</b>Consulta</button></nav>
 <div class="toast" id="toast"></div>
+<section id="printSheet" aria-label="Ficha preparada para imprimir"></section>
 
 <script>
 const historyKey='tallerV2_history';
@@ -182,16 +202,33 @@ function setCountOptions(selectId,type,preferred){
  node.disabled=type==='joyero';
  return count;
 }
-function saveQuickConfiguration(){try{localStorage.setItem(configurationKey,JSON.stringify({type:document.getElementById('quickType').value,count:Number(document.getElementById('quickCount').value),measure:document.getElementById('quickMeasure').value,woodMode:document.getElementById('quickWoodMode').value}))}catch(e){}}
+function saveQuickConfiguration(){try{localStorage.setItem(configurationKey,JSON.stringify({type:document.getElementById('quickType').value,count:Number(document.getElementById('quickCount').value),measure:document.getElementById('quickMeasure').value,woodMode:document.getElementById('quickWoodMode').value,unit:document.getElementById('quickUnit').value}))}catch(e){}}
 function boxFromMeasure(value,measure){return measure==='hueco'?Number((value+3.9).toFixed(8)):value}
+function quickMeasurementCm(){
+ const amount=val('quickBox');
+ return document.getElementById('quickUnit').value==='mm'?Number((amount/10).toFixed(8)):amount;
+}
+function onQuickUnitChange(){
+ const select=document.getElementById('quickUnit'),next=select.value,old=select.dataset.previous||'cm',input=document.getElementById('quickBox');
+ if(next!==old&&input.value.trim()){
+  const current=Number(input.value.replace(',','.'));
+  if(Number.isFinite(current)){
+   const converted=old==='cm'?current*10:current/10;
+   input.value=String(Number(converted.toFixed(6))).replace('.',',');
+  }
+ }
+ select.dataset.previous=next;
+ onQuickMeasureChange();
+}
 function onQuickMeasureChange(){
  const type=document.getElementById('quickType').value,mode=document.getElementById('quickWoodMode').value;
  const special=type==='madera'&&mode==='special',sel=document.getElementById('quickMeasure');
  if(special)sel.value='hueco';
  sel.disabled=special;
  const m=sel.value,input=document.getElementById('quickBox');
- document.getElementById('quickBoxLabel').textContent=m==='hueco'?'5 · ANCHO HUECO (cm)':'5 · ANCHO CAJA (cm)';
- input.placeholder=m==='hueco'?'96,1':'100';
+ const unit=document.getElementById('quickUnit').value;
+ document.getElementById('quickBoxLabel').textContent='5 · ANCHO '+(m==='hueco'?'HUECO':'CAJA')+' ('+unit+')';
+ input.placeholder=unit==='mm'?(m==='hueco'?'961':'1000'):(m==='hueco'?'96,1':'100');
  saveQuickConfiguration();
  if(document.getElementById('quickResult').classList.contains('show')&&input.value.trim())quickCalculate();
 }
@@ -313,7 +350,8 @@ function showResult(id,html){
   const actions=document.createElement('div');actions.className='resultActions';
   const copy=document.createElement('button');copy.type='button';copy.textContent='📋 Copiar ficha';copy.addEventListener('click',()=>copyMeasurements(id));
   const share=document.createElement('button');share.type='button';share.textContent='↗ Compartir ficha';share.addEventListener('click',()=>shareMeasurements(id));
-  actions.append(copy,share);el.appendChild(actions);
+  const print=document.createElement('button');print.type='button';print.textContent='🖨️ Imprimir / PDF';print.addEventListener('click',()=>printMeasurements(id));
+  actions.append(copy,share,print);el.appendChild(actions);
  }
 }
 function measurementSheetText(id){
@@ -339,6 +377,21 @@ function measurementSheetText(id){
  }
  lines.push('Revisar las cotas pendientes antes de fabricar. Referencia: ESENZIA 4.0.');
  return lines.join('\n');
+}
+function printMeasurements(id){
+ const source=document.getElementById(id),sheet=document.getElementById('printSheet');
+ if(!source||!source.querySelector('.resultHero'))return toast('No hay resultados para imprimir');
+ sheet.replaceChildren();
+ const heading=document.createElement('h1');heading.textContent='Taller Baixmoduls · Ficha de medidas';sheet.appendChild(heading);
+ const cards=source.querySelectorAll('.resultHero');
+ cards.forEach(card=>sheet.appendChild(card.cloneNode(true)));
+ source.querySelectorAll('svg').forEach(svg=>sheet.appendChild(svg.cloneNode(true)));
+ if(id==='sketchMeta'){
+  const drawing=document.getElementById('diagram')?.querySelector('svg');
+  if(drawing)sheet.appendChild(drawing.cloneNode(true));
+ }
+ const foot=document.createElement('p');foot.className='printFoot';foot.textContent='ESENZIA 4.0 · Comprobar las cotas pendientes antes de fabricar.';sheet.appendChild(foot);
+ window.print();
 }
 async function copyMeasurements(id){
  const content=measurementSheetText(id);
@@ -384,7 +437,8 @@ function repeatHistory(i){
  syncWoodModeVisibility();
  document.getElementById('quickMeasure').value=x.measure==='hueco'?'hueco':'caja';
  onQuickMeasureChange();
- document.getElementById('quickBox').value=x.measure==='hueco'?Number((x.box-3.9).toFixed(8)):x.box;
+ const originalMeasure=x.measure==='hueco'?Number((x.box-3.9).toFixed(8)):x.box;
+ document.getElementById('quickBox').value=document.getElementById('quickUnit').value==='mm'?Number((originalMeasure*10).toFixed(6)):originalMeasure;
  let count=x.count||(x.type==='Cajonera 2'?2:x.type==='Cajonera 3'?3:1);
  setCountOptions('quickCount',type,count);
  saveQuickConfiguration();quickCalculate();window.scrollTo({top:0,behavior:'smooth'});
@@ -573,7 +627,7 @@ function makeSketch(){
 }
 
 function quickCalculate(){
- const type=document.getElementById('quickType').value,raw=val('quickBox'),measure=document.getElementById('quickMeasure').value,c=boxFromMeasure(raw,measure),count=Number(document.getElementById('quickCount').value),out='quickResult';
+ const type=document.getElementById('quickType').value,raw=quickMeasurementCm(),measure=document.getElementById('quickMeasure').value,c=boxFromMeasure(raw,measure),count=Number(document.getElementById('quickCount').value),out='quickResult';
  if(!permittedCounts(type).includes(count))return showResult(out,'<div class="notice">Esta cantidad no está disponible para el tipo de cajón seleccionado.</div>');
  if(!document.getElementById('quickBox').value.trim()||!Number.isFinite(raw)||!Number.isFinite(c))return showResult(out,'<div class="notice">Introduce una medida válida.</div>');
  if(type==='madera'){
@@ -596,8 +650,8 @@ async function copyText(text){try{await navigator.clipboard.writeText(text)}catc
 async function askChatGPT(){const q=document.getElementById('query'),text=q.value.trim();if(!text){toast('Escribe primero la consulta');q.focus();return}await copyText(text);toast('Abriendo ChatGPT…');window.open('https://chatgpt.com/?q='+encodeURIComponent(text),'_blank')}
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
 document.getElementById('quickBox').addEventListener('keydown',e=>{if(e.key==='Enter')quickCalculate()});document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter')calculate()});try{const stored=localStorage.getItem(depthKey);if(depthProfiles[stored])document.getElementById('armDepth').value=stored;const ws=Number(localStorage.getItem(woodSideDepthKey));if([45,40,35,30].includes(ws))document.getElementById('woodSideDepth').value=String(ws)}catch(e){}
-try{const settings=JSON.parse(localStorage.getItem(configurationKey)||'{}');if(permittedCounts(settings.type).includes(settings.count)&&['madera','metalico','joyero'].includes(settings.type)){document.getElementById('quickType').value=settings.type;setCountOptions('quickCount',settings.type,settings.count);document.getElementById('quickWoodMode').value=settings.woodMode==='special'?'special':'standard';if(['caja','hueco'].includes(settings.measure))document.getElementById('quickMeasure').value=settings.measure;else if(settings.woodMode==='special'&&settings.type==='madera')document.getElementById('quickMeasure').value='hueco'}else setCountOptions('quickCount','madera',3)}catch(e){setCountOptions('quickCount','madera',3)}
-syncWoodModeVisibility();onQuickMeasureChange();onArmMeasureChange();onMetalTypeChange();onDepthChange();tick();setInterval(tick,30000);renderHistory();
+try{const settings=JSON.parse(localStorage.getItem(configurationKey)||'{}');if(permittedCounts(settings.type).includes(settings.count)&&['madera','metalico','joyero'].includes(settings.type)){document.getElementById('quickType').value=settings.type;setCountOptions('quickCount',settings.type,settings.count);document.getElementById('quickWoodMode').value=settings.woodMode==='special'?'special':'standard';document.getElementById('quickUnit').value=settings.unit==='mm'?'mm':'cm';if(['caja','hueco'].includes(settings.measure))document.getElementById('quickMeasure').value=settings.measure;else if(settings.woodMode==='special'&&settings.type==='madera')document.getElementById('quickMeasure').value='hueco'}else setCountOptions('quickCount','madera',3)}catch(e){setCountOptions('quickCount','madera',3)}
+document.getElementById('quickUnit').dataset.previous=document.getElementById('quickUnit').value;syncWoodModeVisibility();onQuickMeasureChange();onArmMeasureChange();onMetalTypeChange();onDepthChange();tick();setInterval(tick,30000);renderHistory();
 </script>
 </body>
 </html>
